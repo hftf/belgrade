@@ -1,0 +1,49 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title Belgrade
+		link(rel='stylesheet', type='text/css', href='css/tossup.css')
+		link(rel='stylesheet', type='text/css', href='css/gloss.css')
+	body
+		header
+			h1.acronym belgrade
+			.lite
+				p.words buzz event location graph demo
+				svg.overlay.lines.coolhead(xmlns='http://www.w3.org/2000/svg')
+
+		nav
+			ul
+
+		h2 Tossup
+
+		p
+			img.category-image
+			| 
+			span.category
+			//- Author, Target conversion %
+
+		blockquote
+			p.relative
+				span.question
+				svg.overlay.lines.rug
+			p
+				span.answer-label ANSWER: 
+				span.answer
+
+		hr
+
+
+		p: svg.chart
+
+		h2 Buzzes
+
+		table
+			thead
+				tr
+					th User
+					th Pos.
+					th Answer
+			tbody.buzzes
+
+		script(src='js/all.js')
