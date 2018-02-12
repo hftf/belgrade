@@ -1,0 +1,131 @@
+$color6: #A2DEAC
+$color1: #DABCD4
+$color4: #D7D382
+$color2: #E6B693
+$color3: #B4D6D2
+
+$color6: #DABCD4
+
+// $color1: #8dd3c7
+// $color2: #ffffb3
+// $color3: #bebada
+// $color4: #fb8072
+// $color5: #80b1d3
+// $color6: #fdb462
+// $color7: #b3de69
+// $color8: #fccde5
+// $color9: #d9d9d9
+
+@font-face
+	font-family: 'ct'
+	font-weight: 400
+	src: local('Chronicle Text G1'), url(../fonts/ct.otf)
+
+@font-face
+	font-family: 'cd'
+	font-weight: 700
+	src: local('Chronicle Display'), url(../fonts/cd.otf)
+
+
+body
+	font-family: 'ct'
+	width: 700px
+	margin: 0 auto
+
+h1, h2, h3
+	font-family: 'cd'
+
+// h1
+	font-size: 2.2em
+	margin-bottom: 0.5em
+
+.lite p
+	font-size: 1.3em
+	background: white
+
+.relative
+	position: relative
+
+svg.overlay
+	pointer-events: none
+	position: absolute
+	top: 0
+	left: 0
+	overflow: visible
+	z-index: -1
+
+.line.last
+	color: $color6
+
+.lines
+	line, path
+		fill: none
+		stroke: black
+
+.coolhead.lines
+	line, path
+		stroke-width: 1px
+
+//	.lite
+//		opacity: 0.1
+//		transition: opacity linear 0.1s
+//
+//	header:hover .lite
+//		opacity: 1
+
+.rug.lines
+		line, path
+			stroke: rgba($color6, 0.7)
+			stroke-width: auto
+
+		circle
+			stroke: rgba($color6, 0.7)
+			fill: white
+
+
+.chart
+	.bar rect
+		fill: rgba($color4, 0.8)
+		// fill: $color6
+		shape-rendering: crispEdges
+
+	path.kde
+		fill: none
+		stroke: $color4
+		stroke-width: 1.5px
+		stroke-dasharray: 6px 5px
+
+	.axis path, .axis line
+		fill: none
+		stroke: black
+		shape-rendering: crispEdges
+
+	.x.axis .label
+		text-anchor: middle
+
+
+@mixin smcp()
+	-webkit-font-feature-settings: "c2sc" 1
+
+.answer-label
+	@include smcp
+
+.category-image
+	vertical-align: bottom
+	height: 22px
+
+nav
+	li
+		display: inline-block
+		margin-right: 1em
+
+hr
+	border: 1px dotted #999
+	border-width: 1px 0 0
+	width: 401px
+	margin: 0 auto
+
+blockquote
+	padding-left: 1em
+	border-left: 2px solid
+	margin: 0
