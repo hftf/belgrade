@@ -45,9 +45,10 @@ fs =
 		diagonal = d3.svg.diagonal()
 		(svg, [wd], [wdR], {x}) ->
 			idx = +wd.parentNode.dataset.index
-			wds = +wd.parentNode.parentNode.dataset.words
+			wds = +wd.closest('[data-words]').dataset.words
 			pct = idx / (wds - 1)
 			buzzes = +wd.innerHTML
+			strokeColor = 'hsla(' + (Math.floor(0 + pct * -360) % 360) + ', 40%, 80%, 0.7)'
 
 			path = document.createElementNS svgNS, 'path'
 			line = document.createElementNS svgNS, 'line'
@@ -57,7 +58,8 @@ fs =
 			# y1 = wdR.bottom
 			y1 = wdR.top + wdR.height / 2
 			x2 = x(pct) + +svg.getAttribute 'l'
-			y2 = 360 + +svg.getAttribute 't'
+			# y2 = 360 + +svg.getAttribute 't'
+			y2 = 460 + +svg.getAttribute 't'
 
 			r = 6 + 3 * Math.sqrt buzzes
 
@@ -72,15 +74,18 @@ fs =
 				.target
 					x: x2
 					y: y2
-			attrs path, ['d', 'stroke-width'], [d, buzzes]
-			attrs line, ['x1', 'y1', 'x2', 'y2', 'stroke-width'], [
+			attrs path, ['d', 'stroke-width', 'stroke'], [d, buzzes, strokeColor]
+			attrs line, ['x1', 'y1', 'x2', 'y2', 'stroke-width', 'stroke'], [
 				x2
 				y2
 				x2
-				y2 + 150
+				# y2 + 150
+				y2 + 100
 				buzzes
+				strokeColor
 			]
-			attrs circle, ['r', 'cx', 'cy'], [r, x1 - 0.5, y1]
+			attrs circle, ['r', 'cx', 'cy', 'stroke'], [r, x1 - 0.5, y1, strokeColor]
+			wd.style.color = strokeColor
 
 			svg.appendChild path
 			svg.appendChild line
