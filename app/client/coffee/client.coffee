@@ -38,6 +38,41 @@ splitWord = (x) -> (R.compose \
 	R.split(' ')
 )
 
+# NEW
+replaceMs = (p, groupedBuzzesByWord) ->
+	ms = p.querySelectorAll('m')
+	for m in ms
+		word_index = m.getAttribute 'v'
+		buzzes = groupedBuzzesByWord[word_index]
+		console.log(m, buzzes)
+		replaceM m, buzzes
+	p
+replaceM = (m, buzzes) ->
+	s = document.createElement 'span'
+	s.setAttribute 'class', 'word'
+
+	m.setAttribute 'class', 'line'
+	word_index = m.getAttribute 'v'
+	# TODO temporary. shouldn't be using id
+	s.setAttribute 'data-index', word_index
+
+	n = document.createElement 'span'
+	l2 = l2c = ''
+	if buzzes
+		l2c = ' last'
+		l2 = buzzes.length
+	n.setAttribute 'class', 'line' + l2c
+	n.innerHTML = l2
+
+	m.parentNode.insertBefore s, m
+
+	s.appendChild m
+	s.appendChild n
+
+splitWordM = (question, outerHTML, groupedBuzzesByWord) ->
+	question.innerHTML = outerHTML
+	replaceMs(question, groupedBuzzesByWord)
+
 iconmap =
 	'Fine Arts':      'paintbrush-7'
 	'Literature':     'book-20'
@@ -62,24 +97,26 @@ loadData = (err, json) ->
 	console.log spanWord
 
 	table json.b
-	x = graph json.a.p, json.a.category
+	x = graph json.a.p, json.a.o, json.a.category
 
 	document.querySelector '.category'
 		.innerHTML = json.a.category
 	document.querySelector '.category-image'
 		.setAttribute 'src', iconurl json.a.category
 	question = document.querySelector '.question'
-	question
-		# .innerHTML = split json.a.raw
-		.innerHTML = splitWord(groups) json.a.raw
-	question.dataset.words = R.length R.split ' ', json.a.raw
+	# question
+		## .innerHTML = split json.a.raw
+		# .innerHTML = splitWord(groups) json.a.raw
+	splitWordM question, json.a.raw, groups
+	# question.dataset.words = R.length R.split ' ', json.a.raw
+	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'
 	rugSvgG = connect.svgGTransform document.querySelector '.rug'
 	connectf = connect.connect 'rug', rugSvgG, {x}
 	R.map R.compose(connectf, R.of), lines
 	# `debugger`
-	document.querySelector '.answer'
-		.innerHTML = json.a.answer
+	# document.querySelector '.answer'
+	# 	.innerHTML = json.a.answer
 
 	# d3.select 'nav ul'
 	# 	.selectAll 'li'
@@ -102,18 +139,18 @@ table = (buzzes) ->
 
 		
 
-graph = (points, category) ->
+graph = (points, categoryPoints, category) ->
 	console.log points, category
 	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .0003).map d3.scale.pow().exponent 2
 	c =
-		width: 400
+		width: 640
 		height: 200
 		mt: 10
 		mb: 60
 		ml: 30
-		mr: 30
+		mr: 60
 
 	chart = d3.select '.chart'
 		.attr 'width',  c.width  + c.ml + c.mr
@@ -141,7 +178,7 @@ graph = (points, category) ->
 	kde = kdep()
 		.sample \
 		# R.filter R.gt(1),
-		points
+		categoryPoints
 		# .kernel (x) -> 1*+(-.5<x<.5)
 		# .bandwidth 0.03
 		.bounds domainp
@@ -202,15 +239,22 @@ graph = (points, category) ->
 		.scale y
 		.ticks 4
 		# .tickFormat ''
-		.orient 'left'
+		.orient 'right'
 
 	chart.append 'text'
-		.text 'All ' + category + ' tossups'
+		.text 'dotted line = pdf(All ' + category + ' tossups)'
 		.attr 'transform', 'translate(20, 20)'
 
-	# chart.append 'g'
-	# 	.attr 'class', 'y axis'
-	# 	.call yaxis
+	# commented?
+	chart.append 'g'
+		.attr 'class', 'y axis'
+		.attr 'transform', 'translate(' + (c.width + 12) + ',0)'
+		.call yaxis
+		.append 'text'
+		.attr 'class', 'label'
+		.text 'Buzzes'
+		.attr 'text-anchor', 'middle'
+		.attr 'transform', 'translate(' + 40 + ',' + (c.height/2) + ') rotate(-90)'
 
 	chart.append 'g'
 		.attr 'class', 'x axis'
@@ -218,7 +262,7 @@ graph = (points, category) ->
 		.call xaxis
 		.append 'text'
 		.attr 'class', 'label'
-		.text 'Position in tossup'
+		.text 'Position in tossup (%)'
 		.attr 'transform', 'translate(' + c.width/2 + ',50)'
 
 	x # hack return
