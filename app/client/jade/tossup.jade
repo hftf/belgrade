@@ -27,13 +27,6 @@ html
 				div.question
 				svg.overlay.lines.rug
 
-			div(style="text-align:right;")
-				small.line.last
-					| Key:   
-					span.get Correct 
-					span.bb +Correct bounceback 
-					span.neg –Incorrect
-
 			//- p.relative
 			//- 	span.question
 			//- 	svg.overlay.lines.rug
@@ -41,7 +34,14 @@ html
 			//- 	span.answer-label ANSWER: 
 			//- 	span.answer
 
-		div.answer
+			div.answer
+
+			div.key
+				small.line.last
+					| Key:   
+					span.get Correct 
+					span.bb +Correct bounceback 
+					span.neg –Incorrect
 
 		h2 Chart
 		p: svg.chart
