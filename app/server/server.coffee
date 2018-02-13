@@ -34,8 +34,9 @@ te.name team_name,
 p.name player_name,
 buzz_value,
 buzz_location p,
-round(buzz_location * 1.0 / words,3) buzz_location_pct,
-bounceback \
+case when buzz_location is null then "" else printf("%.2f", buzz_location * 1.0 / words) end buzz_location_pct,
+bounceback,
+answer_given \
 from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te \
 where get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
 and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value desc, bounceback'
