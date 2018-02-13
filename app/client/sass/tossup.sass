@@ -30,8 +30,18 @@ $color6: #DABCD4
 body
 	font-family: 'Lyon Text', 'Times New Roman', Times, serif
 	font-variant-numeric: lining-nums
-	width: 860px
-	margin: 0 auto
+	margin: 0 4em 1em
+
+	display: grid
+	grid-template-areas: "a b"
+	grid-gap: 4em
+	grid-template-columns: 860px max-content
+
+.left
+	grid-area: a
+.right
+	grid-area: b
+
 
 h1, h2, h3
 	font-family: 'BentonSansCond'
@@ -149,7 +159,7 @@ rt
 	font-size: 80%
 	display: none
 blockquote
-	margin: 2em 0
+	margin: 1em 0
 	line-height: 1.4
 
 svg, .line.last
@@ -182,8 +192,10 @@ svg, .line.last
 		font-weight: 400
 		color: darken($color2, 15)
 
+table
+	font-size: 90%
 th
 	font-weight: 600
 	text-align: left
-td
-	padding-right: 0.5em
+td, th
+	padding-right: 0.75em

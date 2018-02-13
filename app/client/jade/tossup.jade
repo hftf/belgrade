@@ -15,48 +15,50 @@ html
 		//- nav
 		//- 	ul
 
-		h2 Tossup
-		div.packet
+		div.left
+			h2 Tossup
+			div.packet
 
-		//- p
-		//- 	u.category
-		//- 	//- Author, Target conversion %
-
-		blockquote
-			div.relative
-				div.question
-				svg.overlay.lines.rug
-
-			//- p.relative
-			//- 	span.question
-			//- 	svg.overlay.lines.rug
 			//- p
-			//- 	span.answer-label ANSWER: 
-			//- 	span.answer
+			//- 	u.category
+			//- 	//- Author, Target conversion %
 
-			div.answer
+			blockquote
+				div.relative
+					div.question
+					svg.overlay.lines.rug
 
-			div.key
-				small.line.last
-					| Key:   
-					span.get Correct 
-					span.bb +Correct bounceback 
-					span.neg –Incorrect
+				//- p.relative
+				//- 	span.question
+				//- 	svg.overlay.lines.rug
+				//- p
+				//- 	span.answer-label ANSWER: 
+				//- 	span.answer
 
-		h2 Chart
-		p: svg.chart
+				div.answer
 
-		h2 Buzzes
-		table
-			thead
-				tr
-					th Player
-					th Team
-					th Value
-					th BzPt
-					th BzPt%
-					th Bounceback?
-					th Answer
-			tbody.buzzes
+				div.key
+					small.line.last
+						| Key:   
+						span.get Correct 
+						span.bb +Correct bounceback 
+						span.neg –Incorrect
+
+			h2 Chart
+			p: svg.chart
+
+		div.right
+			h2 Buzzes
+			table
+				thead
+					tr
+						th Player
+						th Team
+						th Value
+						th BzPt
+						th BzPt%
+						//- th Bounceback?
+						//- th Answer
+				tbody.buzzes
 
 		script(src='js/all.js')
