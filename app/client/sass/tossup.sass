@@ -6,6 +6,8 @@ $color3: #B4D6D2
 
 $color6: #DABCD4
 
+$colorget: #757
+
 // $color1: #8dd3c7
 // $color2: #ffffb3
 // $color3: #bebada
@@ -100,13 +102,13 @@ svg.overlay
 
 .chart
 	.bar rect
-		fill: rgba($color4, 0.8)
+		fill: rgba($colorget, 0.8)
 		// fill: $color6
 		shape-rendering: crispEdges
 
 	path.kde
 		fill: none
-		stroke: $color4
+		stroke: $color1
 		stroke-width: 1.5px
 		stroke-dasharray: 6px 5px
 
@@ -184,7 +186,7 @@ svg, .line.last
 	color: #999
 	.get
 		font-weight: 500
-		color: #757
+		color: $colorget
 	.bb
 		font-weight: 300
 		color: darken($color4, 20)
@@ -200,3 +202,6 @@ th
 	text-align: left
 td, th
 	padding-right: 0.75em
+
+.chart .axis .tick line
+	stroke: rgba(0,0,0,0.1)

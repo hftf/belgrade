@@ -104,7 +104,6 @@ table = (buzzes) ->
 		
 
 graph = (points, categoryPoints, category) ->
-	console.log points, category
 	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .0003).map d3.scale.pow().exponent 2
@@ -114,7 +113,7 @@ graph = (points, categoryPoints, category) ->
 		mt: 10
 		mb: 60
 		ml: 30
-		mr: 60
+		mr: 80
 
 	chart = d3.select '.chart'
 		.attr 'width',  c.width  + c.ml + c.mr
@@ -122,7 +121,7 @@ graph = (points, categoryPoints, category) ->
 		.append 'g'
 		.attr 'transform', 'translate(' + c.ml + ',' + c.mt + ')'
 
-	binwidth = 0.02
+	binwidth = 0.025
 	domainp = [0, 1]
 	domain = [0, 1 + binwidth]
 	thresholds = d3.range 0, 1 + 2 * binwidth, binwidth
@@ -134,6 +133,11 @@ graph = (points, categoryPoints, category) ->
 
 	normalize = R.over R.lensProp('y'), R.flip(R.divide) binwidth
 	data = R.map normalize, data
+
+	# last = 0
+	# for i in data
+	# 	i.y = last + i.y
+	# 	last = i.y
 
 	x = d3.scale.linear()
 		.range [0, c.width]
@@ -172,8 +176,8 @@ graph = (points, categoryPoints, category) ->
 		.attr 'transform', (d) -> 'translate(' + x(d.x) + ',' + y(d.y) + ')'
 
 	bar.append 'rect'
-		.attr 'x', 1
-		.attr 'width', x(data[0].dx) - 1
+		.attr 'x', 0
+		.attr 'width', x(data[0].dx)
 		.attr 'height', (d) -> c.height - y(d.y)
 
 	# kde
@@ -196,15 +200,17 @@ graph = (points, categoryPoints, category) ->
 		# .tickValues [.5, .84, 1]
 		# .tickFormat (x) -> if x is ftp then 'FTP' else d3.format('0%') x
 		.ticks 4
+		.tickSize -c.height
 		.outerTickSize 0
 		.orient 'bottom'
 
 	yaxis = d3.svg.axis()
 		.scale y
 		.ticks 4
+		.tickSize -c.width
+		.outerTickSize 0
 		# .tickFormat ''
 		.orient 'right'
-
 	chart.append 'text'
 		.text 'dotted line = pdf(All ' + category + ' tossups)'
 		.attr 'transform', 'translate(20, 20)'
@@ -212,13 +218,13 @@ graph = (points, categoryPoints, category) ->
 	# commented?
 	chart.append 'g'
 		.attr 'class', 'y axis'
-		.attr 'transform', 'translate(' + (c.width + 12) + ',0)'
+		.attr 'transform', 'translate(' + (c.width) + ',0)'
 		.call yaxis
 		.append 'text'
 		.attr 'class', 'label'
 		.text 'Buzzes'
 		.attr 'text-anchor', 'middle'
-		.attr 'transform', 'translate(' + 40 + ',' + (c.height/2) + ') rotate(-90)'
+		.attr 'transform', 'translate(' + 50 + ',' + (c.height/2) + ') rotate(-90)'
 
 	chart.append 'g'
 		.attr 'class', 'x axis'
