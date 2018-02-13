@@ -6,7 +6,7 @@ coolhead = require './coolhead'
 connect = require './connect'
 
 main = ->
-	do coolhead
+	# do coolhead
 
 	d3.json '/test/' + window.location.search.slice(1), R.compose loadData
 
@@ -44,7 +44,6 @@ replaceMs = (p, groupedBuzzesByWord) ->
 	for m in ms
 		word_index = m.getAttribute 'v'
 		buzzes = groupedBuzzesByWord[word_index]
-		console.log(m, buzzes)
 		replaceM m, buzzes
 	p
 replaceM = (m, buzzes) ->
@@ -61,7 +60,7 @@ replaceM = (m, buzzes) ->
 	if buzzes
 		l2c = ' last'
 		l2 = buzzes.length
-	n.setAttribute 'class', 'line' + l2c
+	n.setAttribute 'class', 'line lower' + l2c
 	n.innerHTML = l2
 
 	m.parentNode.insertBefore s, m
@@ -94,15 +93,12 @@ groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
 loadData = (err, json) ->
 	groups = groupBuzzesByWord json.b
-	console.log spanWord
 
 	table json.b
 	x = graph json.a.p, json.a.o, json.a.category
 
 	document.querySelector '.category'
 		.innerHTML = json.a.category
-	document.querySelector '.category-image'
-		.setAttribute 'src', iconurl json.a.category
 	question = document.querySelector '.question'
 	# question
 		## .innerHTML = split json.a.raw

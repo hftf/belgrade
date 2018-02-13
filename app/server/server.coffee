@@ -29,12 +29,24 @@ from questions q, \
 as b where q.id = ?1;'
 
 # NEW 
-q1 = 'select player_id u, buzz_location p, (case when buzz_value > 0 then 1 else 0 end) c, case when answer_given is not null then answer_given else "" end a \
-from schema_gameeventtossup \
-where tossup_id = ?1 and buzz_location is not null and buzz_value > 0 order by c desc, p'
+q1 = 'select \
+player_id u, \
+buzz_location p, \
+(case when buzz_value > 0 then 1 else 0 end) c, \
+case when answer_given is not null then answer_given else "" end a, \
+buzz_value,
+round(buzz_location * 1.0 / words,3) buzz_location_pct,
+bounceback,
+p.name player_name,
+te.name team_name \
+from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te \
+where get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
+and tossup_id = ?1 and buzz_location is not null and buzz_value > 0 order by c desc, p'
 # buzz_location is not null
 
-q2 = 'select t.*, q.*, p.*, c.name as category,
+q2 = 'select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+c.name as category,
 group_concat(round(get.p * 1.0 / t.words, 3)) p,
 cget.p o
 from 
@@ -81,7 +93,7 @@ scan_packet = (packet_filename, question_type, question_number) ->
 
     for line, index in packet_file
         if line.startsWith(util.format(META[question_type]['line_startswith_template'], question_number))
-            return packet_file.slice(index, index + META[question_type]['get_next_n_lines']).join('\n')
+            return packet_file.slice(index, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
 # END NEW
 
 runQueries = (queries) ->

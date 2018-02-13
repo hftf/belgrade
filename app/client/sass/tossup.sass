@@ -28,12 +28,13 @@ $color6: #DABCD4
 
 
 body
-	font-family: 'ct'
-	width: 700px
+	font-family: 'Lyon Text', 'ct'
+	font-variant-numeric: lining-nums
+	width: 800px
 	margin: 0 auto
 
 h1, h2, h3
-	font-family: 'cd'
+	font-family: 'Lyon Display', 'cd'
 
 // h1
 	font-size: 2.2em
@@ -126,6 +127,42 @@ hr
 	margin: 0 auto
 
 blockquote
-	padding-left: 1em
-	border-left: 2px solid
-	margin: 0
+	padding: 1em
+	// border: 2px solid #f7e
+	// margin: 0
+	border: 1px solid #ddd
+
+
+
+ruby
+	border-width: 0 0 3px 0
+	border-style: solid
+	border-color: #bef
+.bracket-instruction,
+rt,
+rp
+	font-family: 'Novel SansCond Pro', sans-serif
+	font-size: 100%
+	font-weight: normal
+	font-style: normal
+	color: #58c
+
+ruby
+	ruby-align: space-around
+rt
+	font-size: 80%
+	display: none
+blockquote
+	margin: 3em 0
+	line-height: 1.75
+
+svg, .line.last
+	font-family: 'BentonSansCond', sans-serif
+.lower
+	height: 1em
+
+.answer
+	strong, b
+		font-weight: 600
+	.s1
+		text-decoration: underline
