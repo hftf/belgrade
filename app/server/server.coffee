@@ -29,19 +29,17 @@ from questions q, \
 as b where q.id = ?1;'
 
 # NEW 
-q1 = 'select \
-player_id u, \
-buzz_location p, \
-(case when buzz_value > 0 then 1 else 0 end) c, \
-case when answer_given is not null then answer_given else "" end a, \
-buzz_value,
-round(buzz_location * 1.0 / words,3) buzz_location_pct,
-bounceback,
+q1 = 'select
+te.name team_name,
 p.name player_name,
-te.name team_name \
+buzz_value,
+buzz_location p,
+round(buzz_location * 1.0 / words,3) buzz_location_pct,
+case when answer_given is not null then answer_given else "" end a, \
+bounceback
 from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te \
 where get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
-and tossup_id = ?1 and buzz_location is not null and buzz_value > 0 order by c desc, p'
+and tossup_id = ?1 and buzz_location is not null order by buzz_location, buzz_value desc, bounceback'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,

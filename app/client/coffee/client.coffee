@@ -10,33 +10,33 @@ main = ->
 
 	d3.json '/test/' + window.location.search.slice(1), R.compose loadData
 
-span = (x) -> '<span>' + x + '</span>'
-spanF = R.compose \
-		R.join(' '),
-		R.map(span),
-		R.pluck('u')
-spanWord = R.curry \
-	# r = buzzes {8: [...], 9: [...], ...}
-	# w = word
-	# i = index
-	(r, w, idx) ->
-		i = idx + 1
-		l2 = l2c = ''
-		if i of r
-			# l2 = spanF r[i]
-			l2 = r[i].length
-			l2c = 'last'
-		l2s = '<span class="line ' + l2c + '">' + l2 + '</span>'
-		'<span class="word" data-index="' + i + '"><span class="line">' + w + '</span>' + l2s + '</span>'
-split = R.compose \
-	R.join(' '),
-	R.map(span),
-	R.split(' ')
-splitWord = (x) -> (R.compose \
-	R.join(' '),
-	R.addIndex(R.map)(spanWord x),
-	R.split(' ')
-)
+# span = (x) -> '<span>' + x + '</span>'
+# spanF = R.compose \
+# 		R.join(' '),
+# 		R.map(span),
+# 		R.pluck('u')
+# spanWord = R.curry \
+# 	# r = buzzes {8: [...], 9: [...], ...}
+# 	# w = word
+# 	# i = index
+# 	(r, w, idx) ->
+# 		i = idx + 1
+# 		l2 = l2c = ''
+# 		if i of r
+# 			# l2 = spanF r[i]
+# 			l2 = r[i].length
+# 			l2c = 'last'
+# 		l2s = '<span class="line ' + l2c + '">' + l2 + '</span>'
+# 		'<span class="word" data-index="' + i + '"><span class="line">' + w + '</span>' + l2s + '</span>'
+# split = R.compose \
+# 	R.join(' '),
+# 	R.map(span),
+# 	R.split(' ')
+# splitWord = (x) -> (R.compose \
+# 	R.join(' '),
+# 	R.addIndex(R.map)(spanWord x),
+# 	R.split(' ')
+# )
 
 # NEW
 replaceMs = (p, groupedBuzzesByWord) ->
@@ -97,8 +97,8 @@ loadData = (err, json) ->
 	table json.b
 	x = graph json.a.p, json.a.o, json.a.category
 
-	document.querySelector '.category'
-		.innerHTML = json.a.category
+	# document.querySelector '.category'
+	# 	.innerHTML = json.a.category
 	question = document.querySelector '.question'
 	# question
 		## .innerHTML = split json.a.raw
@@ -109,7 +109,7 @@ loadData = (err, json) ->
 	lines = question.querySelectorAll '.line.last'
 	rugSvgG = connect.svgGTransform document.querySelector '.rug'
 	connectf = connect.connect 'rug', rugSvgG, {x}
-	R.map R.compose(connectf, R.of), lines
+	# R.map R.compose(connectf, R.of), lines
 	# `debugger`
 	# document.querySelector '.answer'
 	# 	.innerHTML = json.a.answer
