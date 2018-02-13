@@ -87,7 +87,7 @@ buzzesToDiffStat = (buzzes) ->
 	diffStat = []
 	positive = ''
 	if 'get' of lengths
-		positive = lengths['get']
+		positive = '<span class="get">' + lengths['get'] + '</span>'
 	if 'bounceback-get' of lengths
 		positive += '<span class="bb">+' + lengths['bounceback-get'] + '</span>'
 	if positive
@@ -128,10 +128,12 @@ loadData = (err, json) ->
 	# document.querySelector '.category'
 	# 	.innerHTML = json.a.category
 	question = document.querySelector '.question'
+	answer = document.querySelector '.answer'
+	answer.innerHTML = json.a.raw[1]
 	# question
 		## .innerHTML = split json.a.raw
 		# .innerHTML = splitWord(groups) json.a.raw
-	splitWordM question, json.a.raw, groups
+	splitWordM question, json.a.raw[0], groups
 	# question.dataset.words = R.length R.split ' ', json.a.raw
 	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'

@@ -39,7 +39,7 @@ bounceback,
 case when answer_given is not null then answer_given else "" end a \
 from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te \
 where get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
-and tossup_id = ?1 and buzz_location is not null order by buzz_location, buzz_value desc, bounceback'
+and tossup_id = ?1 order by buzz_location, buzz_value desc, bounceback'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,
@@ -91,7 +91,10 @@ scan_packet = (packet_filename, question_type, question_number) ->
 
     for line, index in packet_file
         if line.startsWith(util.format(META[question_type]['line_startswith_template'], question_number))
-            return packet_file.slice(index, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
+            return [
+                packet_file.slice(index, index + 1),
+                packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
+            ]
 # END NEW
 
 runQueries = (queries) ->
