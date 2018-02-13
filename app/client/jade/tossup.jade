@@ -15,7 +15,8 @@ html
 		//- nav
 		//- 	ul
 
-		//- h2 Tossup
+		h2 Tossup
+		div.packet
 
 		//- p
 		//- 	u.category
@@ -26,12 +27,11 @@ html
 				div.question
 				svg.overlay.lines.rug
 
-			p(style="text-align:right;")
+			div(style="text-align:right;")
 				small.line.last
 					| Key:   
-					span.get Correct
-					span.bb +Bounceback
-					, 
+					span.get Correct 
+					span.bb +Correct bounceback 
 					span.neg –Incorrect
 
 			//- p.relative
@@ -40,14 +40,13 @@ html
 			//- p
 			//- 	span.answer-label ANSWER: 
 			//- 	span.answer
-		div.answer		
-		hr
 
+		div.answer
 
+		h2 Chart
 		p: svg.chart
 
 		h2 Buzzes
-
 		table
 			thead
 				tr

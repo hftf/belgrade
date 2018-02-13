@@ -28,13 +28,17 @@ $color6: #DABCD4
 
 
 body
-	font-family: 'Lyon Text', 'ct'
+	font-family: 'Lyon Text', 'Times New Roman', Times, serif
 	font-variant-numeric: lining-nums
 	width: 860px
 	margin: 0 auto
 
 h1, h2, h3
-	font-family: 'Lyon Display', 'cd'
+	font-family: 'BentonSansCond'
+	font-weight: 700
+
+h2
+	font-size: 1.3em
 
 // h1
 	font-size: 2.2em
@@ -120,16 +124,8 @@ nav
 		display: inline-block
 		margin-right: 1em
 
-hr
-	border: 1px dotted #999
-	border-width: 1px 0 0
-	width: 401px
-	margin: 0 auto
-
 blockquote
-	padding: 1em
-	// border: 2px solid #f7e
-	// margin: 0
+	padding: 0.8em
 	border: 1px solid #ddd
 
 
@@ -153,7 +149,7 @@ rt
 	font-size: 80%
 	display: none
 blockquote
-	margin: 3em 0
+	margin: 2em 0
 	line-height: 1.3
 
 svg, .line.last
@@ -168,23 +164,25 @@ svg, .line.last
 		text-decoration: underline
 
 .line.last
+	font-weight: normal
+	font-style: normal
+	// font-variant-numeric: tabular-nums
 	color: #999
 	.get
-		font-weight: 600
+		font-weight: 500
 		color: #757
 	.bb
-		color: darken($color4, 18)
+		font-weight: 300
+		color: darken($color4, 20)
 	.neg
-		font-weight: 500
+		font-weight: 400
 		color: darken($color2, 15)
 
 th
 	font-weight: 600
 	text-align: left
-	padding-right: 3px
+td
+	padding-right: 0.5em
 
 blockquote p
-	margin: 0
-
-.answer
-	color: #555555
+	margin: 0.25em 0

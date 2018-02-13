@@ -41,8 +41,12 @@ main = ->
 # NEW
 replaceMs = (p, groupedBuzzesByWord) ->
 	ms = p.querySelectorAll('m')
+	last_word_index = null
 	for m in ms
 		word_index = m.getAttribute 'v'
+		if word_index == last_word_index
+			continue
+		last_word_index = word_index
 		buzzes = groupedBuzzesByWord[word_index]
 		replaceM m, buzzes
 	p
@@ -85,16 +89,13 @@ buzzesToDiffStat = (buzzes) ->
 	groupedBuzzesAtLocation = groupBuzzesAtLocationByCorrect buzzes
 	lengths = R.mapObjIndexed R.length, groupedBuzzesAtLocation
 	diffStat = []
-	positive = ''
 	if 'get' of lengths
-		positive = '<span class="get">' + lengths['get'] + '</span>'
+		diffStat.push '<span class="get">' + lengths['get'] + '</span>'
 	if 'bounceback-get' of lengths
-		positive += '<span class="bb">+' + lengths['bounceback-get'] + '</span>'
-	if positive
-		diffStat.push positive
+		diffStat.push '<span class="bb">+' + lengths['bounceback-get'] + '</span>'
 	if 'neg' of lengths
 		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
-	diffStat.join ', '
+	diffStat.join ' '
 
 splitWordM = (question, outerHTML, groupedBuzzesByWord) ->
 	question.innerHTML = outerHTML
@@ -128,8 +129,8 @@ loadData = (err, json) ->
 	# document.querySelector '.category'
 	# 	.innerHTML = json.a.category
 	question = document.querySelector '.question'
-	answer = document.querySelector '.answer'
-	answer.innerHTML = json.a.raw[1]
+	document.querySelector('.packet').innerHTML = 'Packet ' + json.a.packet_name + ' '
+	document.querySelector('.answer').innerHTML = json.a.raw[1]
 	# question
 		## .innerHTML = split json.a.raw
 		# .innerHTML = splitWord(groups) json.a.raw
