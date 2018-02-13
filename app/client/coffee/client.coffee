@@ -47,6 +47,8 @@ replaceMs = (p, groupedBuzzesByWord) ->
 		replaceM m, buzzes
 	p
 replaceM = (m, buzzes) ->
+	diffStat = buzzesToDiffStat(buzzes)
+
 	s = document.createElement 'span'
 	s.setAttribute 'class', 'word'
 
@@ -59,7 +61,7 @@ replaceM = (m, buzzes) ->
 	l2 = l2c = ''
 	if buzzes
 		l2c = ' last'
-		l2 = buzzes.length
+		l2 = diffStat
 	n.setAttribute 'class', 'line lower' + l2c
 	n.innerHTML = l2
 
@@ -67,6 +69,32 @@ replaceM = (m, buzzes) ->
 
 	s.appendChild m
 	s.appendChild n
+
+classifyBuzz = (buzz) ->
+	if buzz.buzz_value <= 0
+		'neg'
+	else if buzz.bounceback == 'bounceback'
+		'bounceback-get'
+	else
+		'get'
+groupBuzzesAtLocationByCorrect = R.groupBy classifyBuzz
+buzzesToDiffStat = (buzzes) ->
+	if not buzzes?
+		return ''
+
+	groupedBuzzesAtLocation = groupBuzzesAtLocationByCorrect buzzes
+	lengths = R.mapObjIndexed R.length, groupedBuzzesAtLocation
+	diffStat = []
+	positive = ''
+	if 'get' of lengths
+		positive = lengths['get']
+	if 'bounceback-get' of lengths
+		positive += '<span class="bb">+' + lengths['bounceback-get'] + '</span>'
+	if positive
+		diffStat.push positive
+	if 'neg' of lengths
+		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
+	diffStat.join ', '
 
 splitWordM = (question, outerHTML, groupedBuzzesByWord) ->
 	question.innerHTML = outerHTML
