@@ -6,37 +6,7 @@ coolhead = require './coolhead'
 connect = require './connect'
 
 main = ->
-	# do coolhead
-
 	d3.json '/test/' + window.location.search.slice(1), R.compose loadData
-
-# span = (x) -> '<span>' + x + '</span>'
-# spanF = R.compose \
-# 		R.join(' '),
-# 		R.map(span),
-# 		R.pluck('u')
-# spanWord = R.curry \
-# 	# r = buzzes {8: [...], 9: [...], ...}
-# 	# w = word
-# 	# i = index
-# 	(r, w, idx) ->
-# 		i = idx + 1
-# 		l2 = l2c = ''
-# 		if i of r
-# 			# l2 = spanF r[i]
-# 			l2 = r[i].length
-# 			l2c = 'last'
-# 		l2s = '<span class="line ' + l2c + '">' + l2 + '</span>'
-# 		'<span class="word" data-index="' + i + '"><span class="line">' + w + '</span>' + l2s + '</span>'
-# split = R.compose \
-# 	R.join(' '),
-# 	R.map(span),
-# 	R.split(' ')
-# splitWord = (x) -> (R.compose \
-# 	R.join(' '),
-# 	R.addIndex(R.map)(spanWord x),
-# 	R.split(' ')
-# )
 
 # NEW
 replaceMs = (p, groupedBuzzesByWord) ->
@@ -101,23 +71,6 @@ splitWordM = (question, outerHTML, groupedBuzzesByWord) ->
 	question.innerHTML = outerHTML
 	replaceMs(question, groupedBuzzesByWord)
 
-iconmap =
-	'Fine Arts':      'paintbrush-7'
-	'Literature':     'book-20'
-	'History':        'time-13'
-	'Social Studies': 'script-5'
-	'Biology':        'virus-2'
-	'Chemistry':      'flask-3'
-	'Physics':        'magnet'
-	'Mathematics':    'infinity'
-	'Astronomy':      'rocket-11'
-	'Earth Science':  'globe-4'
-	'Other':          'menu-10'
-iconurl = (category) ->
-	'/img/iconmonstr-' + iconmap[category] + '-icon.svg'
-navlink = (category) ->
-	'<img class="category-image" src="' + iconurl(category) + '"> <span class="category">' + category + '</span>'
-
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
 loadData = (err, json) ->
@@ -126,31 +79,15 @@ loadData = (err, json) ->
 	table json.b
 	x = graph json.a.p, json.a.o, json.a.category
 
-	# document.querySelector '.category'
-	# 	.innerHTML = json.a.category
 	question = document.querySelector '.question'
 	document.querySelector('.packet').innerHTML = 'Packet ' + json.a.packet_name + ' '
 	document.querySelector('.answer').innerHTML = json.a.raw[1]
-	# question
-		## .innerHTML = split json.a.raw
-		# .innerHTML = splitWord(groups) json.a.raw
 	splitWordM question, json.a.raw[0], groups
-	# question.dataset.words = R.length R.split ' ', json.a.raw
 	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'
 	rugSvgG = connect.svgGTransform document.querySelector '.rug'
 	connectf = connect.connect 'rug', rugSvgG, {x}
 	# R.map R.compose(connectf, R.of), lines
-	# `debugger`
-	# document.querySelector '.answer'
-	# 	.innerHTML = json.a.answer
-
-	# d3.select 'nav ul'
-	# 	.selectAll 'li'
-	# 	.data R.keys iconmap
-	# 	.enter()
-	# 	.append 'li'
-	# 	.html navlink
 
 table = (buzzes) ->
 	x = d3.select '.buzzes'
