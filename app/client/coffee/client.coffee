@@ -122,7 +122,7 @@ graph = (points, categoryPoints, category) ->
 	c =
 		width: 640
 		height: 200
-		mt: 40
+		mt: 45
 		mb: 60
 		ml: 30
 		mr: 80
@@ -202,9 +202,18 @@ graph = (points, categoryPoints, category) ->
 	chart.append 'path'
 		.attr 'class', 'kde'
 		.attr 'd', line kdes
+
+	# legend
 	chart.append 'path'
 		.attr 'class', 'kde'
-		.attr 'd', "M 10,14 L 50,14"
+		.attr 'd', "M 10,14 L 40,14"
+	chart.append 'g'
+		.attr 'class', 'bar'
+		.append 'rect'
+		.attr 'x', '10'
+		.attr 'y', '30'
+		.attr 'width', '30'
+		.attr 'height', '12'
 
 	# labels
 
@@ -221,14 +230,17 @@ graph = (points, categoryPoints, category) ->
 
 	yaxis = d3.svg.axis()
 		.scale y
-		.ticks 4
+		.ticks 5
 		.tickSize -c.width
 		.outerTickSize 0
 		# .tickFormat ''
 		.orient 'right'
 	chart.append 'text'
 		.text 'pdf(All ' + category + ' tossups)'
-		.attr 'transform', 'translate(60, 20)'
+		.attr 'transform', 'translate(50, 20)'
+	chart.append 'text'
+		.text 'All correct buzzes'
+		.attr 'transform', 'translate(50, 42)'
 
 	# commented?
 	chart.append 'g'
@@ -237,9 +249,9 @@ graph = (points, categoryPoints, category) ->
 		.call yaxis
 		.append 'text'
 		.attr 'class', 'label'
-		.text 'Buzzes'
+		.text 'Buzzes (scale is off)'
 		.attr 'text-anchor', 'middle'
-		.attr 'transform', 'translate(' + 50 + ',' + (c.height/2) + ') rotate(-90)'
+		.attr 'transform', 'translate(' + 40 + ',' + (c.height/2) + ') rotate(-90)'
 
 	chart.append 'g'
 		.attr 'class', 'x axis'
@@ -248,7 +260,7 @@ graph = (points, categoryPoints, category) ->
 		.append 'text'
 		.attr 'class', 'label'
 		.text 'Position in tossup'
-		.attr 'transform', 'translate(' + c.width/2 + ',50)'
+		.attr 'transform', 'translate(' + c.width/2 + ',40)'
 
 
 	box = [

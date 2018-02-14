@@ -36,9 +36,14 @@ buzz_value,
 buzz_location p,
 case when buzz_location is null then "" else printf("%.2f", buzz_location * 1.0 / words) end buzz_location_pct,
 bounceback,
-answer_given \
-from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te \
-where get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
+answer_given,
+rm.number room_number,
+r.number round_number
+from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm \
+where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and g.round_id = r.id and g.room_id = rm.id
+and get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
 and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value desc, bounceback'
 # buzz_location is not null
 

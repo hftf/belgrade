@@ -44,8 +44,9 @@ html
 						span.bb +Correct bounceback 
 						span.neg –Incorrect
 
-			h2 Chart
-			p: svg.chart
+			h2(style="margin-bottom: 0;") Chart
+			p(style="margin-top: -10px;")
+				svg.chart
 
 		div.right
 			h2 Buzzes
@@ -57,8 +58,10 @@ html
 						th Value
 						th BzPt
 						th BzPt%
-						//- th Bounceback?
-						//- th Answer
+						th Bounceback?
+						th Ans
+						th Rm
+						th Rd
 				tbody.buzzes
 
 		script(src='js/all.js')
