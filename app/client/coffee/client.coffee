@@ -9,15 +9,26 @@ main = ->
 	d3.json '/test/' + window.location.search.slice(1), R.compose loadData
 
 # NEW
-replaceMs = (p, groupedBuzzesByWord) ->
+replaceMs = (p, groupedBuzzesByWord, words) ->
 	ms = p.querySelectorAll('m')
 	last_word_index = null
+	next_tick = 0.2
 	for m in ms
 		word_index = m.getAttribute 'v'
 		if word_index == last_word_index
 			continue
 		last_word_index = word_index
 		buzzes = groupedBuzzesByWord[word_index]
+
+		if (word_index / words) > next_tick and word_index < words
+			s = document.createElement 'span'
+			s.setAttribute 'class', 'next_tick'
+			s.innerHTML = '<b>' + next_tick.toFixed(1) + '</b> ' + word_index
+			m.style.position = 'relative'
+			# m.parentNode.insertBefore s, m
+			m.appendChild s
+			next_tick += 0.2
+
 		replaceM m, buzzes
 	p
 replaceM = (m, buzzes) ->
@@ -67,9 +78,10 @@ buzzesToDiffStat = (buzzes) ->
 		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
 	diffStat.join ' '
 
-splitWordM = (question, outerHTML, groupedBuzzesByWord) ->
+splitWordM = (question, a, groupedBuzzesByWord) ->
+	outerHTML = a.raw[0]
 	question.innerHTML = outerHTML
-	replaceMs(question, groupedBuzzesByWord)
+	replaceMs(question, groupedBuzzesByWord, a.words)
 
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
@@ -82,11 +94,11 @@ loadData = (err, json) ->
 	question = document.querySelector '.question'
 	document.querySelector('.packet').innerHTML = 'Packet ' + json.a.packet_name + ' '
 	document.querySelector('.answer').innerHTML = json.a.raw[1]
-	splitWordM question, json.a.raw[0], groups
+	splitWordM question, json.a, groups
 	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'
-	rugSvgG = connect.svgGTransform document.querySelector '.rug'
-	connectf = connect.connect 'rug', rugSvgG, {x}
+	# rugSvgG = connect.svgGTransform document.querySelector '.rug'
+	# connectf = connect.connect 'rug', rugSvgG, {x}
 	# R.map R.compose(connectf, R.of), lines
 
 table = (buzzes) ->
@@ -110,7 +122,7 @@ graph = (points, categoryPoints, category) ->
 	c =
 		width: 640
 		height: 200
-		mt: 10
+		mt: 40
 		mb: 60
 		ml: 30
 		mr: 80
@@ -190,6 +202,9 @@ graph = (points, categoryPoints, category) ->
 	chart.append 'path'
 		.attr 'class', 'kde'
 		.attr 'd', line kdes
+	chart.append 'path'
+		.attr 'class', 'kde'
+		.attr 'd', "M 10,14 L 50,14"
 
 	# labels
 
@@ -212,8 +227,8 @@ graph = (points, categoryPoints, category) ->
 		# .tickFormat ''
 		.orient 'right'
 	chart.append 'text'
-		.text 'dotted line = pdf(All ' + category + ' tossups)'
-		.attr 'transform', 'translate(20, 20)'
+		.text 'pdf(All ' + category + ' tossups)'
+		.attr 'transform', 'translate(60, 20)'
 
 	# commented?
 	chart.append 'g'
@@ -232,8 +247,49 @@ graph = (points, categoryPoints, category) ->
 		.call xaxis
 		.append 'text'
 		.attr 'class', 'label'
-		.text 'Position in tossup (%)'
+		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',50)'
+
+
+	box = [
+		d3.quantile(points, 0.2),
+		d3.quantile(points, 0.4),
+		d3.quantile(points, 0.5),
+		d3.quantile(points, 0.6),
+		d3.quantile(points, 0.8)
+	]
+
+	chart.append("path")
+		.attr("d", 'M0,' + c.height + ' L0,0 H' + x(box[0]) + ' V-4 H' + x(box[1]) + ' V-8 H' + x(box[2]) + ' V0 V-8 H' + x(box[3]) + ' V-4 H' + x(box[4]) + ' V0 H' + c.width)
+		.attr("fill", "none")
+		.attr("stroke", "black")
+	topaxisg = chart.append("g")
+		.attr("font-size","10")
+	txt = topaxisg.append("text")
+		.attr("transform", 'translate(' + ( 3 + x(box[0]) ) + ',-6) rotate(-90)')
+		.attr("text-anchor","start")		
+	txt.append("tspan").text("20% of").attr("x","0").attr("dy","0")
+	txt.append("tspan").text("buzzes").attr("x","0").attr("dy","8")
+	if (x(box[1]) - x(box[0]) > 16)
+		topaxisg.append("text")
+			.text("40%")
+			.attr("transform", 'translate(' + ( 3 + x(box[1]) ) + ',-10) rotate(-90)')
+			.attr("text-anchor","start")
+	if (x(box[2]) - x(box[1]) > 8)
+		topaxisg.append("text")
+			.text("Median")
+			.attr("transform", 'translate(' + ( 3 + x(box[2]) ) + ',-10) rotate(-90)')
+			.attr("text-anchor","start")
+	if (x(box[3]) - x(box[2]) > 8)
+		topaxisg.append("text")
+			.text("60%")
+			.attr("transform", 'translate(' + ( 3 + x(box[3]) ) + ',-10) rotate(-90)')
+			.attr("text-anchor","start")
+	if (x(box[4]) - x(box[3]) > 8)
+		topaxisg.append("text")
+			.text("80%")
+			.attr("transform", 'translate(' + ( 3 + x(box[4]) ) + ',-6) rotate(-90)')
+			.attr("text-anchor","start")
 
 	x # hack return
 
