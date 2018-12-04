@@ -5,7 +5,8 @@ R = require 'ramda'
 coolhead = require './coolhead'
 connect = require './connect'
 
-tossup_id = window.location.search.slice(1)
+tossup_id = new URLSearchParams(window.location.search).get 'id'
+# tossup_id = window.location.search.slice(1)
 
 main = ->
 	d3.json '/test/' + tossup_id, R.compose loadData
@@ -89,19 +90,13 @@ splitWordM = (question, a, groupedBuzzesByWord) ->
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
 loadData = (err, json) ->
+	do setRowHandlers
+
 	groups = groupBuzzesByWord json.b
 
-	table json.b
 	x = graph json.a.p, json.a.o, json.a.category
-	editionsTable json.c
 
 	question = document.querySelector '.question'
-	document.querySelector('.edition').innerHTML = json.a.question_set_edition_date
-	document.querySelector('.packet').innerHTML = json.a.packet_name
-	document.querySelector('.tossup').innerHTML = 'Tossup ' + json.a.position
-	document.querySelector('.answer').innerHTML = json.a.raw[1]
-	document.querySelector('.prev').href = '?' + (+tossup_id - 1)
-	document.querySelector('.next').href = '?' + (+tossup_id + 1)
 	splitWordM question, json.a, groups
 	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'
@@ -109,46 +104,15 @@ loadData = (err, json) ->
 	# connectf = connect.connect 'rug', rugSvgG, {x}
 	# R.map R.compose(connectf, R.of), lines
 
-
-editionsTable = (editions) ->
-	x = d3.select '.editions'
-		.selectAll 'tr'
-		.data editions
-		.enter()
-		.append 'tr'
-		.attr('class', (d) -> if d.question_ptr_id == +tossup_id then 'cur' else '')
-	x.append 'td'
-		.append 'a'
-		.attr('href', (d) -> '?' + d.question_ptr_id)
-		# .on('click', (d) ->
-		# 	do d3.event.preventDefault
-		# 	tossup_id = d.question_ptr_id
-		# 	do main
-		# 	false
-		# )
-		.text (d) -> d.question_set_edition_date
-	x.selectAll 'td'
-		.data R.props ['question_set_edition_date','packet_letter','position','initials','category','answer','power_words','words']
-		.enter()
-		.append 'td'
-		.text R.identity
-
-table = (buzzes) ->
-	x = d3.select '.buzzes'
-		.selectAll 'tr'
-		.data buzzes
-		.enter()
-		.append 'tr'
-		.attr('class', (d) -> classifyBuzz(d))
-		.on 'mouseover', (d, i) -> document.querySelector('[data-index="' + d.p + '"]').classList.add    'hover'
-		.on 'mouseout',  (d, i) -> document.querySelector('[data-index="' + d.p + '"]').classList.remove 'hover'
-		.selectAll 'td'
-		.data R.values #R.props ['']
-		.enter()
-		.append 'td'
-		.text R.identity
-
-		
+rowHover = (method) -> (e) ->
+	p = this.dataset.index
+	document.querySelector('[data-index="' + p + '"]').classList[method] 'hover'
+rHA = rowHover 'add'
+rHR = rowHover 'remove'
+setRowHandlers = () ->
+	document.querySelectorAll('.buzzes tr').forEach (el) ->
+		el.onmouseover = rHA
+		el.onmouseout  = rHR
 
 graph = (points, categoryPoints, category) ->
 	# points = json.p

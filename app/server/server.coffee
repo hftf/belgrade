@@ -51,7 +51,7 @@ and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value des
 
 q2 = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
-qse.date as question_set_edition_date,
+qse.date as question_set_edition,
 c.name as category,
 group_concat(round(get.p * 1.0 / t.words, 3)) p,
 cget.p o
@@ -74,7 +74,7 @@ where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.
 qs = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 c.name as category, a.name as author, a.initials,
-qse.date as question_set_edition_date
+qse.date as question_set_edition
 from 
 schema_tossup t0, schema_question q0, 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
@@ -127,6 +127,13 @@ scan_packet = (packet_filename, question_type, question_number) ->
                 packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
             ]
 # END NEW
+classifyBuzz = (buzz) ->
+	if buzz.buzz_value <= 0
+		'neg'
+	else if buzz.bounceback != null # == 'bounceback'
+		'bb' #bounceback-get
+	else
+		'get'
 
 runQueries = (queries) ->
 	runQuery = ([method, query...]) -> db[method].apply db, query
@@ -147,6 +154,29 @@ server.use '/index.html', (req, res, next) ->
 	runQueries queries
 		.then (results) ->
 			res.render 'index.jade', results
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
+
+server.use '/tu.html', (req, res, next) ->
+	id = req.query.id
+	queries =
+		tossup: ['get', q2, id]
+		buzzes: ['all', q1, id]
+		editions: ['all', qs, id]
+
+	runQueries queries
+		.then (results) ->
+			results['raw'] = get_question_html(
+				results['tossup']['filename'],
+				results['tossup']['question_set_edition'],
+				'tossup',
+				results['tossup']['position']
+			)
+			results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
+
+
+			res.render 'tossup.jade', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -172,7 +202,7 @@ server.use '/test/:id', (req, res, next) ->
 	runQueries queries
 		.then (results) ->
 			results = overPaths split, paths, results
-			results['a']['raw'] = get_question_html(results['a']['filename'], results['a']['question_set_edition_date'], 'tossup', results['a']['position'])
+			results['a']['raw'] = get_question_html(results['a']['filename'], results['a']['question_set_edition'], 'tossup', results['a']['position'])
 
 			res.setHeader 'Content-Type', 'application/json'
 			res.send results
