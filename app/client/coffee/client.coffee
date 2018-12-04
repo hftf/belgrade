@@ -120,6 +120,12 @@ editionsTable = (editions) ->
 	x.append 'td'
 		.append 'a'
 		.attr('href', (d) -> '?' + d.question_ptr_id)
+		# .on('click', (d) ->
+		# 	do d3.event.preventDefault
+		# 	tossup_id = d.question_ptr_id
+		# 	do main
+		# 	false
+		# )
 		.text (d) -> d.question_set_edition_date
 	x.selectAll 'td'
 		.data R.props ['question_set_edition_date','packet_letter','position','initials','category','answer','power_words','words']
