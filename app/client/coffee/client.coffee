@@ -60,8 +60,8 @@ replaceM = (m, buzzes) ->
 classifyBuzz = (buzz) ->
 	if buzz.buzz_value <= 0
 		'neg'
-	else if buzz.bounceback == 'bounceback'
-		'bounceback-get'
+	else if buzz.bounceback != null # == 'bounceback'
+		'bb' #bounceback-get
 	else
 		'get'
 groupBuzzesAtLocationByCorrect = R.groupBy classifyBuzz
@@ -74,8 +74,8 @@ buzzesToDiffStat = (buzzes) ->
 	diffStat = []
 	if 'get' of lengths
 		diffStat.push '<span class="get">' + lengths['get'] + '</span>'
-	if 'bounceback-get' of lengths
-		diffStat.push '<span class="bb">+' + lengths['bounceback-get'] + '</span>'
+	if 'bb' of lengths
+		diffStat.push '<span class="bb">+' + lengths['bb'] + '</span>'
 	if 'neg' of lengths
 		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
 	diffStat.join ' '
