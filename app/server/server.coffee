@@ -141,7 +141,7 @@ server.use '/img', express.static './app/img'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
-server.use '/index', (req, res, next) ->
+server.use '/index.html', (req, res, next) ->
 	queries =
 		tossups: ['all', ql]
 	runQueries queries
