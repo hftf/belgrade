@@ -200,14 +200,14 @@ graph = (points, categoryPoints, category) ->
 		# ),
 		# R.concat [binwidth, .1], 
 		# d3.values science.stats.bandwidth
-		console.log do kde.bandwidth
 
+	yMax = 1 + d3.max [
+			d3.max data, R.prop 'y'
+			d3.max R.flip(R.map) kdes, R.prop '1'
+		]
 	y = d3.scale.linear()
 		.range [c.height, 0]
-		.domain [0, 1 + d3.max [
-			d3.max data, R.prop 'y'
-			d3.max R.flip(R.map) kdes, R.flip(d3.max) R.prop '1'
-		]]
+		.domain [0, yMax]
 		# .domain [0, 30]
 		.nice 4
 
@@ -293,6 +293,8 @@ graph = (points, categoryPoints, category) ->
 		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
 
+	if not points.length
+		return
 
 	box = [
 		d3.quantile(points, 0.2),

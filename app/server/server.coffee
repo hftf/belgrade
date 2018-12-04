@@ -56,9 +56,9 @@ c.name as category,
 group_concat(round(get.p * 1.0 / t.words, 3)) p,
 cget.p o
 from 
-schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse,
-(select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value > 0 order by p) get,
-(select group_concat(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
+schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
+left join (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value > 0 order by p) get
+left join (select group_concat(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
    schema_question q_aux, schema_tossup t_aux, schema_category c
    where t_aux.question_ptr_id = ?1 and q_aux.category_id = c.id and q_aux.id = t_aux.question_ptr_id
    and get.tossup_id = t.question_ptr_id and q.id = t.question_ptr_id
@@ -159,7 +159,7 @@ server.use '/test/:id', (req, res, next) ->
 		b: ['all', q1, id]
 		c: ['all', qs, id]
 
-	split = (x) -> JSON.parse "[" + x + "]"
+	split = (x) -> JSON.parse "[" + (if x then x else '') + "]"
 	lensPath = (path) -> R.lens R.path(path), R.assocPath(path)
 	overPaths = R.curry (f, paths, obj) ->
 		R.reduce \
