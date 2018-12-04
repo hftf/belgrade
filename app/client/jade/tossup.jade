@@ -17,6 +17,7 @@ html
 
 		div.left
 			h2 Tossup
+			div.edition
 			div.packet
 			div
 				a.prev ←
@@ -53,17 +54,20 @@ html
 				svg.chart
 
 		div.right
+
 			h2 Buzzes
 			table
 				thead
 					tr
-						th Player
-						th Team
+						th(width=120) Team
+						th(width=160) Player
 						th Value
 						th BzPt
 						th BzPt%
-						th Bounceback?
-						th Ans
+						th BB?
+						th(width=120) Answer
+						th Pro?
+						th(width=100) Site
 						th Rm
 						th Rd
 				tbody.buzzes

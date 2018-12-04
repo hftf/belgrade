@@ -95,6 +95,7 @@ loadData = (err, json) ->
 	x = graph json.a.p, json.a.o, json.a.category
 
 	question = document.querySelector '.question'
+	document.querySelector('.edition').innerHTML = json.a.question_set_edition_date
 	document.querySelector('.packet').innerHTML = json.a.packet_name
 	document.querySelector('.answer').innerHTML = json.a.raw[1]
 	document.querySelector('.prev').href = '?' + (+tossup_id - 1)

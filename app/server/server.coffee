@@ -37,30 +37,33 @@ buzz_location p,
 case when buzz_location is null then "" else printf("%.2f", buzz_location * 1.0 / words) end buzz_location_pct,
 bounceback,
 answer_given,
+protested,
+tou.site_name tournament_name,
 rm.number room_number,
 r.number round_number
-from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te,
+from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te, schema_tournament tou,
 schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm \
 where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
-and g.round_id = r.id and g.room_id = rm.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
 and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value desc, bounceback'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.date as question_set_edition_date,
 c.name as category,
 group_concat(round(get.p * 1.0 / t.words, 3)) p,
 cget.p o
 from 
-schema_tossup t, schema_question q, schema_packet p, schema_category c,
+schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse,
 (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value > 0 order by p) get,
 (select group_concat(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
    schema_question q_aux, schema_tossup t_aux, schema_category c
    where t_aux.question_ptr_id = ?1 and q_aux.category_id = c.id and q_aux.id = t_aux.question_ptr_id
    and get.tossup_id = t.question_ptr_id and q.id = t.question_ptr_id
    and buzz_value > 0 order by p) cget
-where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id
+where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
 ;'
 # , schema_category cp
 # q.category_id >= cp.lft and q.category_id <= cp.rght
@@ -80,7 +83,8 @@ where t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition
 
 # TODO rename
 META = {
-    'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundled-packets/regionals18-packets/html/',
+    'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundled-packets/sgi-%s-packets/html/',
+    # 'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundled-packets/regionals18-packets/html/',
     'tossup': {
         'line_startswith_template':  '<p class="p1 tu"><m v="0">%d.</m> ',
         'get_next_n_lines': 2, # ANSWER + <Tag>
@@ -93,9 +97,10 @@ META = {
 
 
 # NEW
-get_question_html = (packet_filename, question_type, question_number) ->
+get_question_html = (packet_filename, question_set_edition_date, question_type, question_number) ->
     # TODO Hardcoded
-    packet_filename = META['filename_template'] + packet_filename
+    set_edition_path = util.format(META['filename_template'], question_set_edition_date)
+    packet_filename = set_edition_path + packet_filename
     return scan_packet(packet_filename, question_type, question_number)
 
 fs = require('fs')
@@ -154,7 +159,7 @@ server.use '/test/:id', (req, res, next) ->
 	runQueries queries
 		.then (results) ->
 			results = overPaths split, paths, results
-			results['a']['raw'] = get_question_html(results['a']['filename'], 'tossup', results['a']['position'])
+			results['a']['raw'] = get_question_html(results['a']['filename'], results['a']['question_set_edition_date'], 'tossup', results['a']['position'])
 
 			res.setHeader 'Content-Type', 'application/json'
 			res.send results
