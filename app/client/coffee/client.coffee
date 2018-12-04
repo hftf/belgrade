@@ -11,10 +11,11 @@ main = ->
 	d3.json '/test/' + tossup_id, R.compose loadData
 
 # NEW
+tick_delta = 0.1
 replaceMs = (p, groupedBuzzesByWord, words) ->
 	ms = p.querySelectorAll('m')
 	last_word_index = null
-	next_tick = 0.2
+	next_tick = tick_delta
 	for m in ms
 		word_index = m.getAttribute 'v'
 		if word_index == last_word_index
@@ -29,7 +30,7 @@ replaceMs = (p, groupedBuzzesByWord, words) ->
 			m.style.position = 'relative'
 			# m.parentNode.insertBefore s, m
 			m.appendChild s
-			next_tick += 0.2
+			next_tick += tick_delta
 
 		replaceM m, buzzes
 	p
@@ -125,10 +126,10 @@ table = (buzzes) ->
 graph = (points, categoryPoints, category) ->
 	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
-	# points = (d3.range 0, 1, .0003).map d3.scale.pow().exponent 2
+	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
 	c =
 		width: 640
-		height: 200
+		height: 220
 		mt: 45
 		mb: 60
 		ml: 30
@@ -147,11 +148,12 @@ graph = (points, categoryPoints, category) ->
 
 	data = (d3.layout.histogram()
 		.bins thresholds
-		.frequency false
+		.frequency true
 		) points
 
 	normalize = R.over R.lensProp('y'), R.flip(R.divide) binwidth
-	data = R.map normalize, data
+	# only use if frequency = true
+	# data = R.map normalize, data
 
 	# last = 0
 	# for i in data
@@ -181,10 +183,11 @@ graph = (points, categoryPoints, category) ->
 
 	y = d3.scale.linear()
 		.range [c.height, 0]
-		.domain [0, d3.max [
+		.domain [0, 1 + d3.max [
 			d3.max data, R.prop 'y'
 			d3.max R.flip(R.map) kdes, R.flip(d3.max) R.prop '1'
 		]]
+		# .domain [0, 30]
 		.nice 4
 
 	bar = chart.selectAll 'g'
@@ -256,7 +259,7 @@ graph = (points, categoryPoints, category) ->
 		.call yaxis
 		.append 'text'
 		.attr 'class', 'label'
-		.text 'Buzzes (scale is off)'
+		.text 'Buzzes'
 		.attr 'text-anchor', 'middle'
 		.attr 'transform', 'translate(' + 40 + ',' + (c.height/2) + ') rotate(-90)'
 
