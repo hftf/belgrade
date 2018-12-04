@@ -5,8 +5,10 @@ R = require 'ramda'
 coolhead = require './coolhead'
 connect = require './connect'
 
+tossup_id = window.location.search.slice(1)
+
 main = ->
-	d3.json '/test/' + window.location.search.slice(1), R.compose loadData
+	d3.json '/test/' + tossup_id, R.compose loadData
 
 # NEW
 replaceMs = (p, groupedBuzzesByWord, words) ->
@@ -92,8 +94,10 @@ loadData = (err, json) ->
 	x = graph json.a.p, json.a.o, json.a.category
 
 	question = document.querySelector '.question'
-	document.querySelector('.packet').innerHTML = 'Packet ' + json.a.packet_name + ' '
+	document.querySelector('.packet').innerHTML = json.a.packet_name
 	document.querySelector('.answer').innerHTML = json.a.raw[1]
+	document.querySelector('.prev').href = '?' + (+tossup_id - 1)
+	document.querySelector('.next').href = '?' + (+tossup_id + 1)
 	splitWordM question, json.a, groups
 	question.dataset.words = json.a.words
 	lines = question.querySelectorAll '.line.last'
