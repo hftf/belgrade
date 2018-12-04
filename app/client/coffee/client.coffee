@@ -93,6 +93,7 @@ loadData = (err, json) ->
 
 	table json.b
 	x = graph json.a.p, json.a.o, json.a.category
+	editionsTable json.c
 
 	question = document.querySelector '.question'
 	document.querySelector('.edition').innerHTML = json.a.question_set_edition_date
@@ -107,6 +108,24 @@ loadData = (err, json) ->
 	# rugSvgG = connect.svgGTransform document.querySelector '.rug'
 	# connectf = connect.connect 'rug', rugSvgG, {x}
 	# R.map R.compose(connectf, R.of), lines
+
+
+editionsTable = (editions) ->
+	x = d3.select '.editions'
+		.selectAll 'tr'
+		.data editions
+		.enter()
+		.append 'tr'
+		.attr('class', (d) -> if d.question_ptr_id == +tossup_id then 'cur' else '')
+	x.append 'td'
+		.append 'a'
+		.attr('href', (d) -> '?' + d.question_ptr_id)
+		.text (d) -> d.question_set_edition_date
+	x.selectAll 'td'
+		.data R.props ['question_set_edition_date','packet_letter','position','initials','category','answer','power_words','words']
+		.enter()
+		.append 'td'
+		.text R.identity
 
 table = (buzzes) ->
 	x = d3.select '.buzzes'

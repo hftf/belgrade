@@ -15,13 +15,17 @@ html
 		//- 	ul
 
 		div.left
-			h2 Tossup
-			div.edition
-			div.packet
-			div
 			p
 				a(href="/index") Home
+
+			p.center
+				strong.edition
+				br
+				span.packet
+				br
 				a.prev ←
+				| 
+				span.tossup
 				| 
 				a.next →
 
@@ -50,7 +54,7 @@ html
 			p(style="margin-top: -10px;")
 				svg.chart
 
-			p TODO: Show Conversion, 10s –5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
+			//- p TODO: Show Conversion, 10s –5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
 
 		div.right
 
@@ -70,5 +74,19 @@ html
 						th Rm
 						th Rd
 				tbody.buzzes.stripe
+
+			h2 All editions of this tossup
+			table
+				thead
+					tr
+						th Set edition
+						th Packet
+						th Tossup
+						th Author
+						th Category
+						th Answer
+						th Pwds
+						th Wds
+				tbody.editions
 
 		script(src='js/all.js')

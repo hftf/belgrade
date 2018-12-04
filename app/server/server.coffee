@@ -71,6 +71,18 @@ where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.
 # group_concat(round(negs.p * 1.0 / words, 3))
 # (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value < 0 order by p) negs
 
+qs = 'select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+c.name as category, a.name as author, a.initials,
+qse.date as question_set_edition_date
+from 
+schema_tossup t0, schema_question q0, 
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+where t0.question_ptr_id = ?1 and t0.question_ptr_id = q0.id and t0.answer like t.answer and q0.category_id = q.category_id
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+and q.category_id = c.id and q.author_id = a.id
+;'
+
 ql = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
@@ -145,6 +157,7 @@ server.use '/test/:id', (req, res, next) ->
 	queries =
 		a: ['get', q2, id]
 		b: ['all', q1, id]
+		c: ['all', qs, id]
 
 	split = (x) -> JSON.parse "[" + x + "]"
 	lensPath = (path) -> R.lens R.path(path), R.assocPath(path)
