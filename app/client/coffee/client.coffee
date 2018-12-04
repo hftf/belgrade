@@ -111,6 +111,9 @@ table = (buzzes) ->
 		.data buzzes
 		.enter()
 		.append 'tr'
+		.attr('class', (d) -> classifyBuzz(d))
+		.on 'mouseover', (d, i) -> document.querySelector('[data-index="' + d.p + '"]').classList.add    'hover'
+		.on 'mouseout',  (d, i) -> document.querySelector('[data-index="' + d.p + '"]').classList.remove 'hover'
 		.selectAll 'td'
 		.data R.values #R.props ['']
 		.enter()
