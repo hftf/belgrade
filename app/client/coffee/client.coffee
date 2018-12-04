@@ -97,6 +97,7 @@ loadData = (err, json) ->
 	question = document.querySelector '.question'
 	document.querySelector('.edition').innerHTML = json.a.question_set_edition_date
 	document.querySelector('.packet').innerHTML = json.a.packet_name
+	document.querySelector('.tossup').innerHTML = 'Tossup ' + json.a.position
 	document.querySelector('.answer').innerHTML = json.a.raw[1]
 	document.querySelector('.prev').href = '?' + (+tossup_id - 1)
 	document.querySelector('.next').href = '?' + (+tossup_id + 1)

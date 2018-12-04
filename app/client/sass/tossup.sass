@@ -37,7 +37,9 @@ body
 	display: grid
 	grid-template-areas: "a b"
 	grid-gap: 2em
-	grid-template-columns: 900px max-content
+	grid-template-columns: 800px max-content
+
+	text-decoration-skip-ink: none
 
 .left
 	grid-area: a
@@ -50,7 +52,9 @@ h1, h2, h3
 	font-weight: 700
 
 h2
-	font-size: 1.2em
+	font-size: 1.25em
+h3
+	font-size: 1.15em
 
 // h1
 	font-size: 2.2em
@@ -224,9 +228,12 @@ td
 	&:nth-child(n+8)
 		color: black
 
-tbody
+tbody.stripe
 	tr:nth-child(2n)
 		background: #f2f2f2
 
 .chart .axis .tick line
 	stroke: rgba(0,0,0,0.1)
+
+.center
+	text-align: center

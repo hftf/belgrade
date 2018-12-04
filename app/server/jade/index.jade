@@ -21,15 +21,16 @@ html
 						th Pwds
 						th Wds
 
-					for tossup in tossups
-						tr
-							td= tossup.question_set_edition
-							td= tossup.packet_letter
-							td= tossup.position
-							td= tossup.initials
-							td= tossup.category
-							td
-								a(href='/tossup.html?' + tossup.question_ptr_id)
-									= tossup.answer
-							td= tossup.power_words
-							td= tossup.words
+					tbody.stripe
+						for tossup in tossups
+							tr
+								td= tossup.question_set_edition
+								td= tossup.packet_letter
+								td= tossup.position
+								td= tossup.initials
+								td= tossup.category
+								td
+									a(href='/tossup.html?' + tossup.question_ptr_id)
+										= tossup.answer
+								td= tossup.power_words
+								td= tossup.words
