@@ -68,6 +68,15 @@ where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.
 # group_concat(round(negs.p * 1.0 / words, 3))
 # (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value < 0 order by p) negs
 
+ql = 'select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.name as question_set_edition,
+c.name as category, a.name as author, a.initials
+from
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+where t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
+;'
+
 
 # TODO rename
 META = {
@@ -113,6 +122,17 @@ server.use express.static './dist'
 server.use '/img', express.static './app/img'
 
 
+server.set 'view engine', 'jade'
+server.set 'views', './app/server/jade'
+server.use '/index', (req, res, next) ->
+	queries =
+		tossups: ['all', ql]
+	runQueries queries
+		.then (results) ->
+			res.render 'index.jade', results
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
 
 server.use '/test/:id', (req, res, next) ->
 	id = req.params.id

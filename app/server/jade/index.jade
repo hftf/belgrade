@@ -1,0 +1,35 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
+		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+	body(style='display: block;')
+		div.left
+			header
+				h1 Tossups
+
+			nav
+				table
+					thead
+						th Set edition
+						th Packet
+						th Tossup
+						th Author
+						th Category
+						th Answer
+						th Pwds
+						th Wds
+
+					for tossup in tossups
+						tr
+							td= tossup.question_set_edition
+							td= tossup.packet_letter
+							td= tossup.position
+							td= tossup.initials
+							td= tossup.category
+							td
+								a(href='/tossup.html?' + tossup.question_ptr_id)
+									= tossup.answer
+							td= tossup.power_words
+							td= tossup.words
