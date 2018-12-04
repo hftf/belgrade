@@ -2,8 +2,6 @@ d3 = require 'd3'
 kdep = require './kde'
 R = require 'ramda'
 
-coolhead = require './coolhead'
-connect = require './connect'
 
 tossup_id = new URLSearchParams(window.location.search).get 'id'
 # tossup_id = window.location.search.slice(1)
@@ -99,10 +97,6 @@ loadData = (err, json) ->
 	question = document.querySelector '.question'
 	splitWordM question, json.a, groups
 	question.dataset.words = json.a.words
-	lines = question.querySelectorAll '.line.last'
-	# rugSvgG = connect.svgGTransform document.querySelector '.rug'
-	# connectf = connect.connect 'rug', rugSvgG, {x}
-	# R.map R.compose(connectf, R.of), lines
 
 rowHover = (method) -> (e) ->
 	p = this.dataset.index

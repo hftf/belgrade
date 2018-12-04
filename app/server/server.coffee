@@ -8,25 +8,9 @@ red = (s) -> '\x1b[91;1m[ERROR] ' + s + '\x1b[0m';
 console.error = R.compose console.error, red
 
 
-dbfname = 'app/data/db'
 dbfname = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/db.sqlite3'
 db = new sql.Database new sqlite.Database dbfname
 
-#select b2.user, group_concat(b2.position||'/'||q2.words) from buzzes b, buzzes b2, questions q, questions q2
-#where q.id = 847 and b.question = q.id and b.user = b2.user and b2.question = q2.id and q2.category = q.category group by b2.user;
-q1 = 'select user u, cast(position as int) p, correct c, answer a \
-from buzzes \
-where question = ?1 order by correct desc, p'
-
-q2 = 'select q.*, group_concat(b.p) p, o \
-from questions q, \
-(select group_concat(q2.id) o from questions q, questions q2 \
-	where q.id = ?1 and q2.id != q.id and q.answer = q2.answer), \
-(select round(avg(b.position*1.0/q2.words),3) p \
-	from questions q, questions q2, buzzes b \
-	where q.id = ?1 and q.category = q2.category and q2.id = b.question \
-	group by q2.id order by p) \
-as b where q.id = ?1;'
 
 # NEW 
 q1 = 'select
