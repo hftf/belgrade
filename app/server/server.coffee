@@ -76,6 +76,39 @@ schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition q
 where t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
 ;'
 
+qb1 = 'select
+te.name team_name,
+geb.*,
+value1+value2+value3 as total,
+tou.site_name tournament_name,
+rm.number room_number,
+r.number round_number
+from schema_gameeventbonus geb, schema_bonus b, schema_team te, schema_tournament tou,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm \
+where ge.id = geb.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
+and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id \
+and bonus_id = ?1 order by total desc, value1 desc, value2 desc, value3 desc
+;'
+qb = 'select b.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.date as question_set_edition, c.name as category
+from 
+schema_bonus b, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
+where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+;'
+qbs = 'select b.*, q.*,
+b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+c.name as category, a.name as author, a.initials,
+qse.date as question_set_edition
+from 
+schema_bonus b0, schema_question q0, 
+schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id and b0.answer1 like b.answer1 and q0.category_id = q.category_id
+and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+and q.category_id = c.id and q.author_id = a.id
+;'
 
 # TODO rename
 META = {
@@ -93,7 +126,14 @@ META = {
 
 
 # NEW
-get_question_html = (packet_filename, question_set_edition_date, question_type, question_number) ->
+get_question_html = (question_type, question) ->
+	get_question_html_(
+		question_type
+		question['filename'],
+		question['question_set_edition'],
+		question['position']
+	)
+get_question_html_ = (question_type, packet_filename, question_set_edition_date, question_number) ->
     # TODO Hardcoded
     set_edition_path = util.format(META['filename_template'], question_set_edition_date)
     packet_filename = set_edition_path + packet_filename
@@ -151,16 +191,26 @@ server.use '/tu.html', (req, res, next) ->
 
 	runQueries queries
 		.then (results) ->
-			results['raw'] = get_question_html(
-				results['tossup']['filename'],
-				results['tossup']['question_set_edition'],
-				'tossup',
-				results['tossup']['position']
-			)
+			results['raw'] = get_question_html('tossup', results['tossup'])
 			results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
 
-
 			res.render 'tossup.jade', results
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
+
+server.use '/bonus.html', (req, res, next) ->
+	id = req.query.id
+	queries =
+		bonus: ['get', qb, id]
+		performances: ['all', qb1, id]
+		editions: ['all', qbs, id]
+
+	runQueries queries
+		.then (results) ->
+			results['raw'] = get_question_html('bonus', results['bonus'])
+
+			res.render 'bonus.jade', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack

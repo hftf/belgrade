@@ -1,0 +1,72 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
+		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+	body.twocol
+
+		div.left
+			p
+				a(href="/index.html") Home
+
+			table.center
+				tr: td(colspan=3): strong= bonus.question_set_edition
+				tr: td(colspan=3)= bonus.packet_name
+				tr
+					td: a(href='?id=' + (+bonus.question_ptr_id - 1)) ←
+					td Bonus #{bonus.position}
+					td: a(href='?id=' + (+bonus.question_ptr_id + 1)) →
+
+			blockquote
+				div.question
+					!= raw[0]
+					!= raw[1]
+
+		div.right
+
+			h2 Performances
+			table
+				thead
+					tr
+						th(width=120) Team
+						th(style='max-width: 8em; min-width: 4em;')= bonus.answer1
+						th(style='max-width: 8em; min-width: 4em;')= bonus.answer2
+						th(style='max-width: 8em; min-width: 4em;')= bonus.answer3
+						th Points
+						th(width=100) Site
+						th Rm
+						th Rd
+				tbody.stripe
+					for geb in performances
+						tr
+							td= geb.team_name
+							td= geb.value1
+							td= geb.value2
+							td= geb.value3
+							td= geb.total
+							td= geb.tournament_name
+							td= geb.room_number
+							td= geb.round_number
+
+			h2 All editions of this bonus
+			table
+				thead
+					tr
+						th Set edition
+						th Packet
+						th Bonus
+						th Author
+						th Category
+						th Answer
+				tbody
+					for bonus in editions
+						tr
+							td: a(href='?id=' + bonus.question_ptr_id)= bonus.question_set_edition
+							td= bonus.packet_letter
+							td= bonus.position
+							td= bonus.initials
+							td= bonus.category
+							td= bonus.answers
+
+		script(src='js/all.js')
