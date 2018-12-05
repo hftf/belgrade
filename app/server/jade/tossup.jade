@@ -19,8 +19,10 @@ html
 					td: a(href='?id=' + (+tossup.question_ptr_id + 1)) →
 
 			blockquote
-				div.question!= raw[0]
-				div.answer!= raw[1]
+				div.question(data-words=tossup.words)
+					!= raw[0]
+				div.answer
+					!= raw[1]
 
 				div.key
 					small.line.last
@@ -82,12 +84,12 @@ html
 				tbody
 					for tossup in editions
 						tr
-							td= tossup.question_set_edition
+							td: a(href='?id=' + tossup.question_ptr_id)= tossup.question_set_edition
 							td= tossup.packet_letter
 							td= tossup.position
 							td= tossup.initials
 							td= tossup.category
-							td: a(href='?id=' + tossup.question_ptr_id)= tossup.answer
+							td= tossup.answer
 							td= tossup.power_words
 							td= tossup.words
 

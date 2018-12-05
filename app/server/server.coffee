@@ -7,12 +7,35 @@ sql = require 'q-sqlite3'
 red = (s) -> '\x1b[91;1m[ERROR] ' + s + '\x1b[0m';
 console.error = R.compose console.error, red
 
+kde = require '../client/coffee/kde'
+d3 = require 'd3'
 
 dbfname = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/db.sqlite3'
 db = new sql.Database new sqlite.Database dbfname
 
 
 # NEW 
+
+q_ = '
+SELECT
+    c.name, c.lft, c.rght, c.level,
+    count(*) as count,
+    json_group_array(round(get.buzz_location * 1.0 / t.words, 3)) p
+FROM
+    schema_category c,
+    schema_category cp,
+    schema_question q,
+    schema_tossup t,
+    schema_gameeventtossup get
+WHERE
+    q.category_id = cp.id
+    AND c.lft <= cp.lft AND cp.rght <= c.rght
+    AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
+    AND buzz_value > 0
+GROUP BY
+    c.id
+;'
+
 q1 = 'select
 te.name team_name,
 p.name player_name,
@@ -36,13 +59,21 @@ and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value des
 q2 = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
-c.name as category,
-group_concat(round(get.p * 1.0 / t.words, 3)) p,
+c.name as category, c.lft, c.rght, c.level
+from 
+schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
+where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+;'
+q2b = 'select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.date as question_set_edition,
+c.name as category, c.lft, c.rght, c.level,
+json_group_array(round(get.p * 1.0 / t.words, 3)) p,
 cget.p o
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
 left join (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value > 0 order by p) get
-left join (select group_concat(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
+left join (select json_group_array(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
    schema_question q_aux, schema_tossup t_aux, schema_category c
    where t_aux.question_ptr_id = ?1 and q_aux.category_id = c.id and q_aux.id = t_aux.question_ptr_id
    and get.tossup_id = t.question_ptr_id and q.id = t.question_ptr_id
@@ -182,7 +213,7 @@ server.use '/index.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/tu.html', (req, res, next) ->
+server.use '/tossup.html', (req, res, next) ->
 	id = req.query.id
 	queries =
 		tossup: ['get', q2, id]
@@ -219,11 +250,11 @@ server.use '/test/:id', (req, res, next) ->
 	id = req.params.id
 	
 	queries =
-		a: ['get', q2, id]
+		a: ['get', q2b, id]
 		b: ['all', q1, id]
 		c: ['all', qs, id]
+		d: ['all', q_]
 
-	split = (x) -> JSON.parse "[" + (if x then x else '') + "]"
 	lensPath = (path) -> R.lens R.path(path), R.assocPath(path)
 	overPaths = R.curry (f, paths, obj) ->
 		R.reduce \
@@ -235,8 +266,25 @@ server.use '/test/:id', (req, res, next) ->
 
 	runQueries queries
 		.then (results) ->
-			results = overPaths split, paths, results
-			results['a']['raw'] = get_question_html(results['a']['filename'], results['a']['question_set_edition'], 'tossup', results['a']['position'])
+			results = overPaths JSON.parse, paths, results
+
+			domainp = [0, 1]
+			deltaX = 4/(41*16) #0.005
+			kdeXs = R.append 1, d3.range domainp..., deltaX
+			results.kdeXs = kdeXs
+			for d in results.d
+				categoryPoints =
+					# R.filter R.gt(1),
+					JSON.parse(d.p)
+				kdeF = kde()
+					.sample categoryPoints
+					# .kernel (x) -> 1*+(-.5<x<.5)
+					# .bandwidth 0.03
+					.bounds domainp
+				kdePts = kdeF kdeXs
+				kdeYs = R.map ((p) -> +p[1].toFixed 4), kdePts
+				d.kdeYs = kdeYs
+				delete d.p
 
 			res.setHeader 'Content-Type', 'application/json'
 			res.send results

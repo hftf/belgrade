@@ -80,10 +80,8 @@ buzzesToDiffStat = (buzzes) ->
 		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
 	diffStat.join ' '
 
-splitWordM = (question, a, groupedBuzzesByWord) ->
-	outerHTML = a.raw[0]
-	question.innerHTML = outerHTML
-	replaceMs(question, groupedBuzzesByWord, a.words)
+splitWordM = (question, groupedBuzzesByWord) ->
+	replaceMs(question, groupedBuzzesByWord, +question.dataset.words)
 
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
@@ -92,11 +90,10 @@ loadData = (err, json) ->
 
 	groups = groupBuzzesByWord json.b
 
-	x = graph json.a.p, json.a.o, json.a.category
+	graph json.a.p, json.a.o, json.a, json.d, json.kdeXs
 
 	question = document.querySelector '.question'
-	splitWordM question, json.a, groups
-	question.dataset.words = json.a.words
+	splitWordM question, groups
 
 rowHover = (method) -> (e) ->
 	p = this.dataset.index
@@ -108,16 +105,16 @@ setRowHandlers = () ->
 		el.onmouseover = rHA
 		el.onmouseout  = rHR
 
-graph = (points, categoryPoints, category) ->
+graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
 	c =
-		width: 640
+		width: 41*16
 		height: 220
 		mt: 45
 		mb: 60
-		ml: 30
+		ml: 20
 		mr: 80
 
 	chart = d3.select '.chart'
@@ -156,11 +153,14 @@ graph = (points, categoryPoints, category) ->
 		# .kernel (x) -> 1*+(-.5<x<.5)
 		# .bandwidth 0.03
 		.bounds domainp
+
+	deltaX = 4/(41*16) #0.005
+	kdeXs = R.append 1, d3.range domainp..., deltaX
 	kdes = kde \
 		#R.map R.pipe(
 		# kde.bandwidth,
 		#R.flip(R.call) \
-		R.append 1, d3.range domainp..., 3 / c.width
+		kdeXs
 		# ),
 		# R.concat [binwidth, .1], 
 		# d3.values science.stats.bandwidth
@@ -194,22 +194,54 @@ graph = (points, categoryPoints, category) ->
 		.x (d) -> x d[0]
 		.y (d) -> y d[1]
 
-	chart.append 'path'
-		.attr 'class', 'kde'
-		.attr 'd', line kdes
+	legend = chart.append 'g'
+		.attr 'class', 'legend'
+		.attr 'transform', 'translate(8, 14)'
+	kdeWidth = d3.scale.linear()
+		.range [6, 1]
+		.domain [0, 3]
+	kdeOpacity = d3.scale.linear()
+		.range [0.5, 1.1]
+		.domain [0, 3]
+
+	for category in allCategoryKdes
+		unless category.lft <= a.lft and a.rght <= category.rght
+			continue
+
+		kdePts = d3.zip kdeXs, category.kdeYs
+
+		chart.append 'path'
+			.attr 'class', 'kde'
+			.attr 'stroke-width', kdeWidth category.level
+			.attr 'stroke-opacity', kdeOpacity category.level
+			.attr 'd', line kdePts
+
+		h = 22 * (category.level + 1)
+		name = if category.level then category.name else 'All tossups'
+		legendCategory = legend.append 'g'
+			.attr 'transform', 'translate(0, ' + h + ')'
+		legendCategory.append 'path'
+			.attr 'class', 'kde'
+			.attr 'stroke-width', kdeWidth category.level
+			.attr 'stroke-opacity', kdeOpacity category.level
+			.attr 'd', "M 0,0 L 30,0"
+		legendCategory.append 'text'
+			.text name + ' (' + category.count + ' buzzes)'
+			.attr 'x', '40'
+			.attr 'y', '0'
 
 	# legend
-	chart.append 'path'
-		.attr 'class', 'kde'
-		.attr 'd', "M 10,14 L 40,14"
-	chart.append 'g'
+	legend.append 'g'
 		.attr 'class', 'bar'
 		.append 'rect'
-		.attr 'x', '10'
-		.attr 'y', '30'
+		.attr 'x', '0'
+		.attr 'y', '-6'
 		.attr 'width', '30'
 		.attr 'height', '12'
-
+	legend.append 'text'
+		.text 'All correct buzzes'
+		.attr 'x', '40'
+		.attr 'y', '0'
 	# labels
 
 	ftp = 0.84
@@ -230,12 +262,6 @@ graph = (points, categoryPoints, category) ->
 		.outerTickSize 0
 		# .tickFormat ''
 		.orient 'right'
-	chart.append 'text'
-		.text 'pdf(All ' + category + ' tossups)'
-		.attr 'transform', 'translate(50, 20)'
-	chart.append 'text'
-		.text 'All correct buzzes'
-		.attr 'transform', 'translate(50, 42)'
 
 	# commented?
 	chart.append 'g'
