@@ -7,9 +7,9 @@ html
 	body
 		div.left
 			header
-				h1 Tossups
 
 			nav
+				h2 Tossups
 				table
 					thead
 						th Set edition
@@ -34,3 +34,33 @@ html
 										= tossup.answer
 								td= tossup.power_words
 								td= tossup.words
+
+				h2 Bonuses
+				table
+					thead
+						th Set edition
+						th Packet
+						th Bonus
+						th Author
+						th Category
+						th Part 1
+						th Part 2
+						th Part 3
+
+					tbody.stripe
+						for bonus in bonuses
+							tr
+								td= bonus.question_set_edition
+								td= bonus.packet_letter
+								td= bonus.position
+								td= bonus.initials
+								td= bonus.category
+								td
+									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+										= bonus.answer1
+								td
+									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+										= bonus.answer2
+								td
+									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+										= bonus.answer3

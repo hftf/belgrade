@@ -98,13 +98,22 @@ and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 and q.category_id = c.id and q.author_id = a.id
 ;'
 
-ql = 'select t.*, q.*,
+qlt = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
 c.name as category, a.name as author, a.initials
 from
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
 where t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
+;'
+qlb = 'select b.*, q.*,
+b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.name as question_set_edition,
+c.name as category, a.name as author, a.initials
+from
+schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+where b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
 ;'
 
 qb1 = 'select
@@ -205,7 +214,8 @@ server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
 server.use '/index.html', (req, res, next) ->
 	queries =
-		tossups: ['all', ql]
+		tossups: ['all', qlt]
+		bonuses: ['all', qlb]
 	runQueries queries
 		.then (results) ->
 			res.render 'index.jade', results
