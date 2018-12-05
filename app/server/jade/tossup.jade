@@ -32,13 +32,37 @@ html
 						span.bb +Correct bounceback 
 						span.neg −Incorrect
 
-			h2(style="margin-bottom: 0;") Chart
+			h2(style="margin-bottom: 0;") Histogram
 			p(style="margin-top: -10px;")
 				svg.chart
 
 			//- p TODO: Show Conversion, 10s −5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
 
 		div.right
+
+			h2 Editions of this tossup
+			table
+				thead
+					tr
+						th Set edition
+						th Packet
+						th Tossup
+						th Author
+						th Category
+						th Answer
+						th Pwds
+						th Wds
+				tbody
+					for edition in editions
+						tr(class=tossup.question_set_edition == edition.question_set_edition ? 'cur' : '')
+							td: a(href='?id=' + edition.question_ptr_id)= edition.question_set_edition
+							td= edition.packet_letter
+							td= edition.position
+							td= edition.initials
+							td= edition.category
+							td= edition.answer
+							td= edition.power_words
+							td= edition.words
 
 			h2 Buzzes
 			table
@@ -69,29 +93,5 @@ html
 							td= buzz.tournament_name
 							td= buzz.room_number
 							td= buzz.round_number
-
-			h2 All editions of this tossup
-			table
-				thead
-					tr
-						th Set edition
-						th Packet
-						th Tossup
-						th Author
-						th Category
-						th Answer
-						th Pwds
-						th Wds
-				tbody
-					for tossup in editions
-						tr
-							td: a(href='?id=' + tossup.question_ptr_id)= tossup.question_set_edition
-							td= tossup.packet_letter
-							td= tossup.position
-							td= tossup.initials
-							td= tossup.category
-							td= tossup.answer
-							td= tossup.power_words
-							td= tossup.words
 
 		script(src='js/all.js')

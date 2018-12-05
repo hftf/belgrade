@@ -86,8 +86,6 @@ splitWordM = (question, groupedBuzzesByWord) ->
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
 loadData = (err, json) ->
-	do setRowHandlers
-
 	groups = groupBuzzesByWord json.b
 
 	graph json.a.p, json.a.o, json.a, json.d, json.kdeXs
@@ -95,15 +93,24 @@ loadData = (err, json) ->
 	question = document.querySelector '.question'
 	splitWordM question, groups
 
-rowHover = (method) -> (e) ->
+	do setRowHandlers
+
+onHover = (base, method) -> (e) ->
 	p = this.dataset.index
-	document.querySelector('[data-index="' + p + '"]').classList[method] 'hover'
-rHA = rowHover 'add'
-rHR = rowHover 'remove'
+	document.querySelectorAll('[data-index="' + p + '"]').forEach (el) -> el.classList[method] 'hover'
 setRowHandlers = () ->
+	question = document.querySelector '.question'
+	buzzes = document.querySelector '.buzzes'
+	rHA = onHover question, 'add'
+	rHR = onHover question, 'remove'
+	wHA = onHover buzzes, 'add'
+	wHR = onHover buzzes, 'remove'
 	document.querySelectorAll('.buzzes tr').forEach (el) ->
 		el.onmouseover = rHA
 		el.onmouseout  = rHR
+	document.querySelectorAll('.question .word').forEach (el) ->
+		el.onmouseover = wHA
+		el.onmouseout  = wHR
 
 graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 	# points = json.p
@@ -198,10 +205,10 @@ graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 		.attr 'class', 'legend'
 		.attr 'transform', 'translate(8, 14)'
 	kdeWidth = d3.scale.linear()
-		.range [6, 1]
+		.range [7, 1]
 		.domain [0, 3]
 	kdeOpacity = d3.scale.linear()
-		.range [0.5, 1.1]
+		.range [0.5, 1.3]
 		.domain [0, 3]
 
 	for category in allCategoryKdes
@@ -226,9 +233,14 @@ graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 			.attr 'stroke-opacity', kdeOpacity category.level
 			.attr 'd', "M 0,0 L 30,0"
 		legendCategory.append 'text'
-			.text name + ' (' + category.count + ' buzzes)'
+			.text name
 			.attr 'x', '40'
 			.attr 'y', '0'
+			.append 'tspan'
+			.text '(' + category.count + ')'
+			.attr 'dx', '5'
+			.attr 'font-size', 'smaller'
+			.attr 'font-weight', '300'
 
 	# legend
 	legend.append 'g'
@@ -239,9 +251,14 @@ graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 		.attr 'width', '30'
 		.attr 'height', '12'
 	legend.append 'text'
-		.text 'All correct buzzes'
+		.text 'Correct buzzes'
 		.attr 'x', '40'
 		.attr 'y', '0'
+		.append 'tspan'
+		.text '(' + points.length + ')'
+		.attr 'dx', '5'
+		.attr 'font-size', 'smaller'
+		.attr 'font-weight', '300'
 	# labels
 
 	ftp = 0.84
