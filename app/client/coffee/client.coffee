@@ -88,7 +88,7 @@ groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 loadData = (err, json) ->
 	groups = groupBuzzesByWord json.b
 
-	graph json.a.p, json.a.o, json.a, json.d, json.kdeXs
+	graph json.a.p, json.a, json.d, json.kdeXs
 
 	question = document.querySelector '.question'
 	splitWordM question, groups
@@ -112,7 +112,7 @@ setRowHandlers = () ->
 		el.onmouseover = wHA
 		el.onmouseout  = wHR
 
-graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
+graph = (points, a, allCategoryKdes, kdeXs) ->
 	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
@@ -153,28 +153,9 @@ graph = (points, categoryPoints, a, allCategoryKdes, kdeXs) ->
 		.range [0, c.width]
 		.domain domain
 
-	kde = kdep()
-		.sample \
-		# R.filter R.gt(1),
-		categoryPoints
-		# .kernel (x) -> 1*+(-.5<x<.5)
-		# .bandwidth 0.03
-		.bounds domainp
-
-	deltaX = 4/(41*16) #0.005
-	kdeXs = R.append 1, d3.range domainp..., deltaX
-	kdes = kde \
-		#R.map R.pipe(
-		# kde.bandwidth,
-		#R.flip(R.call) \
-		kdeXs
-		# ),
-		# R.concat [binwidth, .1], 
-		# d3.values science.stats.bandwidth
-
 	yMax = 1 + d3.max [
 			d3.max data, R.prop 'y'
-			d3.max R.flip(R.map) kdes, R.prop '1'
+			2 # d3.max R.flip(R.map) kdes, R.prop '1'
 		]
 	y = d3.scale.linear()
 		.range [c.height, 0]

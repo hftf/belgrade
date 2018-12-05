@@ -68,16 +68,10 @@ q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 c.name as category, c.lft, c.rght, c.level,
-json_group_array(round(get.p * 1.0 / t.words, 3)) p,
-cget.p o
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value > 0) p,
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value <= 0) n
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
-left join (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value > 0 order by p) get
-left join (select json_group_array(round(get.buzz_location * 1.0 / t.words, 3)) p from schema_gameeventtossup get, schema_tossup t, schema_question q,
-   schema_question q_aux, schema_tossup t_aux, schema_category c
-   where t_aux.question_ptr_id = ?1 and q_aux.category_id = c.id and q_aux.id = t_aux.question_ptr_id
-   and get.tossup_id = t.question_ptr_id and q.id = t.question_ptr_id
-   and buzz_value > 0 order by p) cget
 where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
 ;'
 # , schema_category cp
@@ -265,23 +259,16 @@ server.use '/test/:id', (req, res, next) ->
 		c: ['all', qs, id]
 		d: ['all', q_]
 
-	lensPath = (path) -> R.lens R.path(path), R.assocPath(path)
-	overPaths = R.curry (f, paths, obj) ->
-		R.reduce \
-			(o, lens) -> R.over lens, f, o,
-			obj,
-			R.map lensPath, paths
-
-	paths = R.map R.unnest, ['ao', 'ap']
-
 	runQueries queries
 		.then (results) ->
-			results = overPaths JSON.parse, paths, results
+			results.a.p = JSON.parse results.a.p
+			results.a.p.sort()
+			results.a.n = JSON.parse results.a.n
+			results.a.n.sort()
 
 			domainp = [0, 1]
 			deltaX = 4/(41*16) #0.005
-			kdeXs = R.append 1, d3.range domainp..., deltaX
-			results.kdeXs = kdeXs
+			results.kdeXs = kdeXs = R.append 1, d3.range domainp..., deltaX
 			for d in results.d
 				categoryPoints =
 					# R.filter R.gt(1),
