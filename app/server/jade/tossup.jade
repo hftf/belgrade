@@ -1,4 +1,5 @@
 doctype html
+- function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
 html
 	head
 		meta(charset='utf-8')
@@ -29,13 +30,13 @@ html
 						| Key:   
 						span.get Correct 
 						span.bb +Correct bounceback 
-						span.neg –Incorrect
+						span.neg −Incorrect
 
 			h2(style="margin-bottom: 0;") Chart
 			p(style="margin-top: -10px;")
 				svg.chart
 
-			//- p TODO: Show Conversion, 10s –5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
+			//- p TODO: Show Conversion, 10s −5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
 
 		div.right
 
@@ -59,7 +60,7 @@ html
 						tr(data-index=buzz.p class=buzz.class)
 							td= buzz.team_name
 							td= buzz.player_name
-							td= buzz.buzz_value
+							td= formatNegative(buzz.buzz_value)
 							td= buzz.p
 							td= buzz.buzz_location_pct
 							td= buzz.bounceback

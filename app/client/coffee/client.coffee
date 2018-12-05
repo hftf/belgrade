@@ -77,7 +77,7 @@ buzzesToDiffStat = (buzzes) ->
 	if 'bb' of lengths
 		diffStat.push '<span class="bb">+' + lengths['bb'] + '</span>'
 	if 'neg' of lengths
-		diffStat.push '<span class="neg">–' + lengths['neg'] + '</span>'
+		diffStat.push '<span class="neg">−' + lengths['neg'] + '</span>'
 	diffStat.join ' '
 
 splitWordM = (question, groupedBuzzesByWord) ->
