@@ -28,9 +28,12 @@ $colorget: #757
 	font-weight: 700
 	src: local('Chronicle Display'), url(../fonts/cd.otf)
 
+html
+	--base-sans-font: 'BentonSansCond', sans-serif
+	--base-serif-font: 'Lyon Text', 'Times New Roman', Times, serif
 
 body
-	font-family: 'Lyon Text', 'Times New Roman', Times, serif
+	font-family: var(--base-serif-font)
 	font-variant-numeric: lining-nums
 	margin: 0 2em 1em
 
@@ -53,7 +56,7 @@ body
 
 
 h1, h2, h3
-	font-family: 'BentonSansCond', sans-serif
+	font-family: var(--base-sans-font)
 	font-weight: 700
 
 h1
@@ -140,7 +143,7 @@ blockquote
 		// right: 100%
 
 svg, .line.last, .next_tick
-	font-family: 'BentonSansCond', sans-serif
+	font-family: var(--base-sans-font)
 .lower
 	height: 1em
 
@@ -168,6 +171,9 @@ svg, .line.last, .next_tick
 .neg
 	font-weight: 400
 	color: darken($color2, 15)
+
+.serif, .dag
+	font-family: var(--base-serif-font)
 
 table
 	font-size: 90%

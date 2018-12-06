@@ -22,7 +22,7 @@ html
 
 			.right
 				h2 Editions of this bonus
-					abbr(title='Two bonuses are detected as editions of the same bonus if at least 2 of the following conditions match: Answer 1, Answer 2, Answer 3, Category.') *
+					span.dag †
 				table
 					colgroup(span=4)
 					colgroup(span=5)
@@ -78,5 +78,11 @@ html
 								td.ellipsis(title=geb.tournament_name)= geb.tournament_name
 								td= geb.room_number
 								td= geb.round_number
+
+		h3
+			span.dag †
+			|  Compare with care.
+		p Questions may have substantially changed in different set editions. Be responsible and only compare stats from identical questions.
+		p Two bonuses are detected as editions of the same bonus if at least 2 of the following match: Answer 1, Answer 2, Answer 3, Category.
 
 		script(src='/js/all.js')
