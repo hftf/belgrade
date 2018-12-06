@@ -66,6 +66,18 @@ html
 								// td= edition.initials
 								// td= edition.category
 								+tdel(edition.answers)
+
+								td.r= edition.countRooms
+
+								td.r.strong= formatPct(edition.avgT)
+								td.r= formatPct(edition.avg1)
+								td.r= formatPct(edition.avg2)
+								td.r= formatPct(edition.avg3)
+
+								td.r= edition.count0
+								td.r= edition.count10
+								td.r= edition.count20
+								td.r= edition.count30
 		.twocol
 			.left
 				h2 Text

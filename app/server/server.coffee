@@ -154,10 +154,27 @@ qbs = 'select b.*, q.*,
 b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 c.name as category, a.name as author, a.initials,
-qse.date as question_set_edition
+qse.date as question_set_edition,
+AVG(total)/30 avgT,
+AVG(value1)/10 avg1,
+AVG(value2)/10 avg2,
+AVG(value3)/10 avg3,
+COUNT(CASE WHEN total = 0  THEN 1 END) count0,
+COUNT(CASE WHEN total = 10 THEN 1 END) count10,
+COUNT(CASE WHEN total = 20 THEN 1 END) count20,
+COUNT(CASE WHEN total = 30 THEN 1 END) count30,
+AVG(CASE WHEN total >= 0  THEN 1 ELSE 0 END) atleast0,
+AVG(CASE WHEN total >= 10 THEN 1 ELSE 0 END) atleast10,
+AVG(CASE WHEN total >= 20 THEN 1 ELSE 0 END) atleast20,
+AVG(CASE WHEN total >= 30 THEN 1 ELSE 0 END) atleast30,
+COUNT(DISTINCT game_id) AS countRooms
 from 
 schema_bonus b0, schema_question q0, 
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+LEFT JOIN (SELECT *, value1+value2+value3 AS total FROM schema_gameeventbonus) geb ON geb.bonus_id = b.question_ptr_id 
+LEFT JOIN schema_gameevent ge ON ge.id = geb.gameevent_ptr_id 
+LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
+LEFT JOIN schema_game g ON gt.game_id = g.id
 where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id
 and 2 <=
 (b0.answer1 like b.answer1) +
@@ -166,6 +183,7 @@ and 2 <=
 (q0.category_id = q.category_id)
 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
 and q.category_id = c.id and q.author_id = a.id
+GROUP BY b.question_ptr_id
 ;'
 
 # TODO rename
