@@ -1,97 +1,148 @@
 doctype html
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
+- function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
+- function bl(c, n) { return c ? n : ''; }
+- function bld(c, n) { var d = c - n; return c ? (d ? n : '=') : ''; }
 html
 	head
 		meta(charset='utf-8')
 		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
 		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
-	body.twocol
+	body
+		.twocol.skinny
 
-		div.left
-			p
-				a(href="/index.html") Home
-
-			table.center
-				tr: td(colspan=3): strong= tossup.question_set_edition
-				tr: td(colspan=3)= tossup.packet_name
-				tr
-					td: a(href='?id=' + (+tossup.question_ptr_id - 1)) ←
-					td Tossup #{tossup.position}
-					td: a(href='?id=' + (+tossup.question_ptr_id + 1)) →
-
-			blockquote
-				div.question(data-words=tossup.words)
-					!= raw[0]
-				div.answer
-					!= raw[1]
-
-				div.key
-					small.line.last
-						| Key:   
-						span.get Correct 
-						span.bb +Correct bounceback 
-						span.neg −Incorrect
-
-			h2(style="margin-bottom: 0;") Histogram
-			p(style="margin-top: -10px;")
-				svg.chart
-
-			//- p TODO: Show Conversion, 10s −5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
-
-		div.right
-
-			h2 Editions of this tossup
-			table
-				thead
+			.left
+				h2 Tossup
+				table.center
+					tr: td(colspan=3): strong= tossup.question_set_edition
+					tr: td(colspan=3)= tossup.packet_name
 					tr
-						th Set edition
-						th Packet
-						th Tossup
-						th Author
-						th Category
-						th Answer
-						th Pwds
-						th Wds
-				tbody
-					for edition in editions
-						tr(class=tossup.question_set_edition == edition.question_set_edition ? 'cur' : '')
-							td: a(href='?id=' + edition.question_ptr_id)= edition.question_set_edition
-							td= edition.packet_letter
-							td= edition.position
-							td= edition.initials
-							td= edition.category
-							td= edition.answer
-							td= edition.power_words
-							td= edition.words
+						td: a(href='?id=' + (+tossup.question_ptr_id - 1)) ←
+						td Tossup #{tossup.position}
+						td: a(href='?id=' + (+tossup.question_ptr_id + 1)) →
 
-			h2 Buzzes
-			table
-				thead
-					tr
-						th(width=120) Team
-						th(width=160) Player
-						th Value
-						th BzPt
-						th BzPt%
-						th BB?
-						th(width=120) Answer
-						th Pro?
-						th(width=100) Site
-						th Rm
-						th Rd
-				tbody.stripe.buzzes
-					for buzz in buzzes
-						tr(data-index=buzz.p class=buzz.class)
-							td= buzz.team_name
-							td= buzz.player_name
-							td= formatNegative(buzz.buzz_value)
-							td= buzz.p
-							td= buzz.buzz_location_pct
-							td= buzz.bounceback
-							td= buzz.answer_given
-							td= buzz.protested
-							td= buzz.tournament_name
-							td= buzz.room_number
-							td= buzz.round_number
+				p
+					a(href="/index.html") ‹ Home
 
-		script(src='js/all.js')
+			.right
+				h2 Editions of this tossup
+					abbr(title='Two tossups are detected as two editions of the same bonus if at least 2 of the following conditions match: Answer, Category.') *
+				table
+					colgroup(span=6)
+					colgroup(span=5)
+					colgroup(span=3)
+					colgroup(span=3)
+					colgroup(span=2)
+					thead
+						tr
+							th Set edition
+							th Packet
+							th Tossup
+							// th Author
+							// th Category
+							th(width=140) Answer
+							th Pwds
+							th Wds
+
+							th(width=30) G
+							th(width=30) 15s
+							th(width=30) 10s
+							th(width=30) −5s
+							th(width=30) 0s
+
+							th(width=50) Rooms
+							// th(width=30) BP?
+							th(width=50) Buzzes
+							th(width=30) BP?
+
+							th(width=42) Conv
+							th(width=42) Pow%
+							th(width=42) Neg%
+							
+							th(width=42) FB%
+							th(width=42) Avg%
+					tbody
+						for edition in editions
+							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
+								td: a(href='?id=' + edition.question_ptr_id)= edition.question_set_edition
+								td= edition.packet_letter
+								td= edition.position
+								// td= edition.initials
+								// td= edition.category
+								td= edition.answer
+								td.r= edition.power_words
+								td.r= edition.words
+
+								td.r= bl(edition.countRooms, edition.countG)
+								td.r= bl(edition.countRooms, edition.count15)
+								td.r= bl(edition.countRooms, edition.count10)
+								td.r= bl(edition.countRooms, edition.countN5)
+								td.r= bl(edition.countRooms, edition.count0)
+
+								td.r= edition.countRooms
+								// td.r= bld(edition.countRooms, edition.countRoomsBzPt)
+								td.r= edition.countBzs
+								td.r= bld(edition.countBzs, edition.countBzPts)
+
+								td.r= bl(edition.countRooms, formatPct(edition.countG  / edition.countRooms))
+								td.r= bl(edition.countRooms, formatPct(edition.count15 / edition.countRooms))
+								td.r= bl(edition.countRooms, formatPct(edition.countN5 / edition.countRooms))
+
+								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))
+								td.r= bl(edition.countRooms, formatPct(edition.avgBzPt))
+		.twocol
+			.left
+				h2 Text
+				blockquote
+					.question(data-words=tossup.words)
+						!= raw[0]
+					.answer
+						!= raw[1]
+
+					.key
+						small.line.last
+							| Key:   
+							span.get Correct 
+							span.bb +Correct bounceback 
+							span.neg −Incorrect
+
+				h2(style="margin-bottom: 0;") Histogram
+				p(style="margin-top: -10px;")
+					svg.chart
+
+				//- p TODO: Show Conversion, 10s −5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
+
+				// Conversion	Power %	G	15	10	–5	Rooms	Avg	Buzz location	Buzz %	Buzz – Power	(correct only)	Number of correct buzz locations	FB location (first correct buzz)		FB player (first players to buzz correctly before end on TU heard more than once)
+			.right
+
+				h2 Buzzes
+				table
+					thead
+						tr
+							th(width=120) Team
+							th(width=160) Player
+							th Value
+							th BzPt
+							th BzPt%
+							th BB?
+							th(width=140) Answer
+							th Pro?
+							th(width=100) Site
+							th Rm
+							th Rd
+					tbody.stripe.buzzes
+						for buzz in buzzes
+							tr(data-index=buzz.p class=buzz.class)
+								td= buzz.team_name
+								td= buzz.player_name
+								td.r= formatNegative(buzz.buzz_value)
+								td.r= buzz.p
+								td.r= buzz.buzz_location_pct
+								td= buzz.bounceback
+								td= buzz.answer_given
+								td= buzz.protested
+								td= buzz.tournament_name
+								td= buzz.room_number
+								td= buzz.round_number
+
+			script(src='js/all.js')

@@ -31,7 +31,7 @@ WHERE
     q.category_id = cp.id
     AND c.lft <= cp.lft AND cp.rght <= c.rght
     AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
-    AND buzz_value > 0
+    AND buzz_location IS NOT NULL AND buzz_value > 0
 GROUP BY
     c.id
 ;'
@@ -41,7 +41,7 @@ te.name team_name,
 p.name player_name,
 buzz_value,
 buzz_location p,
-case when buzz_location is null then "" else printf("%.2f", buzz_location * 1.0 / words) end buzz_location_pct,
+case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 100.0 / words) end buzz_location_pct,
 bounceback,
 answer_given,
 protested,
@@ -68,8 +68,8 @@ q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 c.name as category, c.lft, c.rght, c.level,
-(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value > 0) p,
-(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value <= 0) n
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value > 0) p,
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value <= 0) n
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
 where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
@@ -83,13 +83,32 @@ where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.
 qs = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 c.name as category, a.name as author, a.initials,
-qse.date as question_set_edition
+qse.date as question_set_edition,
+COUNT(CASE WHEN get.buzz_value = 15 THEN 1 END) count15,
+COUNT(CASE WHEN get.buzz_value = 10 THEN 1 END) count10,
+COUNT(CASE WHEN get.buzz_value = -5 THEN 1 END) countN5,
+COUNT(CASE WHEN get.buzz_value =  0 THEN 1 END) count0,
+COUNT(CASE WHEN get.buzz_value >  0 THEN 1 END) countG,
+COUNT(DISTINCT game_id) AS countRooms,
+COUNT(DISTINCT CASE WHEN get.buzz_location THEN game_id END) AS countRoomsBzPt,
+COUNT(CASE WHEN get.buzz_value    IS NOT NULL THEN 1 END) AS countBzs,
+COUNT(CASE WHEN get.buzz_location IS NOT NULL THEN 1 END) AS countBzPts,
+round(AVG(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.words), 3) avgBzPt,
+round(min(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.words), 3) firstBzPt
 from 
 schema_tossup t0, schema_question q0, 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
-where t0.question_ptr_id = ?1 and t0.question_ptr_id = q0.id and t0.answer like t.answer and q0.category_id = q.category_id
+LEFT JOIN schema_gameeventtossup get ON get.tossup_id = t.question_ptr_id 
+LEFT JOIN schema_gameevent ge ON ge.id = get.gameevent_ptr_id 
+LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
+LEFT JOIN schema_game g ON gt.game_id = g.id
+where t0.question_ptr_id = ?1 and t0.question_ptr_id = q0.id
+and 2 <=
+(t0.answer like t.answer) +
+(q0.category_id = q.category_id)
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
 and q.category_id = c.id and q.author_id = a.id
+GROUP BY t.question_ptr_id
 ;'
 
 qlt = 'select t.*, q.*,
@@ -139,7 +158,12 @@ qse.date as question_set_edition
 from 
 schema_bonus b0, schema_question q0, 
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
-where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id and b0.answer1 like b.answer1 and q0.category_id = q.category_id
+where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id
+and 3 <=
+(b0.answer1 like b.answer1) +
+(b0.answer2 like b.answer2) +
+(b0.answer3 like b.answer3) +
+(q0.category_id = q.category_id)
 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
