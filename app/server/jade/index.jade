@@ -1,4 +1,7 @@
 doctype html
+mixin th(w)
+	th(style='min-width:#{w}em;')
+		block
 html
 	head
 		meta(charset='utf-8')
@@ -22,14 +25,14 @@ html
 					h3(id='tossups-#{edition}')= edition
 					table
 						thead
-							th(style="width:7em;") Set edition
-							th(style="width:4em;") Packet
-							th(style="width:4em;") Bonus
-							th(style="width:4em;") Author
-							th(style="width:15em;") Category
-							th(style="width:18em;") Answer
-							th(style="width:4em;") Pwds
-							th(style="width:4em;") Wds
+							+th(7) Set edition
+							+th(4) Packet
+							+th(4) Bonus
+							+th(4) Author
+							+th(15) Category
+							+th(18) Answer
+							+th(4) Pwds
+							+th(4) Wds
 
 						tbody.stripe
 							for tossup in tossups
@@ -53,14 +56,14 @@ html
 					h3(id='bonuses-#{edition}')= edition
 					table
 						thead
-							th(style="width:7em;") Set edition
-							th(style="width:4em;") Packet
-							th(style="width:4em;") Bonus
-							th(style="width:4em;") Author
-							th(style="width:15em;") Category
-							th(style="width:18em;") Part 1
-							th(style="width:18em;") Part 2
-							th(style="width:18em;") Part 3
+							+th(7) Set edition
+							+th(4) Packet
+							+th(4) Bonus
+							+th(4) Author
+							+th(15) Category
+							+th(18) Part 1
+							+th(18) Part 2
+							+th(18) Part 3
 
 						tbody.stripe
 							for bonus in bonuses

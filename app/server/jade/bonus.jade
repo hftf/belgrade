@@ -1,4 +1,7 @@
 doctype html
+mixin th(w)
+	th(style='min-width:#{w}em;')
+		block
 html
 	head
 		meta(charset='utf-8')
@@ -36,25 +39,25 @@ html
 							th Bonus
 							// th Author
 							// th Category
-							th(style="min-width:30em;") Answers
+							+th(30) Answers
 
-							th(style="min-width:2em;") Rooms
+							+th(2) Rooms
 
-							th(style="min-width:2em;") Parts
-							th(style="min-width:2em;") Part 1
-							th(style="min-width:2em;") Part 2
-							th(style="min-width:2em;") Part 3
+							+th(2) Parts
+							+th(2) Part 1
+							+th(2) Part 2
+							+th(2) Part 3
 
-							th(style="min-width:2em;") 0s
-							th(style="min-width:2em;") 10s
-							th(style="min-width:2em;") 20s
-							th(style="min-width:2em;") 30s
+							+th(2) 0s
+							+th(2) 10s
+							+th(2) 20s
+							+th(2) 30s
 
-							th(style="min-width:2em;") ≥0
-							th(style="min-width:2em;") ≥10
-							th(style="min-width:2em;") ≥20
-							th(style="min-width:2em;") =30
-							th(style="min-width:2em;"): abbr(title='survival function') sf
+							+th(2) ≥0
+							+th(2) ≥10
+							+th(2) ≥20
+							+th(2) =30
+							+th(2): abbr(title='survival function') sf
 					tbody
 						for edition in editions
 							tr(class=bonus.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
@@ -78,14 +81,14 @@ html
 				table
 					thead
 						tr
-							th(style="min-width:8em;") Team
-							th(style="min-width:8em;").ellipsis= bonus.answer1
-							th(style="min-width:8em;").ellipsis= bonus.answer2
-							th(style="min-width:8em;").ellipsis= bonus.answer3
-							th(style="min-width:3em;") Points
-							th(style="min-width:6em;") Site
-							th(style="min-width:2em;") Rm
-							th(style="min-width:2em;") Rd
+							+th(8) Team
+							+th(8).ellipsis= bonus.answer1
+							+th(8).ellipsis= bonus.answer2
+							+th(8).ellipsis= bonus.answer3
+							+th(3) Points
+							+th(6) Site
+							+th(2) Rm
+							+th(2) Rd
 					tbody.stripe
 						for geb in performances
 							tr
@@ -102,6 +105,6 @@ html
 			span.dag †
 			|  Compare with care.
 		p Questions may have substantially changed in different set editions. Be responsible and only compare stats from identical questions.
-		p Two bonuses are detected as editions of the same bonus if at least 2 of the following match: Answer 1, Answer 2, Answer 3, Category.
+		p Two bonuses are only detected as editions of the same bonus if at least 2 of the following match: Answer 1, Answer 2, Answer 3, Category.
 
 		script(src='/js/all.js')

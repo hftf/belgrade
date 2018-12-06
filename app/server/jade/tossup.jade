@@ -1,4 +1,7 @@
 doctype html
+mixin th(w)
+	th(style='min-width:#{w}em;')
+		block
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
 - function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
 - function bl(c, n) { return c ? n : ''; }
@@ -41,28 +44,28 @@ html
 							th Tossup
 							// th Author
 							// th Category
-							th(style="min-width:14em;") Answer
+							+th(14) Answer
 							th Pwds
 							th Wds
 
-							th(style="min-width:3em;") Rooms
+							+th(3) Rooms
 
-							th(style="min-width:2em;") G
-							th(style="min-width:2em;") 15s
-							th(style="min-width:2em;") 10s
-							th(style="min-width:2em;") −5s
-							// th(style="min-width:2em;") 0s
+							+th(2) G
+							+th(2) 15s
+							+th(2) 10s
+							+th(2) −5s
+							// +th(2) 0s
 
-							th(style="min-width:3em;") Conv
-							th(style="min-width:3em;") Pow%
-							th(style="min-width:3em;") Neg%
+							+th(3) Conv
+							+th(3) Pow%
+							+th(3) Neg%
 							
-							th(style="min-width:3em;") FB%
-							th(style="min-width:3em;") Avg%
+							+th(3) FB%
+							+th(3) Avg%
 
-							// th(style="min-width:2em;") BP?
-							th(style="min-width:3em;") Buzzes
-							th(style="min-width:3em;") BzPts
+							// +th(2) BP?
+							+th(3) Buzzes
+							+th(3) BzPts
 					tbody
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
@@ -121,17 +124,17 @@ html
 				table
 					thead
 						tr
-							th(style="min-width:8em;") Team
-							th(style="min-width:8em;") Player
+							+th(8) Team
+							+th(8) Player
 							th Value
 							th BzPt
 							th BzPt%
 							th BB?
-							th(style="min-width:9em;") Answer
+							+th(9) Answer
 							th Pro?
-							th(style="min-width:6em;") Site
-							th(style="min-width:2em;") Rm
-							th(style="min-width:2em;") Rd
+							+th(6) Site
+							+th(2) Rm
+							+th(2) Rd
 					tbody.stripe.buzzes
 						for buzz in buzzes
 							tr(data-index=buzz.p class=buzz.class)
@@ -155,4 +158,4 @@ html
 			span.dag †
 			|  Compare with care.
 		p Questions may have substantially changed in different set editions. Be responsible and only compare stats from identical questions.
-		p Two tossups are detected as editions of the same tossup if both Answer and Category match.
+		p Two tossups are only detected as editions of the same tossup if both Answer and Category match.
