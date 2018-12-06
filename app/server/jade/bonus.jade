@@ -11,16 +11,17 @@ html
 
 			.left
 				h2 Bonus
+				p: a(href="/index.html") ‹ Home
+
 				table.center
 					tr: td(colspan=3): strong= bonus.question_set_edition
 					tr: td(colspan=3)= bonus.packet_name
 					tr
-						td: a(href=(+bonus.question_ptr_id - 1) + '.html') ←
+						td: if bonus.prev
+							a(href=bonus.prev + '.html') ←
 						td Bonus #{bonus.position}
-						td: a(href=(+bonus.question_ptr_id + 1) + '.html') →
-
-				p
-					a(href="/index.html") ‹ Home
+						td: if bonus.next
+							a(href=bonus.next + '.html') →
 
 			.right
 				h2 Editions of this bonus

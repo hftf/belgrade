@@ -11,16 +11,17 @@ html
 
 			.left
 				h2 Tossup
+				p: a(href="/index.html") ‹ Home
+				
 				table.center
 					tr: td(colspan=3): strong= tossup.question_set_edition
 					tr: td(colspan=3)= tossup.packet_name
 					tr
-						td: a(href=(+tossup.question_ptr_id - 1) + '.html') ←
+						td: if tossup.prev
+							a(href=tossup.prev + '.html') ←
 						td Tossup #{tossup.position}
-						td: a(href=(+tossup.question_ptr_id + 1) + '.html') →
-
-				p
-					a(href="/index.html") ‹ Home
+						td: if tossup.next
+							a(href=tossup.next + '.html') →
 
 			.right
 				h2 Editions of this tossup

@@ -59,7 +59,9 @@ and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value des
 q2 = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
-c.name as category, c.lft, c.rght, c.level
+c.name as category, c.lft, c.rght, c.level,
+(select max(question_ptr_id) from schema_tossup where question_ptr_id < t.question_ptr_id) prev,
+(select min(question_ptr_id) from schema_tossup where question_ptr_id > t.question_ptr_id) next
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
 where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
@@ -147,7 +149,9 @@ and bonus_id = ?1 order by total desc, value1 desc, value2 desc, value3 desc
 ;'
 qb = 'select b.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
-qse.date as question_set_edition, c.name as category
+qse.date as question_set_edition, c.name as category,
+(select max(question_ptr_id) from schema_bonus where question_ptr_id < b.question_ptr_id) prev,
+(select min(question_ptr_id) from schema_bonus where question_ptr_id > b.question_ptr_id) next
 from 
 schema_bonus b, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
 where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
