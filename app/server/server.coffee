@@ -236,6 +236,10 @@ server.use '/index.html', (req, res, next) ->
 		bonuses: ['all', qlb]
 	runQueries queries
 		.then (results) ->
+			for type of results
+				results[type + 'ByEdition'] = R.groupBy R.prop('question_set_edition'), results[type]
+				delete results[type]
+
 			res.render 'index.jade', results
 		.catch (err) ->
 			res.status 500

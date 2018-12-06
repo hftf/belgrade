@@ -7,6 +7,7 @@ html
 	body
 		div.left
 			header
+				h1 Index
 
 			nav
 				ul
@@ -14,57 +15,67 @@ html
 					li: a(href='#bonuses') Bonuses
 
 				h2#tossups Tossups
-				table
-					thead
-						th(style="width:7em;") Set edition
-						th(style="width:4em;") Packet
-						th(style="width:4em;") Bonus
-						th(style="width:4em;") Author
-						th(style="width:15em;") Category
-						th(style="width:18em;") Answer
-						th(style="width:4em;") Pwds
-						th(style="width:4em;") Wds
+				nav: ul
+					for tossups, edition in tossupsByEdition
+						li: a(href='#tossups-#{edition}')= edition
+				for tossups, edition in tossupsByEdition
+					h3(id='tossups-#{edition}')= edition
+					table
+						thead
+							th(style="width:7em;") Set edition
+							th(style="width:4em;") Packet
+							th(style="width:4em;") Bonus
+							th(style="width:4em;") Author
+							th(style="width:15em;") Category
+							th(style="width:18em;") Answer
+							th(style="width:4em;") Pwds
+							th(style="width:4em;") Wds
 
-					tbody.stripe
-						for tossup in tossups
-							tr
-								td= tossup.question_set_edition
-								td= tossup.packet_letter
-								td= tossup.position
-								td= tossup.initials
-								td= tossup.category
-								td.ellipsis(title=tossup.answer)
-									a(href='/tossup/' + tossup.question_ptr_id + '.html')
-										= tossup.answer
-								td= tossup.power_words
-								td= tossup.words
+						tbody.stripe
+							for tossup in tossups
+								tr
+									td= tossup.question_set_edition
+									td= tossup.packet_letter
+									td= tossup.position
+									td= tossup.initials
+									td= tossup.category
+									td.ellipsis(title=tossup.answer)
+										a(href='/tossup/' + tossup.question_ptr_id + '.html')
+											= tossup.answer
+									td= tossup.power_words
+									td= tossup.words
 
 				h2#bonuses Bonuses
-				table
-					thead
-						th(style="width:7em;") Set edition
-						th(style="width:4em;") Packet
-						th(style="width:4em;") Bonus
-						th(style="width:4em;") Author
-						th(style="width:15em;") Category
-						th(style="width:18em;") Part 1
-						th(style="width:18em;") Part 2
-						th(style="width:18em;") Part 3
+				nav: ul
+					for bonuses, edition in bonusesByEdition
+						li: a(href='#bonuses-#{edition}')= edition
+				for bonuses, edition in bonusesByEdition
+					h3(id='bonuses-#{edition}')= edition
+					table
+						thead
+							th(style="width:7em;") Set edition
+							th(style="width:4em;") Packet
+							th(style="width:4em;") Bonus
+							th(style="width:4em;") Author
+							th(style="width:15em;") Category
+							th(style="width:18em;") Part 1
+							th(style="width:18em;") Part 2
+							th(style="width:18em;") Part 3
 
-					tbody.stripe
-						for bonus in bonuses
-							tr
-								td= bonus.question_set_edition
-								td= bonus.packet_letter
-								td= bonus.position
-								td= bonus.initials
-								td= bonus.category
-								td.ellipsis(title=bonus.answer1)
-									a(href='/bonus/' + bonus.question_ptr_id + '.html')
-										= bonus.answer1
-								td.ellipsis(title=bonus.answer1)
-									a(href='/bonus/' + bonus.question_ptr_id + '.html')
-										= bonus.answer2
-								td.ellipsis(title=bonus.answer1)
-									a(href='/bonus/' + bonus.question_ptr_id + '.html')
-										= bonus.answer3
+						tbody.stripe
+							for bonus in bonuses
+								tr
+									td= bonus.question_set_edition
+									td= bonus.packet_letter
+									td= bonus.position
+									td= bonus.initials
+									td= bonus.category
+									td.ellipsis(title=bonus.answer1)
+										a(href='/bonus/' + bonus.question_ptr_id + '.html')
+											= bonus.answer1
+									td.ellipsis(title=bonus.answer1)
+										a(href='/bonus/' + bonus.question_ptr_id + '.html')
+											= bonus.answer2
+									td.ellipsis(title=bonus.answer1)
+										a(href='/bonus/' + bonus.question_ptr_id + '.html')
+											= bonus.answer3
