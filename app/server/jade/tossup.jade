@@ -35,6 +35,9 @@ html
 					colgroup(span=1)
 					colgroup(span=4)
 					colgroup(span=3)
+						col
+						col
+						col
 					colgroup(span=2)
 					colgroup(span=2)
 					thead
@@ -67,6 +70,12 @@ html
 							+th(3) Buzzes
 							+th(3) BzPts
 					tbody
+						mixin tdb(x, n)
+							- var pct = x / n
+							- var disp = bl(n, formatPct(pct))
+							td.r.bar(style='background-size: #{disp} 80%;')
+								= disp
+
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
 								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
@@ -86,9 +95,9 @@ html
 								td.r= bl(edition.countRooms, edition.countN5)
 								// td.r= bl(edition.countRooms, edition.count0)
 
-								td.r= bl(edition.countRooms, formatPct(edition.countG  / edition.countRooms))
-								td.r= bl(edition.countRooms, formatPct(edition.count15 / edition.countRooms))
-								td.r= bl(edition.countRooms, formatPct(edition.countN5 / edition.countRooms))
+								+tdb(edition.countG, edition.countRooms)
+								+tdb(edition.count15, edition.countRooms)
+								+tdb(edition.countN5, edition.countRooms)
 
 								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))
 								td.r= bl(edition.countRooms, formatPct(edition.avgBzPt))

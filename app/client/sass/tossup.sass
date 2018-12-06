@@ -187,7 +187,7 @@ th
 	text-align: left
 td, th
 	padding: 1px 0.4em
-td
+.buzzes td
 	&:nth-child(-n+2),
 	&:nth-child(n+8)
 		color: black
@@ -209,6 +209,9 @@ table.center
 	text-align: center
 colgroup:not(:first-of-type)
 	border-left: 1px solid #ccc
+col:not(:first-of-type)
+	border-left: 4px solid transparent
+
 .r
 	text-align: right
 .ellipsis
@@ -220,3 +223,9 @@ colgroup:not(:first-of-type)
 tr.hover
 	outline: 2px solid #ee7
 	background: #ee7 !important
+
+.bar
+	background-image: linear-gradient(#f2f2f2, #f2f2f2)
+	background-size: 100% 0
+	background-position: left 30%
+	background-repeat: no-repeat
