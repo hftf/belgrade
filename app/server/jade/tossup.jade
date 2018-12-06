@@ -29,9 +29,10 @@ html
 					span.dag †
 				table
 					colgroup(span=6)
-					colgroup(span=5)
+					colgroup(span=1)
+					colgroup(span=4)
 					colgroup(span=3)
-					colgroup(span=3)
+					colgroup(span=2)
 					colgroup(span=2)
 					thead
 						tr
@@ -44,16 +45,13 @@ html
 							th Pwds
 							th Wds
 
+							th(style="min-width:3em;") Rooms
+
 							th(style="min-width:2em;") G
 							th(style="min-width:2em;") 15s
 							th(style="min-width:2em;") 10s
 							th(style="min-width:2em;") −5s
-							th(style="min-width:2em;") 0s
-
-							th(style="min-width:3em;") Rooms
-							// th(style="min-width:2em;") BP?
-							th(style="min-width:3em;") Buzzes
-							th(style="min-width:2em;") BP?
+							// th(style="min-width:2em;") 0s
 
 							th(style="min-width:3em;") Conv
 							th(style="min-width:3em;") Pow%
@@ -61,6 +59,10 @@ html
 							
 							th(style="min-width:3em;") FB%
 							th(style="min-width:3em;") Avg%
+
+							// th(style="min-width:2em;") BP?
+							th(style="min-width:3em;") Buzzes
+							th(style="min-width:3em;") BzPts
 					tbody
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
@@ -73,16 +75,13 @@ html
 								td.r= edition.power_words
 								td.r= edition.words
 
+								td.r= edition.countRooms
+
 								td.r= bl(edition.countRooms, edition.countG)
 								td.r= bl(edition.countRooms, edition.count15)
 								td.r= bl(edition.countRooms, edition.count10)
 								td.r= bl(edition.countRooms, edition.countN5)
-								td.r= bl(edition.countRooms, edition.count0)
-
-								td.r= edition.countRooms
-								// td.r= bld(edition.countRooms, edition.countRoomsBzPt)
-								td.r= edition.countBzs
-								td.r= bld(edition.countBzs, edition.countBzPts)
+								// td.r= bl(edition.countRooms, edition.count0)
 
 								td.r= bl(edition.countRooms, formatPct(edition.countG  / edition.countRooms))
 								td.r= bl(edition.countRooms, formatPct(edition.count15 / edition.countRooms))
@@ -90,6 +89,11 @@ html
 
 								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))
 								td.r= bl(edition.countRooms, formatPct(edition.avgBzPt))
+
+								// td.r= bld(edition.countRooms, edition.countRoomsBzPt)
+								td.r= edition.countBzs
+								td.r= bld(edition.countBzs, edition.countBzPts)
+
 		.twocol
 			.left
 				h2 Text
@@ -110,9 +114,7 @@ html
 				p(style="margin-top: -10px;")
 					svg.chart
 
-				//- p TODO: Show Conversion, 10s −5s, Rooms, Rooms with BzPt, Avg Buzz location (%)
-
-				// Conversion	Power %	G	15	10	–5	Rooms	Avg	Buzz location	Buzz %	Buzz – Power	(correct only)	Number of correct buzz locations	FB location (first correct buzz)		FB player (first players to buzz correctly before end on TU heard more than once)
+				// Buzz %	Buzz – Power	(correct only)	FB location (first correct buzz)		FB player (first players to buzz correctly before end on TU heard more than once)
 			.right
 
 				h2 Buzzes

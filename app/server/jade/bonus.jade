@@ -25,9 +25,10 @@ html
 					span.dag †
 				table
 					colgroup(span=4)
-					colgroup(span=5)
+					colgroup(span=1)
 					colgroup(span=4)
-					colgroup(span=3)
+					colgroup(span=4)
+					colgroup(span=4)
 					thead
 						tr
 							th Set edition
@@ -36,6 +37,24 @@ html
 							// th Author
 							// th Category
 							th(style="min-width:30em;") Answers
+
+							th(style="min-width:2em;") Rooms
+
+							th(style="min-width:2em;") Parts
+							th(style="min-width:2em;") Part 1
+							th(style="min-width:2em;") Part 2
+							th(style="min-width:2em;") Part 3
+
+							th(style="min-width:2em;") 0s
+							th(style="min-width:2em;") 10s
+							th(style="min-width:2em;") 20s
+							th(style="min-width:2em;") 30s
+
+							th(style="min-width:2em;") ≥0
+							th(style="min-width:2em;") ≥10
+							th(style="min-width:2em;") ≥20
+							th(style="min-width:2em;") =30
+							th(style="min-width:2em;"): abbr(title='survival function') sf
 					tbody
 						for edition in editions
 							tr(class=bonus.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
