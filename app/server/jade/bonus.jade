@@ -56,11 +56,11 @@ html
 							+th(2) 20s
 							+th(2) 30s
 
+							+th(1): abbr(title='survival function') sf
 							+th(3) ≥0
 							+th(3) ≥10
 							+th(3) ≥20
 							+th(3) =30
-							+th(2): abbr(title='survival function') sf
 					tbody
 						for edition in editions
 							tr(class=bonus.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
@@ -82,6 +82,17 @@ html
 								td.r= edition.count10
 								td.r= edition.count20
 								td.r= edition.count30
+
+								td(style='line-height: 0;')
+									- var w = 40;
+									- var p = w * 0.1;
+									- var s = w / edition.atleast0;
+									svg(width=20 height=15 viewBox='#{-p} #{-p} #{w+2*p} #{w+2*p}' preserveAspectRatio='none' style='vertical-align: baseline;')
+										path.sf(d='M 0 #{w-s*edition.atleast0} L 10 #{w-s*edition.atleast10} L 20 #{w-s*edition.atleast20} L 30 #{w-s*edition.atleast30} L 40 #{w}')
+								td.r= formatPct(edition.atleast0)
+								td.r= formatPct(edition.atleast10)
+								td.r= formatPct(edition.atleast20)
+								td.r= formatPct(edition.atleast30)
 		.twocol
 			.left
 				h2 Text
