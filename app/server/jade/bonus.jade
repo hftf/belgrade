@@ -7,6 +7,7 @@ html
 		meta(charset='utf-8')
 		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
 		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+		title #{bonus.question_set_edition} - #{bonus.packet_name} - Bonus #{bonus.position}
 	body
 		.twocol.skinny
 
@@ -100,11 +101,5 @@ html
 								td.ellipsis(title=geb.tournament_name)= geb.tournament_name
 								td= geb.room_number
 								td= geb.round_number
-
-		h3
-			span.dag †
-			|  Compare with care.
-		p Questions may have substantially changed in different set editions. Be responsible and only compare stats from identical questions.
-		p Two bonuses are only detected as editions of the same bonus if at least 2 of the following match: Answer 1, Answer 2, Answer 3, Category.
 
 		script(src='/js/all.js')

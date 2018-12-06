@@ -11,6 +11,7 @@ html
 		meta(charset='utf-8')
 		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
 		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+		title #{tossup.question_set_edition} - #{tossup.packet_name} - Tossup #{tossup.position}
 	body
 		.twocol.skinny
 
@@ -162,9 +163,3 @@ html
 			script.
 				window.tossup_id = #{tossup.question_ptr_id};
 			script(src='/js/all.js')
-
-		h3
-			span.dag †
-			|  Compare with care.
-		p Questions may have substantially changed in different set editions. Be responsible and only compare stats from identical questions.
-		p Two tossups are only detected as editions of the same tossup if both Answer and Category match.
