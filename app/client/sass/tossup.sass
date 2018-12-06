@@ -172,8 +172,10 @@ svg, .line.last, .next_tick
 table
 	font-size: 90%
 	font-variant-numeric: tabular-nums lining-nums
+
 	border-spacing: 0
 	border-collapse: collapse
+	table-layout: fixed
 th
 	font-weight: 600
 	text-align: left
@@ -203,6 +205,11 @@ colgroup:not(:first-of-type)
 	border-left: 1px solid #ccc
 .r
 	text-align: right
+.ellipsis
+	text-overflow: ellipsis
+	max-width: 0
+	overflow: hidden
+	white-space: nowrap
 
 tr.hover
 	outline: 2px solid #ee7

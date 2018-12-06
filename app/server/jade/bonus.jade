@@ -22,7 +22,7 @@ html
 
 			.right
 				h2 Editions of this bonus
-					abbr(title='Two bonuses are detected as two editions of the same bonus if at least 3 of the following conditions match: Answer 1, Answer 2, Answer 3, Category.') *
+					abbr(title='Two bonuses are detected as editions of the same bonus if at least 2 of the following conditions match: Answer 1, Answer 2, Answer 3, Category.') *
 				table
 					colgroup(span=4)
 					colgroup(span=5)
@@ -35,16 +35,16 @@ html
 							th Bonus
 							// th Author
 							// th Category
-							th Answers
+							th(style="min-width:30em;") Answers
 					tbody
-						for bonus in editions
-							tr
-								td: a(href=bonus.question_ptr_id + '.html')= bonus.question_set_edition
-								td= bonus.packet_letter
-								td= bonus.position
-								// td= bonus.initials
-								// td= bonus.category
-								td= bonus.answers
+						for edition in editions
+							tr(class=bonus.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
+								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
+								td= edition.packet_letter
+								td= edition.position
+								// td= edition.initials
+								// td= edition.category
+								td.ellipsis(title=edition.answers)= edition.answers
 		.twocol
 			.left
 				h2 Text
@@ -59,23 +59,23 @@ html
 				table
 					thead
 						tr
-							th(width=120) Team
-							th(style='max-width: 8em; min-width: 4em;')= bonus.answer1
-							th(style='max-width: 8em; min-width: 4em;')= bonus.answer2
-							th(style='max-width: 8em; min-width: 4em;')= bonus.answer3
-							th Points
-							th(width=100) Site
-							th Rm
-							th Rd
+							th(style="min-width:8em;") Team
+							th(style="min-width:8em;").ellipsis= bonus.answer1
+							th(style="min-width:8em;").ellipsis= bonus.answer2
+							th(style="min-width:8em;").ellipsis= bonus.answer3
+							th(style="min-width:3em;") Points
+							th(style="min-width:6em;") Site
+							th(style="min-width:2em;") Rm
+							th(style="min-width:2em;") Rd
 					tbody.stripe
 						for geb in performances
 							tr
-								td= geb.team_name
+								td.ellipsis(title=geb.team_name)= geb.team_name
 								td= geb.value1
 								td= geb.value2
 								td= geb.value3
 								td= geb.total
-								td= geb.tournament_name
+								td.ellipsis(title=geb.tournament_name)= geb.tournament_name
 								td= geb.room_number
 								td= geb.round_number
 

@@ -159,7 +159,7 @@ from
 schema_bonus b0, schema_question q0, 
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
 where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id
-and 3 <=
+and 2 <=
 (b0.answer1 like b.answer1) +
 (b0.answer2 like b.answer2) +
 (b0.answer3 like b.answer3) +

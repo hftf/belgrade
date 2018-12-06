@@ -7,7 +7,8 @@ R = require 'ramda'
 # tossup_id = window.location.search.slice(1)
 
 main = ->
-	d3.json '/test/' + tossup_id, R.compose loadData
+	if tossup_id?
+		d3.json '/test/' + tossup_id, R.compose loadData
 
 # NEW
 tick_delta = 0.1

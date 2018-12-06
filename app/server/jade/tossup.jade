@@ -26,7 +26,7 @@ html
 
 			.right
 				h2 Editions of this tossup
-					abbr(title='Two tossups are detected as two editions of the same bonus if at least 2 of the following conditions match: Answer, Category.') *
+					abbr(title='Two tossups are detected as editions of the same bonus if at least 2 of the following conditions match: Answer, Category.') *
 				table
 					colgroup(span=6)
 					colgroup(span=5)
@@ -40,27 +40,27 @@ html
 							th Tossup
 							// th Author
 							// th Category
-							th(width=140) Answer
+							th(style="min-width:14em;") Answer
 							th Pwds
 							th Wds
 
-							th(width=30) G
-							th(width=30) 15s
-							th(width=30) 10s
-							th(width=30) −5s
-							th(width=30) 0s
+							th(style="min-width:2em;") G
+							th(style="min-width:2em;") 15s
+							th(style="min-width:2em;") 10s
+							th(style="min-width:2em;") −5s
+							th(style="min-width:2em;") 0s
 
-							th(width=50) Rooms
-							// th(width=30) BP?
-							th(width=50) Buzzes
-							th(width=30) BP?
+							th(style="min-width:3em;") Rooms
+							// th(style="min-width:2em;") BP?
+							th(style="min-width:3em;") Buzzes
+							th(style="min-width:2em;") BP?
 
-							th(width=42) Conv
-							th(width=42) Pow%
-							th(width=42) Neg%
+							th(style="min-width:3em;") Conv
+							th(style="min-width:3em;") Pow%
+							th(style="min-width:3em;") Neg%
 							
-							th(width=42) FB%
-							th(width=42) Avg%
+							th(style="min-width:3em;") FB%
+							th(style="min-width:3em;") Avg%
 					tbody
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
@@ -69,7 +69,7 @@ html
 								td= edition.position
 								// td= edition.initials
 								// td= edition.category
-								td= edition.answer
+								td.ellipsis(title=edition.answer)= edition.answer
 								td.r= edition.power_words
 								td.r= edition.words
 
@@ -119,27 +119,27 @@ html
 				table
 					thead
 						tr
-							th(width=120) Team
-							th(width=160) Player
+							th(style="min-width:8em;") Team
+							th(style="min-width:8em;") Player
 							th Value
 							th BzPt
 							th BzPt%
 							th BB?
-							th(width=140) Answer
+							th(style="min-width:9em;") Answer
 							th Pro?
-							th(width=100) Site
-							th Rm
-							th Rd
+							th(style="min-width:6em;") Site
+							th(style="min-width:2em;") Rm
+							th(style="min-width:2em;") Rd
 					tbody.stripe.buzzes
 						for buzz in buzzes
 							tr(data-index=buzz.p class=buzz.class)
-								td= buzz.team_name
-								td= buzz.player_name
+								td.ellipsis(title=buzz.team_name)= buzz.team_name
+								td.ellipsis(title=buzz.player_name)= buzz.player_name
 								td.r= formatNegative(buzz.buzz_value)
 								td.r= buzz.p
 								td.r= buzz.buzz_location_pct
 								td= buzz.bounceback
-								td= buzz.answer_given
+								td.ellipsis(title=buzz.answer_given)= buzz.answer_given
 								td= buzz.protested
 								td= buzz.tournament_name
 								td= buzz.room_number

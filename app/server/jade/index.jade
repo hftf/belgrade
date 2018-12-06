@@ -9,17 +9,21 @@ html
 			header
 
 			nav
-				h2 Tossups
+				ul
+					li: a(href='#tossups') Tossups
+					li: a(href='#bonuses') Bonuses
+
+				h2#tossups Tossups
 				table
 					thead
-						th(width=70) Set edition
-						th(width=40) Packet
-						th(width=40) Bonus
-						th(width=40) Author
-						th(width=150) Category
-						th(width=180) Answer
-						th(width=40) Pwds
-						th(width=40) Wds
+						th(style="width:7em;") Set edition
+						th(style="width:4em;") Packet
+						th(style="width:4em;") Bonus
+						th(style="width:4em;") Author
+						th(style="width:15em;") Category
+						th(style="width:18em;") Answer
+						th(style="width:4em;") Pwds
+						th(style="width:4em;") Wds
 
 					tbody.stripe
 						for tossup in tossups
@@ -29,23 +33,23 @@ html
 								td= tossup.position
 								td= tossup.initials
 								td= tossup.category
-								td
+								td.ellipsis(title=tossup.answer)
 									a(href='/tossup/' + tossup.question_ptr_id + '.html')
 										= tossup.answer
 								td= tossup.power_words
 								td= tossup.words
 
-				h2 Bonuses
+				h2#bonuses Bonuses
 				table
 					thead
-						th(width=70) Set edition
-						th(width=40) Packet
-						th(width=40) Bonus
-						th(width=40) Author
-						th(width=150) Category
-						th(width=180) Part 1
-						th(width=180) Part 2
-						th(width=180) Part 3
+						th(style="width:7em;") Set edition
+						th(style="width:4em;") Packet
+						th(style="width:4em;") Bonus
+						th(style="width:4em;") Author
+						th(style="width:15em;") Category
+						th(style="width:18em;") Part 1
+						th(style="width:18em;") Part 2
+						th(style="width:18em;") Part 3
 
 					tbody.stripe
 						for bonus in bonuses
@@ -55,12 +59,12 @@ html
 								td= bonus.position
 								td= bonus.initials
 								td= bonus.category
-								td
+								td.ellipsis(title=bonus.answer1)
 									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer1
-								td
+								td.ellipsis(title=bonus.answer1)
 									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer2
-								td
+								td.ellipsis(title=bonus.answer1)
 									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer3
