@@ -67,11 +67,11 @@ gulp.task('styles', function () {
 });
 
 gulp.task('views', function () {
-  // return gulp.src(paths.views)
-  //   .pipe(plumber())
-  //   .pipe(jade())
-  //   .pipe(gulp.dest('dist'))
-  //   .pipe(lr());
+  return gulp.src(paths.views)
+    .pipe(plumber())
+    .pipe(jade())
+    .pipe(gulp.dest('dist'))
+    .pipe(lr());
 });
 
 gulp.task('copy', function() {
