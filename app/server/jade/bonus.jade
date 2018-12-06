@@ -91,10 +91,10 @@ html
 									- var s = w / edition.atleast0;
 									svg(width=20 height=15 viewBox='#{-p} #{-p} #{w+2*p} #{w+2*p}' preserveAspectRatio='none' style='vertical-align: baseline;')
 										path.sf(d='M 0 #{w-s*edition.atleast0} L 10 #{w-s*edition.atleast10} L 20 #{w-s*edition.atleast20} L 30 #{w-s*edition.atleast30} L 40 #{w}')
-								td.r= formatPct(edition.atleast0)
-								td.r= formatPct(edition.atleast10)
-								td.r= formatPct(edition.atleast20)
-								td.r= formatPct(edition.atleast30)
+								+tdb(edition.countRooms, edition.atleast0)
+								+tdb(edition.countRooms, edition.atleast10)
+								+tdb(edition.countRooms, edition.atleast20)
+								+tdb(edition.countRooms, edition.atleast30)
 		.twocol
 			.left
 				h2 Text
