@@ -3,12 +3,9 @@ kdep = require './kde'
 R = require 'ramda'
 
 
-# tossup_id = new URLSearchParams(window.location.search).get 'id'
-# tossup_id = window.location.search.slice(1)
-
 main = ->
 	if tossup_id?
-		d3.json '/test/' + tossup_id, R.compose loadData
+		d3.json "/tossup/#{tossup_id}.json", R.compose loadData
 
 # NEW
 tick_delta = 0.1

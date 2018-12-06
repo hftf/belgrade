@@ -302,7 +302,7 @@ server.use '/bonus/:id.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/test/:id', (req, res, next) ->
+server.use '/tossup/:id.json', (req, res, next) ->
 	id = req.params.id
 	
 	queries =
