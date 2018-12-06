@@ -36,6 +36,10 @@ html
 						col
 					colgroup(span=4)
 					colgroup(span=4)
+						col
+						col
+						col
+						col
 					thead
 						tr
 							+th(6) Set edition
@@ -55,11 +59,11 @@ html
 							+th(2) 20s
 							+th(2) 30s
 
-							+th(1): abbr(title='survival function') sf
-							+th(3) ≥0
-							+th(3) ≥10
-							+th(3) ≥20
-							+th(3) =30
+							+th(1.5): abbr(title='survival function') sf
+							+th(3).bar ≥0
+							+th(3).bar ≥10
+							+th(3).bar ≥20
+							+th(3).bar =30
 					tbody
 						for edition in editions
 							- var cls = (edition.rollup) ? 'rollup' : (bonus.question_ptr_id == edition.question_ptr_id) ? 'cur' : '';
@@ -75,22 +79,23 @@ html
 
 								td.r= edition.countRooms
 
-								+tdbar(edition.avgT).strong
-								+tdbar(edition.avg1)
-								+tdbar(edition.avg2)
-								+tdbar(edition.avg3)
+								+tdbar(edition.countRooms, edition.avgT).strong
+								+tdbar(edition.countRooms, edition.avg1)
+								+tdbar(edition.countRooms, edition.avg2)
+								+tdbar(edition.countRooms, edition.avg3)
 
-								td.r= edition.count0
-								td.r= edition.count10
-								td.r= edition.count20
-								td.r= edition.count30
+								td.r= bl(edition.countRooms, edition.count0)
+								td.r= bl(edition.countRooms, edition.count10)
+								td.r= bl(edition.countRooms, edition.count20)
+								td.r= bl(edition.countRooms, edition.count30)
 
 								td(style='line-height: 0;')
-									- var w = 40;
-									- var p = w * 0.1;
-									- var s = w / edition.atleast0;
-									svg(width=20 height=15 viewBox='#{-p} #{-p} #{w+2*p} #{w+2*p}' preserveAspectRatio='none' style='vertical-align: baseline;')
-										path.sf(d='M 0 #{w-s*edition.atleast0} L 10 #{w-s*edition.atleast10} L 20 #{w-s*edition.atleast20} L 30 #{w-s*edition.atleast30} L 40 #{w}')
+									if edition.countRooms
+										- var w = 40;
+										- var p = w * 0.1;
+										- var s = w / edition.atleast0;
+										svg(width=20 height=15 viewBox='#{-p} #{-p} #{w+2*p} #{w+2*p}' preserveAspectRatio='none' style='vertical-align: baseline;')
+											path.sf(d='M 0 #{w-s*edition.atleast0} L 10 #{w-s*edition.atleast10} L 20 #{w-s*edition.atleast20} L 30 #{w-s*edition.atleast30} L 40 #{w}')
 								+tdb(edition.countRooms, edition.atleast0)
 								+tdb(edition.countRooms, edition.atleast10)
 								+tdb(edition.countRooms, edition.atleast20)

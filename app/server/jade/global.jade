@@ -1,12 +1,15 @@
 mixin th(w)
 	th(style='min-width:#{w}em;')&attributes(attributes)
 		block
-mixin tdb(x, n)
-	+tdbar(x / n)
-mixin tdbar(pct)
-	- var disp = formatPct(pct);
-	td.r.bar(style=pct ? 'background-size: #{disp} 2px;' : '')&attributes(attributes)
-		= disp
+mixin tdb(n, x)
+	+tdbar(n, x / n)
+mixin tdbar(n, pct)
+	if !n
+		td.r.bar
+	else
+		- var disp = formatPct(pct);
+		td.r.bar(style=pct ? 'background-size: #{disp} 2px;' : '')&attributes(attributes)
+			= disp
 mixin tdel(c, href)
 	td.ellipsis(title=c)
 		if href
@@ -17,4 +20,4 @@ mixin tdel(c, href)
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
 - function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
 - function bl(c, n) { return c ? n : ''; }
-- function bld(c, n) { var d = c - n; return c ? (d ? n : '=') : ''; }
+- function bldiff(c, n) { var d = c - n; return c ? (d ? n : '=') : ''; }

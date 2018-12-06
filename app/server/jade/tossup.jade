@@ -86,16 +86,16 @@ html
 								td.r= bl(edition.countRooms, edition.countN5)
 								// td.r= bl(edition.countRooms, edition.count0)
 
-								+tdb(edition.countG, edition.countRooms)
-								+tdb(edition.count15, edition.countRooms)
-								+tdb(edition.countN5, edition.countRooms)
+								+tdb(edition.countRooms, edition.countG)
+								+tdb(edition.countRooms, edition.count15)
+								+tdb(edition.countRooms, edition.countN5)
 
 								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))
 								td.r= bl(edition.countRooms, formatPct(edition.avgBzPt))
 
-								// td.r= bld(edition.countRooms, edition.countRoomsBzPt)
-								td.r= edition.countBzs
-								td.r= bld(edition.countBzs, edition.countBzPts)
+								// td.r= bldiff(edition.countRooms, edition.countRoomsBzPt)
+								td.r= bl(edition.countRooms, edition.countBzs)
+								td.r= bldiff(edition.countBzs, edition.countBzPts)
 
 		.twocol
 			.left
