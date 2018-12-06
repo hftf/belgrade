@@ -5,7 +5,7 @@ mixin tdb(x, n)
 	+tdbar(x / n)
 mixin tdbar(pct)
 	- var disp = formatPct(pct);
-	td.r.bar(style='background-size: #{disp} 2px;')&attributes(attributes)
+	td.r.bar(style=pct ? 'background-size: #{disp} 2px;' : '')&attributes(attributes)
 		= disp
 mixin tdel(c, href)
 	td.ellipsis(title=c)
