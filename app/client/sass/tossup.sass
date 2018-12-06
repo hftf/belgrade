@@ -170,14 +170,17 @@ svg, .line.last, .next_tick
 	// font-variant-numeric: tabular-nums
 	color: #999
 .get
-	font-weight: 500
 	color: $colorget
+	blockquote &
+		font-weight: 500
 .bb
-	font-weight: 300
 	color: darken($color4, 20)
+	blockquote &
+		font-weight: 300
 .neg
-	font-weight: 400
 	color: darken($color2, 15)
+	blockquote &
+		font-weight: 400
 
 .serif, .dag
 	font-family: var(--base-serif-font)
@@ -238,7 +241,7 @@ td.bar
 	// background-repeat: no-repeat
 	background-image: linear-gradient( lighten($colorget,6), lighten($colorget,6) )
 	background-size: 100% 0
-	background-position: left bottom
+	background-position: left bottom 2px
 	background-repeat: no-repeat
 .bar
 	padding-left: 3px

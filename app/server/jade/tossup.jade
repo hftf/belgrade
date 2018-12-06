@@ -38,14 +38,12 @@ html
 					colgroup(span=2)
 					thead
 						tr
-							th Set edition
-							th Packet
-							th Tossup
-							// th Author
-							// th Category
-							+th(14) Answer
-							th Pwds
-							th Wds
+							+th(6) Set edition
+							+th(3) Packet
+							+th(3) Tossup
+							+th(18) Answer
+							+th(3) Pwds
+							+th(3) Wds
 
 							+th(3) Rooms
 
@@ -70,12 +68,12 @@ html
 							- var cls = (edition.rollup) ? 'rollup' : (tossup.question_ptr_id == edition.question_ptr_id) ? 'cur' : '';
 							tr(class=cls)
 								if !edition.rollup
-								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
-								td= edition.packet_letter
-								td= edition.position
-								+tdel(edition.answer)
-								td.r= edition.power_words
-								td.r= edition.words
+									td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
+									td= edition.packet_letter
+									td= edition.position
+									+tdel(edition.answer)
+									td.r= edition.power_words
+									td.r= edition.words
 								else
 									th Grand total #[span.dag †]
 									td.warning(colspan=5) Warning: Comparing editions is not reliable!
