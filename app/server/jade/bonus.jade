@@ -29,6 +29,10 @@ html
 					colgroup(span=4)
 					colgroup(span=1)
 					colgroup(span=4)
+						col
+						col
+						col
+						col
 					colgroup(span=4)
 					colgroup(span=4)
 					thead
@@ -38,24 +42,24 @@ html
 							th Bonus
 							// th Author
 							// th Category
-							+th(30) Answers
+							+th(27) Answers
 
 							+th(2) Rooms
 
-							+th(2) Parts
-							+th(2) Part 1
-							+th(2) Part 2
-							+th(2) Part 3
+							+th(3).bar Total
+							+th(3).bar Part 1
+							+th(3).bar Part 2
+							+th(3).bar Part 3
 
 							+th(2) 0s
 							+th(2) 10s
 							+th(2) 20s
 							+th(2) 30s
 
-							+th(2) ≥0
-							+th(2) ≥10
-							+th(2) ≥20
-							+th(2) =30
+							+th(3) ≥0
+							+th(3) ≥10
+							+th(3) ≥20
+							+th(3) =30
 							+th(2): abbr(title='survival function') sf
 					tbody
 						for edition in editions
@@ -69,10 +73,10 @@ html
 
 								td.r= edition.countRooms
 
-								td.r.strong= formatPct(edition.avgT)
-								td.r= formatPct(edition.avg1)
-								td.r= formatPct(edition.avg2)
-								td.r= formatPct(edition.avg3)
+								+tdbar(edition.avgT).strong
+								+tdbar(edition.avg1)
+								+tdbar(edition.avg2)
+								+tdbar(edition.avg3)
 
 								td.r= edition.count0
 								td.r= edition.count10

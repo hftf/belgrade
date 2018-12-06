@@ -2,9 +2,10 @@ mixin th(w)
 	th(style='min-width:#{w}em;')&attributes(attributes)
 		block
 mixin tdb(x, n)
-	- var pct = x / n;
-	- var disp = bl(n, formatPct(pct));
-	td.r.bar(style='background-size: #{disp} 80%;')
+	+tdbar(x / n)
+mixin tdbar(pct)
+	- var disp = formatPct(pct);
+	td.r.bar(style='background-size: #{disp} 2px;')&attributes(attributes)
 		= disp
 mixin tdel(c, href)
 	td.ellipsis(title=c)
