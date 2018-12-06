@@ -241,8 +241,8 @@ server.use '/index.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/tossup.html', (req, res, next) ->
-	id = req.query.id
+server.use '/tossup/:id.html', (req, res, next) ->
+	id = req.params.id
 	queries =
 		tossup: ['get', q2, id]
 		buzzes: ['all', q1, id]
@@ -258,8 +258,8 @@ server.use '/tossup.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/bonus.html', (req, res, next) ->
-	id = req.query.id
+server.use '/bonus/:id.html', (req, res, next) ->
+	id = req.params.id
 	queries =
 		bonus: ['get', qb, id]
 		performances: ['all', qb1, id]

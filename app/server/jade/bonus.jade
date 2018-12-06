@@ -13,9 +13,9 @@ html
 					tr: td(colspan=3): strong= bonus.question_set_edition
 					tr: td(colspan=3)= bonus.packet_name
 					tr
-						td: a(href='?id=' + (+bonus.question_ptr_id - 1)) ←
+						td: a(href=(+bonus.question_ptr_id - 1) + '.html') ←
 						td Bonus #{bonus.position}
-						td: a(href='?id=' + (+bonus.question_ptr_id + 1)) →
+						td: a(href=(+bonus.question_ptr_id + 1) + '.html') →
 
 				p
 					a(href="/index.html") ‹ Home
@@ -39,7 +39,7 @@ html
 					tbody
 						for bonus in editions
 							tr
-								td: a(href='?id=' + bonus.question_ptr_id)= bonus.question_set_edition
+								td: a(href=bonus.question_ptr_id + '.html')= bonus.question_set_edition
 								td= bonus.packet_letter
 								td= bonus.position
 								// td= bonus.initials
@@ -79,4 +79,4 @@ html
 								td= geb.room_number
 								td= geb.round_number
 
-		script(src='js/all.js')
+		script(src='/js/all.js')

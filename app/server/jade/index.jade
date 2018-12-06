@@ -30,7 +30,7 @@ html
 								td= tossup.initials
 								td= tossup.category
 								td
-									a(href='/tossup.html?id=' + tossup.question_ptr_id)
+									a(href='/tossup/' + tossup.question_ptr_id + '.html')
 										= tossup.answer
 								td= tossup.power_words
 								td= tossup.words
@@ -56,11 +56,11 @@ html
 								td= bonus.initials
 								td= bonus.category
 								td
-									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer1
 								td
-									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer2
 								td
-									a(href='/bonus.html?id=' + bonus.question_ptr_id)
+									a(href='/bonus/' + bonus.question_ptr_id + '.html')
 										= bonus.answer3

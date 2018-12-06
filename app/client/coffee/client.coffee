@@ -3,7 +3,7 @@ kdep = require './kde'
 R = require 'ramda'
 
 
-tossup_id = new URLSearchParams(window.location.search).get 'id'
+# tossup_id = new URLSearchParams(window.location.search).get 'id'
 # tossup_id = window.location.search.slice(1)
 
 main = ->

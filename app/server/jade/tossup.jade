@@ -17,9 +17,9 @@ html
 					tr: td(colspan=3): strong= tossup.question_set_edition
 					tr: td(colspan=3)= tossup.packet_name
 					tr
-						td: a(href='?id=' + (+tossup.question_ptr_id - 1)) ←
+						td: a(href=(+tossup.question_ptr_id - 1) + '.html') ←
 						td Tossup #{tossup.position}
-						td: a(href='?id=' + (+tossup.question_ptr_id + 1)) →
+						td: a(href=(+tossup.question_ptr_id + 1) + '.html') →
 
 				p
 					a(href="/index.html") ‹ Home
@@ -64,7 +64,7 @@ html
 					tbody
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
-								td: a(href='?id=' + edition.question_ptr_id)= edition.question_set_edition
+								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
 								td= edition.packet_letter
 								td= edition.position
 								// td= edition.initials
@@ -145,4 +145,6 @@ html
 								td= buzz.room_number
 								td= buzz.round_number
 
-			script(src='js/all.js')
+			script.
+				window.tossup_id = #{tossup.question_ptr_id};
+			script(src='/js/all.js')
