@@ -1,7 +1,5 @@
 doctype html
-mixin th(w)
-	th(style='min-width:#{w}em;')
-		block
+include global.jade
 html
 	head
 		meta(charset='utf-8')
@@ -75,12 +73,6 @@ html
 									td= bonus.position
 									td= bonus.initials
 									td= bonus.category
-									td.ellipsis(title=bonus.answer1)
-										a(href='/bonus/' + bonus.question_ptr_id + '.html')
-											= bonus.answer1
-									td.ellipsis(title=bonus.answer1)
-										a(href='/bonus/' + bonus.question_ptr_id + '.html')
-											= bonus.answer2
-									td.ellipsis(title=bonus.answer1)
-										a(href='/bonus/' + bonus.question_ptr_id + '.html')
-											= bonus.answer3
+									+tdel(bonus.answer1, href='/bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer2, href='/bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer3, href='/bonus/' + bonus.question_ptr_id + '.html')

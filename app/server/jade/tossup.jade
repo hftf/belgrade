@@ -1,11 +1,5 @@
 doctype html
-mixin th(w)
-	th(style='min-width:#{w}em;')
-		block
-- function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
-- function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
-- function bl(c, n) { return c ? n : ''; }
-- function bld(c, n) { var d = c - n; return c ? (d ? n : '=') : ''; }
+include global.jade
 html
 	head
 		meta(charset='utf-8')
@@ -71,12 +65,6 @@ html
 							+th(3) Buzzes
 							+th(3) BzPts
 					tbody
-						mixin tdb(x, n)
-							- var pct = x / n
-							- var disp = bl(n, formatPct(pct))
-							td.r.bar(style='background-size: #{disp} 80%;')
-								= disp
-
 						for edition in editions
 							tr(class=tossup.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
 								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
@@ -84,7 +72,7 @@ html
 								td= edition.position
 								// td= edition.initials
 								// td= edition.category
-								td.ellipsis(title=edition.answer)= edition.answer
+								+tdel(edition.answer)
 								td.r= edition.power_words
 								td.r= edition.words
 
@@ -148,13 +136,13 @@ html
 					tbody.stripe.buzzes
 						for buzz in buzzes
 							tr(data-index=buzz.p class=buzz.class)
-								td.ellipsis(title=buzz.team_name)= buzz.team_name
-								td.ellipsis(title=buzz.player_name)= buzz.player_name
+								+tdel(buzz.team_name)
+								+tdel(buzz.player_name)
 								td.r= formatNegative(buzz.buzz_value)
 								td.r= buzz.p
 								td.r= buzz.buzz_location_pct
 								td= buzz.bounceback
-								td.ellipsis(title=buzz.answer_given)= buzz.answer_given
+								+tdel(buzz.answer_given)
 								td= buzz.protested
 								td= buzz.tournament_name
 								td= buzz.room_number

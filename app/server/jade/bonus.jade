@@ -1,7 +1,5 @@
 doctype html
-mixin th(w)
-	th(style='min-width:#{w}em;')
-		block
+include global.jade
 html
 	head
 		meta(charset='utf-8')
@@ -67,7 +65,7 @@ html
 								td= edition.position
 								// td= edition.initials
 								// td= edition.category
-								td.ellipsis(title=edition.answers)= edition.answers
+								+tdel(edition.answers)
 		.twocol
 			.left
 				h2 Text
@@ -93,12 +91,12 @@ html
 					tbody.stripe
 						for geb in performances
 							tr
-								td.ellipsis(title=geb.team_name)= geb.team_name
+								+tdel(geb.team_name)
 								td= geb.value1
 								td= geb.value2
 								td= geb.value3
 								td= geb.total
-								td.ellipsis(title=geb.tournament_name)= geb.tournament_name
+								+tdel(geb.tournament_name)
 								td= geb.room_number
 								td= geb.round_number
 
