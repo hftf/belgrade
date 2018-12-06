@@ -63,13 +63,16 @@ html
 							+th(3) =30
 					tbody
 						for edition in editions
-							tr(class=bonus.question_ptr_id == edition.question_ptr_id ? 'cur' : '')
+							- var cls = (edition.rollup) ? 'rollup' : (bonus.question_ptr_id == edition.question_ptr_id) ? 'cur' : '';
+							tr(class=cls)
+								if !edition.rollup
 								td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
 								td= edition.packet_letter
 								td= edition.position
-								// td= edition.initials
-								// td= edition.category
 								+tdel(edition.answers)
+								else
+									th Grand total #[span.dag †]
+									td.warning(colspan=3) Warning: Comparing editions is not reliable!
 
 								td.r= edition.countRooms
 
