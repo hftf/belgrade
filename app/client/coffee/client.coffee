@@ -25,7 +25,7 @@ replaceMs = (p, groupedBuzzesByWord, words) ->
 		if (word_index / words) > next_tick and word_index < words
 			s = document.createElement 'span'
 			s.setAttribute 'class', 'next_tick'
-			s.innerHTML = '<b>' + next_tick.toFixed(1) + '</b> ' + word_index
+			s.innerHTML = '<b>' + (next_tick*100).toFixed(0) + '%</b> ' + word_index
 			m.style.position = 'relative'
 			# m.parentNode.insertBefore s, m
 			m.appendChild s
@@ -135,6 +135,8 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	domain = [0, 1 + binwidth]
 	thresholds = d3.range 0, 1 + 2 * binwidth, binwidth
 
+	# remove null buzz points
+	points = points.filter (x) -> !!x
 	data = (d3.layout.histogram()
 		.bins thresholds
 		.frequency true
@@ -247,7 +249,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	xaxis = d3.svg.axis()
 		.scale x
 		# .tickValues [.5, .84, 1]
-		# .tickFormat (x) -> if x is ftp then 'FTP' else d3.format('0%') x
+		.tickFormat (x) -> if x is ftp then 'FTP' else d3.format('0%') x
 		.ticks 4
 		.tickSize -c.height
 		.outerTickSize 0
@@ -255,7 +257,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 
 	yaxis = d3.svg.axis()
 		.scale y
-		.ticks 5
+		.ticks 4
 		.tickSize -c.width
 		.outerTickSize 0
 		# .tickFormat ''
