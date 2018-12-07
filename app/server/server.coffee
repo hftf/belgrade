@@ -302,14 +302,13 @@ server.use '/bonus/:id.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/tossup/:id.json', (req, res, next) ->
+server.use '/tossup/:id.js', (req, res, next) ->
 	id = req.params.id
 	
 	queries =
 		a: ['get', q2b, id]
 		b: ['all', q1, id]
 		c: ['all', qs, id]
-		d: ['all', q_]
 
 	runQueries queries
 		.then (results) ->
@@ -318,6 +317,18 @@ server.use '/tossup/:id.json', (req, res, next) ->
 			results.a.n = JSON.parse results.a.n
 			results.a.n.sort()
 
+			res.setHeader 'Content-Type', 'application/javascript'
+			res.send "window.tossup = #{JSON.stringify(results)};";
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
+
+server.use '/categories.js', (req, res, next) ->
+	queries =
+		d: ['all', q_]
+
+	runQueries queries
+		.then (results) ->
 			domainp = [0, 1]
 			deltaX = 4/(41*16) #0.005
 			results.kdeXs = kdeXs = R.append 1, d3.range domainp..., deltaX
@@ -335,8 +346,8 @@ server.use '/tossup/:id.json', (req, res, next) ->
 				d.kdeYs = kdeYs
 				delete d.p
 
-			res.setHeader 'Content-Type', 'application/json'
-			res.send results
+			res.setHeader 'Content-Type', 'application/javascript'
+			res.send "window.allCategoryKdes = #{JSON.stringify(results)};";
 		.catch (err) ->
 			res.status 500
 			res.send err.stack

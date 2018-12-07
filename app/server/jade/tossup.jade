@@ -150,6 +150,6 @@ html
 								td= buzz.room_number
 								td= buzz.round_number
 
-			script.
-				window.tossup_id = #{tossup.question_ptr_id};
+			script(src="/tossup/#{tossup.question_ptr_id}.js")
+			script(src='/categories.js')
 			script(src='/js/all.js')

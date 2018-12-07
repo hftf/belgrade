@@ -4,8 +4,7 @@ R = require 'ramda'
 
 
 main = ->
-	if tossup_id?
-		d3.json "/tossup/#{tossup_id}.json", R.compose loadData
+	do loadData
 
 # NEW
 tick_delta = 0.1
@@ -83,11 +82,10 @@ splitWordM = (question, groupedBuzzesByWord) ->
 
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
-loadData = (err, json) ->
-	groups = groupBuzzesByWord json.b
+loadData = () ->
+	graph window.tossup.a.p, window.tossup.a, window.allCategoryKdes.d, window.allCategoryKdes.kdeXs
 
-	graph json.a.p, json.a, json.d, json.kdeXs
-
+	groups = groupBuzzesByWord window.tossup.b
 	question = document.querySelector '.question'
 	splitWordM question, groups
 
@@ -111,7 +109,6 @@ setRowHandlers = () ->
 		el.onmouseout  = wHR
 
 graph = (points, a, allCategoryKdes, kdeXs) ->
-	# points = json.p
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
 	c =
