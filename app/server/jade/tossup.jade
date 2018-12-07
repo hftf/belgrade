@@ -42,27 +42,27 @@ html
 							+th(3) Packet
 							+th(3) Tossup
 							+th(18) Answer
-							+th(3) Pwds
-							+th(3) Wds
+							+th(3): abbr(title='Number of words in power') Pwds
+							+th(3): abbr(title='Number of words') Wds
 
 							+th(3) Rooms
 
-							+th(2) G
+							+th(2): abbr(title='Gets') G
 							+th(2) 15s
 							+th(2) 10s
 							+th(2) −5s
 							// +th(2) 0s
 
-							+th(3) Conv
-							+th(3) Pow%
-							+th(3) Neg%
+							+th(3): abbr(title='Conversion') Conv
+							+th(3): abbr(title='Power %') Pow%
+							+th(3): abbr(title='Neg %') Neg%
 							
-							+th(3) FB%
-							+th(3) Avg%
+							+th(3): abbr(title='First correct buzz location %') FB%
+							+th(3): abbr(title='Average correct buzz location %') Avg%
 
 							// +th(2) BP?
 							+th(3) Buzzes
-							+th(3) BzPts
+							+th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
 					tbody
 						for edition in editions
 							- var cls = (edition.rollup) ? 'rollup' : (tossup.question_ptr_id == edition.question_ptr_id) ? 'cur' : '';
@@ -127,11 +127,11 @@ html
 							+th(8) Team
 							+th(8) Player
 							th Value
-							th BzPt
-							th BzPt%
-							th BB?
+							th: abbr(title='Buzz location') BzPt
+							th: abbr(title='Buzz location %') BzPt%
+							th: abbr(title='Bounceback') BB?
 							+th(9) Answer
-							th Pro?
+							th: abbr(title='Protested') Pro?
 							+th(6) Site
 							+th(2) Rm
 							+th(2) Rd
