@@ -15,7 +15,7 @@ var resolve = require('resolve');
 
 var paths = {
   scripts: ['app/client/coffee/**/*.coffee'],
-  styles:  ['app/client/sass/**/*.sass'],
+  styles:  ['app/client/sass/fonts.sass', 'app/client/sass/tossup.sass','app/client/sass/gloss.sass','app/client/sass/**/*.sass'],
   views:   ['app/client/jade/**/*.jade'],
   data:    ['app/data/**/*']
 };
@@ -62,6 +62,7 @@ gulp.task('styles', function () {
   return gulp.src(paths.styles)
     .pipe(plumber())
     .pipe(sass())
+    .pipe(concat('all.css'))
     .pipe(gulp.dest('dist/css'))
     .pipe(lr());
 });
