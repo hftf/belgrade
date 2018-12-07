@@ -317,6 +317,7 @@ server.use '/tossup/:id.js', (req, res, next) ->
 			results.a.n = JSON.parse results.a.n
 			results.a.n.sort()
 
+			res.setHeader 'Cache-Control', 'public, max-age=3600'
 			res.setHeader 'Content-Type', 'application/javascript'
 			res.send "window.tossup = #{JSON.stringify(results)};";
 		.catch (err) ->
@@ -346,6 +347,7 @@ server.use '/categories.js', (req, res, next) ->
 				d.kdeYs = kdeYs
 				delete d.p
 
+			res.setHeader 'Cache-Control', 'public, max-age=3600'
 			res.setHeader 'Content-Type', 'application/javascript'
 			res.send "window.allCategoryKdes = #{JSON.stringify(results)};";
 		.catch (err) ->
