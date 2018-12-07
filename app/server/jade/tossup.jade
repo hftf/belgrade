@@ -3,6 +3,7 @@ include global.jade
 html
 	head
 		meta(charset='utf-8')
+		include analytics.jade
 		link(rel='stylesheet', type='text/css', href='../css/fonts.css')
 		link(rel='stylesheet', type='text/css', href='../css/tossup.css')
 		link(rel='stylesheet', type='text/css', href='../css/gloss.css')
@@ -151,6 +152,6 @@ html
 								td= buzz.room_number
 								td= buzz.round_number
 
-			script(src="#{tossup.question_ptr_id}.js")
-			script(src='../js/categories.js')
-			script(src='../js/all.js')
+		script(src="#{tossup.question_ptr_id}.js")
+		script(src='../js/categories.js')
+		script(src='../js/all.js')
