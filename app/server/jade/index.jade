@@ -3,8 +3,9 @@ include global.jade
 html
 	head
 		meta(charset='utf-8')
-		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
-		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+		link(rel='stylesheet', type='text/css', href='css/fonts.css')
+		link(rel='stylesheet', type='text/css', href='css/tossup.css')
+		link(rel='stylesheet', type='text/css', href='css/gloss.css')
 		title Index
 	body
 		div.left
@@ -43,7 +44,7 @@ html
 									td= tossup.initials
 									td= tossup.category
 									td.ellipsis(title=tossup.answer)
-										a(href='/tossup/' + tossup.question_ptr_id + '.html')
+										a(href='tossup/' + tossup.question_ptr_id + '.html')
 											= tossup.answer
 									td= tossup.power_words
 									td= tossup.words
@@ -73,6 +74,6 @@ html
 									td= bonus.position
 									td= bonus.initials
 									td= bonus.category
-									+tdel(bonus.answer1, href='/bonus/' + bonus.question_ptr_id + '.html')
-									+tdel(bonus.answer2, href='/bonus/' + bonus.question_ptr_id + '.html')
-									+tdel(bonus.answer3, href='/bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer1, href='bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer2, href='bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer3, href='bonus/' + bonus.question_ptr_id + '.html')

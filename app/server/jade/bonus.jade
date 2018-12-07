@@ -3,15 +3,16 @@ include global.jade
 html
 	head
 		meta(charset='utf-8')
-		link(rel='stylesheet', type='text/css', href='/css/tossup.css')
-		link(rel='stylesheet', type='text/css', href='/css/gloss.css')
+		link(rel='stylesheet', type='text/css', href='../css/fonts.css')
+		link(rel='stylesheet', type='text/css', href='../css/tossup.css')
+		link(rel='stylesheet', type='text/css', href='../css/gloss.css')
 		title #{bonus.question_set_edition} - #{bonus.packet_name} - Bonus #{bonus.position}
 	body
 		.twocol.skinny
 
 			.left
 				h2 Bonus
-				p: a(href="/index.html") ‹ Home
+				p: a(href="..") ‹ Home
 
 				table.center
 					tr: td(colspan=3): strong= bonus.question_set_edition
@@ -133,5 +134,3 @@ html
 								+tdel(geb.tournament_name)
 								td= geb.room_number
 								td= geb.round_number
-
-		script(src='/js/all.js')

@@ -254,7 +254,7 @@ server.use '/img', express.static './app/img'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
-server.use '/index.html', (req, res, next) ->
+server.get ['/index.html', ''], (req, res, next) ->
 	queries =
 		tossups: ['all', qlt]
 		bonuses: ['all', qlb]
@@ -324,7 +324,7 @@ server.use '/tossup/:id.js', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/categories.js', (req, res, next) ->
+server.use '/js/categories.js', (req, res, next) ->
 	queries =
 		d: ['all', q_]
 
