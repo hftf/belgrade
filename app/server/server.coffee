@@ -254,6 +254,7 @@ server.use '/img', express.static './app/img'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
+server.locals.pretty = '\t'
 server.get ['/index.html', ''], (req, res, next) ->
 	queries =
 		tossups: ['all', qlt]
