@@ -53,7 +53,7 @@ schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_r
 where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
-and tossup_id = ?1 order by buzz_location is null, buzz_location, buzz_value desc, bounceback'
+and tossup_id = ?1 order by buzz_location is null, buzz_location, bounceback, buzz_value desc'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,
