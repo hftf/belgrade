@@ -183,11 +183,12 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr 'class', 'legend'
 		.attr 'transform', 'translate(8, 14)'
 	kdeWidth = d3.scale.linear()
-		.range [7, 1]
-		.domain [0, 3]
+		.range [8, 2, 1]
+		.domain [0, 2, 3]
 	kdeOpacity = d3.scale.linear()
-		.range [0.5, 1.3]
-		.domain [0, 3]
+		.range [0.4, 1, 1]
+		.domain [0, 2, 3]
+	kdeDash = (x) -> {0: '', 1: '', 2: '', 3: '4'}[x]
 
 	for category in allCategoryKdes
 		unless category.lft <= a.lft and a.rght <= category.rght
@@ -199,6 +200,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.attr 'class', 'kde'
 			.attr 'stroke-width', kdeWidth category.level
 			.attr 'stroke-opacity', kdeOpacity category.level
+			.attr 'stroke-dasharray', kdeDash category.level
 			.attr 'd', line kdePts
 
 		h = 22 * (category.level + 1)
@@ -209,10 +211,12 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.attr 'class', 'kde'
 			.attr 'stroke-width', kdeWidth category.level
 			.attr 'stroke-opacity', kdeOpacity category.level
+			.attr 'stroke-dasharray', kdeDash category.level
 			.attr 'd', "M 0,0 L 30,0"
 		legendCategory.append 'text'
 			.text name
 			.attr 'x', '72'
+			.attr 'dx', 6*category.level
 			.attr 'y', '0'
 		legendCategory.append 'text'
 			.text category.count
@@ -249,11 +253,14 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	# labels
 
 	ftp = 0.84
+	pwds = a.power_words / a.words
 
 	xaxis = d3.svg.axis()
 		.scale x
 		# .tickValues [.5, .84, 1]
-		.tickFormat (x) -> if x is ftp then 'FTP' else d3.format('0%') x
+		# .tickValues [0, .2, .4, .6, .8, 1, pwds]
+		# .tickFormat (x) -> if x is ftp then 'FTP' else if x is pwds then '*' else d3.format('0%') x
+		.tickFormat d3.format('0%')
 		.ticks 4
 		.tickSize -c.height
 		.outerTickSize 0
