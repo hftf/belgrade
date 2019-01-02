@@ -1,10 +1,11 @@
 doctype html
-include global.jade
+include includes/global.jade
 html
 	head
 		meta(charset='utf-8')
-		include analytics.jade
-		link(rel='stylesheet', type='text/css', href='../css/all.css')
+		include includes/base.jade
+		include includes/analytics.jade
+		link(rel='stylesheet', type='text/css', href='/css/all.css')
 		title every.buzz ⬢ SGI › #{tossup.question_set_edition} › #{tossup.packet_name} › Tossup #{tossup.position}
 	body
 		.twocol.skinny
@@ -151,5 +152,5 @@ html
 								td= buzz.round_number
 
 		script(src="#{tossup.question_ptr_id}.js")
-		script(src='../js/categories.js')
-		script(src='../js/all.js')
+		script(src='/js/categories.js')
+		script(src='/js/all.js')
