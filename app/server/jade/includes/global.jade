@@ -1,3 +1,11 @@
+mixin header
+	header.twocol.skinny
+		h1 every.buzz
+		nav(aria-label="breadcrumb")
+			ol
+				li: a(href=url('question_sets')) Home
+				block
+
 mixin th(w)
 	th(style='min-width:#{w}em;')&attributes(attributes)
 		block

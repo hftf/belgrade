@@ -15,11 +15,7 @@ html
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
 		title every.buzz ⬢ #{question_set.name}
 	body
-		header.twocol.skinny
-			h1 every.buzz
-			nav(aria-label="breadcrumb")
-				ol
-					li: a(href=url('question_sets')) Home
+		+header
 
 		.left
 			h1= question_set.name

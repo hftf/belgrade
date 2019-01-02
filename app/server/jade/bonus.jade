@@ -8,12 +8,8 @@ html
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
 		title every.buzz ⬢ #{bonus.question_set} › #{bonus.question_set_edition} › #{bonus.packet_name} › Bonus #{bonus.position}
 	body
-		header.twocol.skinny
-			h1 every.buzz
-			nav(aria-label="breadcrumb")
-				ol
-					li: a(href=url('question_sets')) Home
-					li: a(href=url('question_set', bonus))= bonus.question_set
+		+header
+			li: a(href=url('question_set', bonus))= bonus.question_set
 
 		.twocol.skinny
 
