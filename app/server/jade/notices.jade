@@ -1,12 +1,15 @@
 doctype html
+include includes/global.jade
 html
 	head
 		meta(charset='utf-8')
-		include ../../server/jade/includes/base.jade
-		include ../../server/jade/includes/analytics.jade
+		include includes/base.jade
+		include includes/analytics.jade
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
 		title every.buzz ⬢ Important notices
 	body
+		+header
+
 		h1 Important notices
 
 		h2 #[span.dag †] Compare with care.

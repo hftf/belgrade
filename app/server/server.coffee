@@ -458,6 +458,9 @@ router.get '/js/categories.js', 'categories', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
+router.get '/notices.html', 'notices', (req, res, next) ->
+	res.render 'notices.jade'
+
 # server.use '/jank', router
 server.use router
 
