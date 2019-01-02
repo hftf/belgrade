@@ -70,7 +70,7 @@ html
 							- var cls = (edition.rollup) ? 'rollup' : (bonus.question_ptr_id == edition.question_ptr_id) ? 'cur' : '';
 							tr(class=cls)
 								if !edition.rollup
-									td: a(href=edition.question_ptr_id + '.html')= edition.question_set_edition
+									td: a(href=url('bonus', edition))= edition.question_set_edition
 									td= edition.packet_letter
 									td= edition.position
 									+tdel(edition.answers)

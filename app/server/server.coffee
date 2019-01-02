@@ -1,4 +1,5 @@
 express = require 'express'
+NamedRouter = require 'named-routes'
 R = require 'ramda'
 q = require 'q'
 sqlite = require 'sqlite3'
@@ -36,6 +37,17 @@ GROUP BY
     c.id
 ;'
 
+q_t_id = 'select t.question_ptr_id
+from schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs
+where t.slug = $tossup_slug and qse.slug = $question_set_edition_slug and qs.slug = $question_set_slug
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+';
+q_b_id = 'select b.question_ptr_id
+from schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs
+where b.slug = $bonus_slug and qse.slug = $question_set_edition_slug and qs.slug = $question_set_slug
+and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+';
+
 q1 = 'select
 te.name team_name,
 p.name player_name,
@@ -59,12 +71,19 @@ and tossup_id = ?1 order by buzz_location is null, buzz_location, bounceback, bu
 q2 = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+qs.name as question_set,
+t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level,
 (select max(question_ptr_id) from schema_tossup where question_ptr_id < t.question_ptr_id) prev,
 (select min(question_ptr_id) from schema_tossup where question_ptr_id > t.question_ptr_id) next
 from 
-schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
-where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c
+where t.question_ptr_id = ?1
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and q.category_id = c.id
 ;'
 q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
@@ -87,6 +106,9 @@ fakerollup = (select, group) ->
 
 qs = fakerollup('t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+t.slug as tossup_slug,
 c.name as category, a.name as author, a.initials,
 qse.date as question_set_edition,
 COUNT(CASE WHEN get.buzz_value = 15 THEN 1 END) count15,
@@ -102,7 +124,8 @@ round(AVG(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.word
 round(min(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.words), 3) firstBzPt
 from 
 schema_tossup t0, schema_question q0, 
-schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c, schema_author a
 LEFT JOIN schema_gameeventtossup get ON get.tossup_id = t.question_ptr_id 
 LEFT JOIN schema_gameevent ge ON ge.id = get.gameevent_ptr_id 
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
@@ -111,26 +134,40 @@ where t0.question_ptr_id = ?1 and t0.question_ptr_id = q0.id
 and 2 <=
 (t0.answer like t.answer) +
 (q0.category_id = q.category_id)
-and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY t.question_ptr_id')
 
 qlt = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+t.slug as tossup_slug,
 c.name as category, a.name as author, a.initials
 from
-schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
-where t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c, schema_author a
+where
+qs.slug = ?1
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and q.category_id = c.id and q.author_id = a.id
 ;'
 qlb = 'select b.*, q.*,
 b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+b.slug as bonus_slug,
 c.name as category, a.name as author, a.initials
 from
-schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
-where b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and q.category_id = c.id and q.author_id = a.id
+schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c, schema_author a
+where
+qs.slug = ?1
+and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and q.category_id = c.id and q.author_id = a.id
 ;'
 
 qb1 = 'select
@@ -149,12 +186,19 @@ and bonus_id = ?1 order by total desc, value1 desc, value2 desc, value3 desc
 ;'
 qb = 'select b.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
-qse.date as question_set_edition, c.name as category,
+qse.date as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+qs.name as question_set,
+b.slug as bonus_slug,
+c.name as category,
 (select max(question_ptr_id) from schema_bonus where question_ptr_id < b.question_ptr_id) prev,
 (select min(question_ptr_id) from schema_bonus where question_ptr_id > b.question_ptr_id) next
 from 
-schema_bonus b, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
-where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c
+where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and q.category_id = c.id
 ;'
 
 qbs = fakerollup('b.*, q.*,
@@ -162,6 +206,9 @@ b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 c.name as category, a.name as author, a.initials,
 qse.date as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+b.slug as bonus_slug,
 AVG(total)/30 avgT,
 AVG(value1)/10 avg1,
 AVG(value2)/10 avg2,
@@ -177,7 +224,8 @@ COUNT(CASE WHEN total >= 30 THEN 1 END) atleast30,
 COUNT(DISTINCT game_id) AS countRooms
 from 
 schema_bonus b0, schema_question q0, 
-schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_category c, schema_author a
+schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c, schema_author a
 LEFT JOIN (SELECT *, value1+value2+value3 AS total FROM schema_gameeventbonus) geb ON geb.bonus_id = b.question_ptr_id 
 LEFT JOIN schema_gameevent ge ON ge.id = geb.gameevent_ptr_id 
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
@@ -188,7 +236,7 @@ and 2 <=
 (b0.answer2 like b.answer2) +
 (b0.answer3 like b.answer3) +
 (q0.category_id = q.category_id)
-and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY b.question_ptr_id')
 
@@ -248,14 +296,23 @@ runQueries = (queries) ->
 		.then R.zipObj R.keys queries
 
 server = express()
-server.use express.static './dist'
-server.use '/img', express.static './app/img'
+router = new express.Router
 
+namedRouter = new NamedRouter
+namedRouter.extendExpress router
+namedRouter.registerAppHelpers server
+
+router.use express.static './dist'
+router.use '/img', express.static './app/img'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
 server.locals.pretty = '\t'
-server.get ['/index.html', ''], (req, res, next) ->
+
+
+router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next) ->
+	id = req.params.question_set_slug
+
 	queries =
 		tossups: ['all', qlt]
 		bonuses: ['all', qlb]
@@ -270,14 +327,22 @@ server.get ['/index.html', ''], (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/tossup/:id.html', (req, res, next) ->
-	id = req.params.id
-	queries =
-		tossup: ['get', q2, id]
-		buzzes: ['all', q1, id]
-		editions: ['all', qs, id]
+router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/tossups/:tossup_slug.html', 'tossup', (req, res, next) ->
+	params =
+		$question_set_slug         : req.params.question_set_slug
+		$question_set_edition_slug : req.params.question_set_edition_slug
+		$tossup_slug               : req.params.tossup_slug
 
-	runQueries queries
+	db.get q_t_id, params
+		.then (result) ->
+			id = result.question_ptr_id
+
+			queries =
+				tossup: ['get', q2, id]
+				buzzes: ['all', q1, id]
+				editions: ['all', qs, id]
+
+			runQueries queries
 		.then (results) ->
 			results['raw'] = get_question_html('tossup', results['tossup'])
 			results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
@@ -287,14 +352,22 @@ server.use '/tossup/:id.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/bonus/:id.html', (req, res, next) ->
-	id = req.params.id
-	queries =
-		bonus: ['get', qb, id]
-		performances: ['all', qb1, id]
-		editions: ['all', qbs, id]
+router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/bonuses/:bonus_slug.html', 'bonus', (req, res, next) ->
+	params =
+		$question_set_slug         : req.params.question_set_slug
+		$question_set_edition_slug : req.params.question_set_edition_slug
+		$bonus_slug                : req.params.bonus_slug
 
-	runQueries queries
+	db.get q_b_id, params
+		.then (result) ->
+			id = result.question_ptr_id
+
+			queries =
+				bonus: ['get', qb, id]
+				performances: ['all', qb1, id]
+				editions: ['all', qbs, id]
+
+			runQueries queries
 		.then (results) ->
 			results['raw'] = get_question_html('bonus', results['bonus'])
 
@@ -303,8 +376,8 @@ server.use '/bonus/:id.html', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/tossup/:id.js', (req, res, next) ->
-	id = req.params.id
+router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
+	id = req.params.question_ptr_id
 	
 	queries =
 		a: ['get', q2b, id]
@@ -325,7 +398,7 @@ server.use '/tossup/:id.js', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-server.use '/js/categories.js', (req, res, next) ->
+router.get '/js/categories.js', 'categories', (req, res, next) ->
 	queries =
 		d: ['all', q_]
 
@@ -355,6 +428,8 @@ server.use '/js/categories.js', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
+# server.use '/jank', router
+server.use router
 
 port = 3000
 server.listen port, ->
