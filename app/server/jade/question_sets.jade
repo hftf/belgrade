@@ -1,0 +1,31 @@
+doctype html
+include includes/global.jade
+html
+	head
+		meta(charset='utf-8')
+		include includes/base.jade
+		include includes/analytics.jade
+		link(rel='stylesheet', type='text/css', href='/css/all.css')
+		title every.buzz ⬢ Question sets
+	body
+		header.twocol.skinny
+			h1 every.buzz
+			nav(aria-label="breadcrumb")
+				ol
+					li: a(href=url('question_sets')) Home
+
+		.left
+			h1 Question sets
+
+			table
+				thead
+					+th(9) Set
+					+th(6) Editions
+					+th(3) Clear
+
+				tbody.stripe
+					for question_set in question_sets
+						tr
+							td: a(href=url('question_set', question_set))= question_set.name
+							td= question_set.question_set_edition_count
+							td

@@ -50,7 +50,7 @@ and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 
 q1 = 'select
 te.name team_name,
-p.name player_name,
+pl.name player_name,
 buzz_value,
 buzz_location p,
 case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 100.0 / words) end buzz_location_pct,
@@ -60,11 +60,11 @@ protested,
 tou.site_name tournament_name,
 rm.number room_number,
 r.number round_number
-from schema_gameeventtossup get, schema_tossup t, schema_player p, schema_team te, schema_tournament tou,
+from schema_gameeventtossup get, schema_tossup t, schema_player pl, schema_team te, schema_tournament tou,
 schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm \
 where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
-and get.tossup_id = t.question_ptr_id and get.player_id = p.id and p.team_id = te.id \
+and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id \
 and tossup_id = ?1 order by buzz_location is null, buzz_location, bounceback, buzz_value desc'
 # buzz_location is not null
 
@@ -177,6 +177,16 @@ from
 schema_questionset qs
 where
 qs.slug = ?1
+;'
+qss = 'select
+qs.*,
+count(qse.id) as question_set_edition_count,
+qs.slug as question_set_slug
+from
+schema_questionsetedition qse, schema_questionset qs
+where
+qse.question_set_id = qs.id
+group by qs.id
 ;'
 
 qb1 = 'select
@@ -318,6 +328,16 @@ server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
 server.locals.pretty = '\t'
 
+
+router.get '/question_sets/', 'question_sets', (req, res, next) ->
+	queries =
+		question_sets: ['all', qss]
+	runQueries queries
+		.then (results) ->
+			res.render 'question_sets.jade', results
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
 
 router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next) ->
 	id = req.params.question_set_slug
