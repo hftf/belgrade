@@ -461,6 +461,9 @@ router.get '/js/categories.js', 'categories', (req, res, next) ->
 router.get '/notices.html', 'notices', (req, res, next) ->
 	res.render 'notices.jade'
 
+router.get '/', 'home', (req, res, next) ->
+	res.send 'Hi'
+
 # server.use '/jank', router
 server.use router
 
