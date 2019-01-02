@@ -1,10 +1,10 @@
 mixin header
 	header.twocol.skinny
 		h1 every.buzz
-		nav(aria-label="breadcrumb")
-			ol
-				li: a(href=url('question_sets')) Home
-				li: a(href=url('notices')) Important notices
+		nav
+			ul
+				li: a(href=url('notices')) Notices
+				li: a(href=url('question_sets')) Question sets
 				block
 
 mixin th(w)
