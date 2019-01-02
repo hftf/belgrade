@@ -88,12 +88,16 @@ and q.category_id = c.id
 q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
+qs.name as question_set,
 c.name as category, c.lft, c.rght, c.level,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value > 0) p,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value <= 0) n
 from 
-schema_tossup t, schema_question q, schema_packet p, schema_category c, schema_questionsetedition qse
-where t.question_ptr_id = ?1 and t.question_ptr_id = q.id and q.category_id = c.id and q.packet_id = p.id and p.question_set_edition_id = qse.id
+schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
+schema_category c
+where t.question_ptr_id = ?1
+and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and q.category_id = c.id
 ;'
 # , schema_category cp
 # q.category_id >= cp.lft and q.category_id <= cp.rght
@@ -261,8 +265,7 @@ and q.category_id = c.id and q.author_id = a.id',
 
 # TODO rename
 META = {
-    'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundled-packets/sgi-%s-packets/html/',
-    # 'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundled-packets/regionals18-packets/html/',
+    'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/',
     'tossup': {
         'line_startswith_template':  '<p class="p1 tu"><m v="0">%d.</m> ',
         'get_next_n_lines': 2, # ANSWER + <Tag>
@@ -279,12 +282,13 @@ get_question_html = (question_type, question) ->
 	get_question_html_(
 		question_type
 		question['filename'],
-		question['question_set_edition'],
+		question['question_set_slug'],
+		question['question_set_edition_slug'],
 		question['position']
 	)
-get_question_html_ = (question_type, packet_filename, question_set_edition_date, question_number) ->
+get_question_html_ = (question_type, packet_filename, question_set_slug, question_set_edition_slug, question_number) ->
     # TODO Hardcoded
-    set_edition_path = util.format(META['filename_template'], question_set_edition_date)
+    set_edition_path = util.format(META['filename_template'], question_set_slug, question_set_edition_slug)
     packet_filename = set_edition_path + packet_filename
     return scan_packet(packet_filename, question_type, question_number)
 
