@@ -41,12 +41,15 @@ case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 10
 bounceback,
 answer_given,
 protested,
+te2.name opponent,
 tou.site_name tournament_name,
 rm.number room_number,
 r.number round_number
 from schema_gameeventtossup get, schema_tossup t, schema_player pl, schema_team te, schema_tournament tou,
-schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2
 where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id
 and tossup_id = ?1 order by buzz_location is null, buzz_location, bounceback, buzz_value desc'

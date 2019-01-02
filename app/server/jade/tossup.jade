@@ -135,6 +135,7 @@ html
 							th: abbr(title='Bounceback') BB?
 							+th(9) Answer
 							th: abbr(title='Protested') Pro?
+							+th(8) Opponent
 							+th(6) Site
 							+th(2) Rm
 							+th(2) Rd
@@ -149,6 +150,7 @@ html
 								td= buzz.bounceback
 								+tdel(buzz.answer_given)
 								td= buzz.protested
+								+tdel(buzz.opponent)
 								td= buzz.tournament_name
 								td= buzz.room_number
 								td= buzz.round_number
