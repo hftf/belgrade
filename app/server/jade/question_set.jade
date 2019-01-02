@@ -13,17 +13,22 @@ html
 		include includes/base.jade
 		include includes/analytics.jade
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
-		title every.buzz ⬢ SGI › Index
+		title every.buzz ⬢ #{question_set.name}
 	body
-		div.left
-			header
-				h1 Index
+		header.twocol.skinny
+			h1 every.buzz
+			nav(aria-label="breadcrumb")
+				ol
+					li: a(href=url('question_sets')) Home
+
+		.left
+			h1= question_set.name
 
 			nav
 				ul
 					li: a(href='#tossups') Tossups
 					li: a(href='#bonuses') Bonuses
-					li: a(href='notices.html') Important notices
+					li: a(href='/notices.html') Important notices
 
 				h2#tossups Tossups
 				nav: ul
@@ -51,7 +56,7 @@ html
 									td= tossup.initials
 									td= tossup.category
 									td.ellipsis(title=tossup.answer)
-										a(href='tossup/' + tossup.question_ptr_id + '.html')
+										a(href=url('tossup', tossup))
 											= tossup.answer
 									td= tossup.power_words
 									td= tossup.words
@@ -81,6 +86,6 @@ html
 									td= bonus.position
 									td= bonus.initials
 									td= bonus.category
-									+tdel(bonus.answer1, href='bonus/' + bonus.question_ptr_id + '.html')
-									+tdel(bonus.answer2, href='bonus/' + bonus.question_ptr_id + '.html')
-									+tdel(bonus.answer3, href='bonus/' + bonus.question_ptr_id + '.html')
+									+tdel(bonus.answer1, href=url('bonus', bonus))
+									+tdel(bonus.answer2, href=url('bonus', bonus))
+									+tdel(bonus.answer3, href=url('bonus', bonus))

@@ -170,6 +170,15 @@ and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 and q.category_id = c.id and q.author_id = a.id
 ;'
 
+qst = 'select
+qs.*,
+qs.slug as question_set_slug
+from
+schema_questionset qs
+where
+qs.slug = ?1
+;'
+
 qb1 = 'select
 te.name team_name,
 geb.*,
@@ -314,15 +323,16 @@ router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next
 	id = req.params.question_set_slug
 
 	queries =
-		tossups: ['all', qlt]
-		bonuses: ['all', qlb]
+		question_set: ['get', qst, id]
+		tossups: ['all', qlt, id]
+		bonuses: ['all', qlb, id]
 	runQueries queries
 		.then (results) ->
-			for type of results
+			for type in ['tossups', 'bonuses']
 				results[type + 'ByEdition'] = R.groupBy R.prop('question_set_edition'), results[type]
 				delete results[type]
 
-			res.render 'index.jade', results
+			res.render 'question_set.jade', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack

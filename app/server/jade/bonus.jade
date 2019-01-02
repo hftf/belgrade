@@ -6,13 +6,19 @@ html
 		include includes/base.jade
 		include includes/analytics.jade
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
-		title every.buzz ⬢ SGI › #{bonus.question_set_edition} › #{bonus.packet_name} › Bonus #{bonus.position}
+		title every.buzz ⬢ #{bonus.question_set} › #{bonus.question_set_edition} › #{bonus.packet_name} › Bonus #{bonus.position}
 	body
+		header.twocol.skinny
+			h1 every.buzz
+			nav(aria-label="breadcrumb")
+				ol
+					li: a(href=url('question_sets')) Home
+					li: a(href=url('question_set', bonus))= bonus.question_set
+
 		.twocol.skinny
 
 			.left
 				h2 Bonus
-				p: a(href="..") ‹ Home
 
 				table.center
 					tr: td(colspan=3): strong= bonus.question_set_edition
