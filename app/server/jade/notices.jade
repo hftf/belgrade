@@ -50,6 +50,14 @@ html
 			br
 			| If you use an ad blocker or anti-tracker that blocks Google Analytics, please consider turning it off for this website. 
 			| I rely on interaction data to improve it.
+			br
+			| #[ins#no-analytics]
+			script.
+				function checkAnalytics() {
+					if (!(window.ga && ga.loaded))
+						document.getElementById('no-analytics').innerHTML = 'Your browser blocked Google Analytics from loading.';
+				}
+				window.addEventListener('load', checkAnalytics);
 		p
 			| This website has only been tested in Google Chrome using a large, high-resolution screen so far.
 
