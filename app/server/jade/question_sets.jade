@@ -5,7 +5,7 @@ html
 		meta(charset='utf-8')
 		include includes/base.jade
 		include includes/analytics.jade
-		link(rel='stylesheet', type='text/css', href='/css/all.css')
+		+css
 		title every.buzz ⬢ Question sets
 	body
 		+header
@@ -24,7 +24,7 @@ html
 				tbody.stripe
 					for question_set in question_sets
 						tr
-							td: a(href=url('question_set', question_set))= question_set.question_set
+							td: a(href=basePath(url('question_set', question_set)))= question_set.question_set
 							td= question_set.question_set_edition_count
 							td= question_set.tournament_count
 							td= question_set.team_count

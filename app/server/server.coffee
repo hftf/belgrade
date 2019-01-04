@@ -77,6 +77,11 @@ runQueries = (queries) ->
 server = express()
 router = new express.Router
 
+server.set 'basePath', '/jank'
+server.locals.basePath =
+	(pathStr) ->
+		server.settings.basePath + pathStr
+
 namedRouter = new NamedRouter
 namedRouter.extendExpress router
 namedRouter.registerAppHelpers server

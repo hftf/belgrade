@@ -1,10 +1,13 @@
+mixin css
+	link(rel='stylesheet', type='text/css', href=basePath('/css/all.css'))
+
 mixin header
 	header.twocol.skinny
-		h1: a(href=url('home')) every.buzz
+		h1: a(href=basePath(url('home'))) every.buzz
 		nav
 			ul
-				li: a(href=url('notices')) Notices
-				li: a(href=url('question_sets')) Question sets
+				li: a(href=basePath(url('notices'))) Notices
+				li: a(href=basePath(url('question_sets'))) Question sets
 				block
 
 mixin th(w)

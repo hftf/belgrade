@@ -12,11 +12,11 @@ html
 		meta(charset='utf-8')
 		include includes/base.jade
 		include includes/analytics.jade
-		link(rel='stylesheet', type='text/css', href='/css/all.css')
+		+css
 		title every.buzz ⬢ #{question_set.question_set}
 	body
 		+header
-			li: a(href=url('question_set', question_set), aria-current='page')= question_set.question_set
+			li: a(href=basePath(url('question_set', question_set)), aria-current='page')= question_set.question_set
 
 		.left
 			h1= question_set.question_set
@@ -52,7 +52,7 @@ html
 									td= tossup.initials
 									td= tossup.category
 									td.ellipsis(title=tossup.answer)
-										a(href=url('tossup', tossup))
+										a(href=basePath(url('tossup', tossup)))
 											= tossup.answer
 									td= tossup.power_words
 									td= tossup.words
@@ -82,6 +82,6 @@ html
 									td= bonus.position
 									td= bonus.initials
 									td= bonus.category
-									+tdel(bonus.answer1, href=url('bonus', bonus))
-									+tdel(bonus.answer2, href=url('bonus', bonus))
-									+tdel(bonus.answer3, href=url('bonus', bonus))
+									+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
+									+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
+									+tdel(bonus.answer3, href=basePath(url('bonus', bonus)))
