@@ -15,6 +15,7 @@ FROM
 WHERE
 	q.category_id = cp.id
 	AND c.lft <= cp.lft AND cp.rght <= c.rght AND c.tree_id = cp.tree_id
+	AND c.question_set_id = ?1
 	AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
 	AND buzz_location IS NOT NULL AND buzz_value > 0
 GROUP BY
@@ -61,6 +62,7 @@ qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.id as question_set_id,
 t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
 (select max(question_ptr_id) from schema_tossup where question_ptr_id < t.question_ptr_id) prev,

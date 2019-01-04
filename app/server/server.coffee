@@ -187,9 +187,11 @@ router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
 			res.status 500
 			res.send err.stack
 
-router.get '/js/categories.js', 'categories', (req, res, next) ->
+router.get '/js/categories/:question_set_id.js', 'categories', (req, res, next) ->
+	id = req.params.question_set_id
+
 	queries =
-		d: ['all', allQueries.categories.d]
+		d: ['all', allQueries.categories.d, id]
 
 	runQueries queries
 		.then (results) ->
