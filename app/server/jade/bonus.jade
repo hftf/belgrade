@@ -20,11 +20,11 @@ html
 					tr: td(colspan=3): strong= bonus.question_set_edition
 					tr: td(colspan=3)= bonus.packet_name
 					tr
-						td: if bonus.prev
-							a(href=bonus.prev + '.html') ←
+						td: if bonus.prev_slug
+							a(href=bonus.prev_slug + '.html') ←
 						td Bonus #{bonus.position}
-						td: if bonus.next
-							a(href=bonus.next + '.html') →
+						td: if bonus.next_slug
+							a(href=bonus.next_slug + '.html') →
 
 			.right
 				h2 Editions of this bonus
