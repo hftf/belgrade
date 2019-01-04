@@ -1,6 +1,11 @@
 mixin css
 	link(rel='stylesheet', type='text/css', href=basePath('/css/all.css'))
 
+mixin title(title)
+	title= title
+	meta(property='og:title', content=title)
+	meta(property='og:description', content='Visualizations of detailed quizbowl stats')
+
 mixin header
 	header.twocol.skinny
 		h1: a(href=basePath(url('home'))) every.buzz
