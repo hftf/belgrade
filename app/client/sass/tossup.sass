@@ -247,10 +247,14 @@ td.bar
 	// background-size: 100% 0
 	// background-position: right top
 	// background-repeat: no-repeat
-	background-image: linear-gradient( lighten($colorget,6), lighten($colorget,6) )
+	--bar-color: lighten($colorget,40)
+	background-image: linear-gradient( var(--bar-color), var(--bar-color) )
 	background-size: 100% 0
 	background-position: left bottom 2px
 	background-repeat: no-repeat
+
+	table:hover &
+		--bar-color: lighten($colorget,6)
 .bar
 	padding-left: 3px
 	padding-right: 3px
