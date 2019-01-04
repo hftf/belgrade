@@ -65,16 +65,17 @@ qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question
 qs.id as question_set_id,
 t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
+a.name as author,
 IFNULL(prev.slug,"") as prev_slug,
 IFNULL(next.slug,"") as next_slug
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
-schema_category c
+schema_category c, schema_author a
 left join schema_tossup prev on prev.question_ptr_id = t.question_ptr_id-1
 left join schema_tossup next on next.question_ptr_id = t.question_ptr_id+1
 where t.question_ptr_id = ?1
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
-and q.category_id = c.id
+and q.category_id = c.id and q.author_id = a.id
 ;'
 q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
@@ -211,15 +212,16 @@ qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 b.slug as bonus_slug,
 c.name as category,
+a.name as author,
 IFNULL(prev.slug,"") as prev_slug,
 IFNULL(next.slug,"") as next_slug
 from 
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
-schema_category c
+schema_category c, schema_author a
 left join schema_bonus prev on prev.question_ptr_id = b.question_ptr_id-1
 left join schema_bonus next on next.question_ptr_id = b.question_ptr_id+1
 where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
-and q.category_id = c.id
+and q.category_id = c.id and q.author_id = a.id
 ;'
 # --left join schema_bonus prev on prev.question_ptr_id = (select max(question_ptr_id) from schema_bonus where question_ptr_id < b.question_ptr_id)
 # --left join schema_bonus next on next.question_ptr_id = (select min(question_ptr_id) from schema_bonus where question_ptr_id > b.question_ptr_id)

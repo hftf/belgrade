@@ -25,6 +25,7 @@ html
 						td Tossup #{tossup.position}
 						td: if tossup.next_slug
 							a(href=tossup.next_slug + '.html') →
+					tr: td(colspan=3) by #{tossup.author}
 
 			.right
 				h2 Editions of this tossup

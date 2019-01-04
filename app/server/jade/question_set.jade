@@ -49,7 +49,7 @@ html
 									td= tossup.question_set_edition
 									td= tossup.packet_letter
 									td= tossup.position
-									td= tossup.initials
+									td(title=tossup.author)= tossup.initials
 									td= tossup.category
 									td.ellipsis(title=tossup.answer)
 										a(href=basePath(url('tossup', tossup)))
@@ -80,7 +80,7 @@ html
 									td= bonus.question_set_edition
 									td= bonus.packet_letter
 									td= bonus.position
-									td= bonus.initials
+									td(title=bonus.author)= bonus.initials
 									td= bonus.category
 									+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
 									+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
