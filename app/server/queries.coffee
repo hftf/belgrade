@@ -174,13 +174,15 @@ qs.slug = ?1
 ;'
 qss = 'select
 qs.*,
-count(qse.id) as question_set_edition_count,
+count(distinct qse.id) as question_set_edition_count,
+count(distinct t.id) as tournament_count,
+count(distinct te.id) as team_count,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
-schema_questionsetedition qse, schema_questionset qs
+schema_questionset qs, schema_questionsetedition qse, schema_tournament t, schema_team te
 where
-qse.question_set_id = qs.id
+qse.question_set_id = qs.id and t.question_set_edition_id = qse.id and te.tournament_id = t.id
 group by qs.id
 ;'
 
