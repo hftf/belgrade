@@ -91,7 +91,7 @@ router.use '/img', express.static './app/img'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'
-server.locals.pretty = '\t'
+# server.locals.pretty = '\t'
 
 
 router.get '/question_sets/', 'question_sets', (req, res, next) ->
@@ -230,8 +230,8 @@ router.get '/notices.html', 'notices', (req, res, next) ->
 router.get '/', 'home', (req, res, next) ->
 	res.send 'Hi'
 
-# server.use '/jank', router
-server.use router
+server.use '/jank', router
+# server.use router
 
 port = 3000
 server.listen port, ->
