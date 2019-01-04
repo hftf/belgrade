@@ -13,7 +13,7 @@ html
 		include includes/base.jade
 		include includes/analytics.jade
 		+css
-		+title every.buzz ⬢ #{question_set.question_set}
+		+title(`every.buzz ⬢ ${question_set.question_set}`)
 	body
 		+header
 			li: a(href=basePath(url('question_set', question_set)), aria-current='page')= question_set.question_set

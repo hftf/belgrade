@@ -6,7 +6,7 @@ html
 		include includes/base.jade
 		include includes/analytics.jade
 		+css
-		+title every.buzz ⬢ #{tossup.question_set} › #{tossup.question_set_edition} › #{tossup.packet_name} › Tossup #{tossup.position}
+		+title(`every.buzz ⬢ ${tossup.question_set} › ${tossup.question_set_edition} › ${tossup.packet_name}, Tossup ${tossup.position}: ${tossup.answer}`)
 	body
 		+header
 			li: a(href=basePath(url('question_set', tossup)))= tossup.question_set

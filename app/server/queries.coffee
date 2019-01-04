@@ -203,6 +203,7 @@ and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id
 and bonus_id = ?1 order by total desc, value1 desc, value2 desc, value3 desc
 ;'
 qb = 'select b.*, q.*,
+b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
