@@ -13,13 +13,13 @@ html
 		include includes/base.jade
 		include includes/analytics.jade
 		link(rel='stylesheet', type='text/css', href='/css/all.css')
-		title every.buzz ⬢ #{question_set.name}
+		title every.buzz ⬢ #{question_set.question_set}
 	body
 		+header
-			li: a(href=url('question_set', question_set), aria-current='page')= question_set.name
+			li: a(href=url('question_set', question_set), aria-current='page')= question_set.question_set
 
 		.left
-			h1= question_set.name
+			h1= question_set.question_set
 
 			nav
 				ul

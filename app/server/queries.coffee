@@ -60,7 +60,7 @@ p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
-qs.name as question_set,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
 (select max(question_ptr_id) from schema_tossup where question_ptr_id < t.question_ptr_id) prev,
@@ -75,7 +75,7 @@ and q.category_id = c.id
 q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
-qs.name as question_set,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value > 0) p,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value <= 0) n
@@ -163,7 +163,8 @@ and q.category_id = c.id and q.author_id = a.id
 
 qst = 'select
 qs.*,
-qs.slug as question_set_slug
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
 schema_questionset qs
 where
@@ -172,7 +173,8 @@ qs.slug = ?1
 qss = 'select
 qs.*,
 count(qse.id) as question_set_edition_count,
-qs.slug as question_set_slug
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
 schema_questionsetedition qse, schema_questionset qs
 where
@@ -199,7 +201,7 @@ p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
-qs.name as question_set,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 b.slug as bonus_slug,
 c.name as category,
 (select max(question_ptr_id) from schema_bonus where question_ptr_id < b.question_ptr_id) prev,

@@ -22,6 +22,6 @@ html
 				tbody.stripe
 					for question_set in question_sets
 						tr
-							td: a(href=url('question_set', question_set))= question_set.name
+							td: a(href=url('question_set', question_set))= question_set.question_set
 							td= question_set.question_set_edition_count
 							td
