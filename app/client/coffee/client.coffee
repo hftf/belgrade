@@ -191,7 +191,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	kdeDash = (x) -> {0: '', 1: '', 2: '', 3: '4'}[x]
 
 	for category in allCategoryKdes
-		unless category.lft <= a.lft and a.rght <= category.rght
+		unless category.lft <= a.lft and a.rght <= category.rght and a.tree_id == category.tree_id
 			continue
 
 		kdePts = d3.zip kdeXs, category.kdeYs

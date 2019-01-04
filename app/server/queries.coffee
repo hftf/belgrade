@@ -3,7 +3,7 @@
 
 q_ = '
 SELECT
-	c.name, c.lft, c.rght, c.level,
+	c.name, c.lft, c.rght, c.level, c.tree_id,
 	count(*) as count,
 	json_group_array(round(get.buzz_location * 1.0 / t.words, 3)) p
 FROM
@@ -14,7 +14,7 @@ FROM
 	schema_gameeventtossup get
 WHERE
 	q.category_id = cp.id
-	AND c.lft <= cp.lft AND cp.rght <= c.rght
+	AND c.lft <= cp.lft AND cp.rght <= c.rght AND c.tree_id = cp.tree_id
 	AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
 	AND buzz_location IS NOT NULL AND buzz_value > 0
 GROUP BY
@@ -62,7 +62,7 @@ qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 qs.name as question_set,
 t.slug as tossup_slug,
-c.name as category, c.lft, c.rght, c.level,
+c.name as category, c.lft, c.rght, c.level, c.tree_id,
 (select max(question_ptr_id) from schema_tossup where question_ptr_id < t.question_ptr_id) prev,
 (select min(question_ptr_id) from schema_tossup where question_ptr_id > t.question_ptr_id) next
 from 
@@ -76,7 +76,7 @@ q2b = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 qs.name as question_set,
-c.name as category, c.lft, c.rght, c.level,
+c.name as category, c.lft, c.rght, c.level, c.tree_id,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value > 0) p,
 (select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value <= 0) n
 from 
