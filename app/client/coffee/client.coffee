@@ -215,19 +215,19 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.attr 'd', "M 0,0 L 30,0"
 		legendCategory.append 'text'
 			.text name
-			.attr 'x', '72'
+			.attr 'x', '78'
 			.attr 'dx', 6*category.level
 			.attr 'y', '0'
 		legendCategory.append 'text'
 			.text category.count
-			.attr 'x', '64'
+			.attr 'x', '68'
 			.attr 'y', '0'
 			.attr 'text-anchor', 'end'
 			.attr 'font-size', 'smaller'
 			.attr 'font-weight', '300'
 		legendCategory.append 'text'
 			.text '†'
-			.attr 'x', '64'
+			.attr 'x', '68'
 			.attr 'y', '0'
 			.attr 'class', 'dag'
 
@@ -241,11 +241,11 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr 'height', '12'
 	legend.append 'text'
 		.text 'Correct buzzes'
-		.attr 'x', '72'
+		.attr 'x', '78'
 		.attr 'y', '0'
 	legend.append 'text'
 		.text points.length
-		.attr 'x', '64'
+		.attr 'x', '68'
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
 		.attr 'font-size', 'smaller'
