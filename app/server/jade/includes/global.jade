@@ -29,7 +29,7 @@ mixin tdbar(n, pct)
 		td.r.bar(style=pct ? 'background-size: #{disp} 2px;' : '')&attributes(attributes)
 			= disp
 mixin tdel(c, href)
-	td.ellipsis(title=c)
+	td.el(title=c)
 		if href
 			a(href=href)= c
 		else

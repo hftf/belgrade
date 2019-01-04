@@ -51,7 +51,7 @@ html
 									td= tossup.position
 									td(title=tossup.author)= tossup.initials
 									td= tossup.category
-									td.ellipsis(title=tossup.answer)
+									td.el(title=tossup.answer)
 										a(href=basePath(url('tossup', tossup)))
 											= tossup.answer
 									td= tossup.power_words

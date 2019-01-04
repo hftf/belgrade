@@ -17,17 +17,17 @@ html
 
 			table
 				thead
-					+th(9) Set
+					+th(11) Question set
 					+th(6) Editions
 					+th(6) Tournaments
 					+th(6) Teams
-					+th(5) Clear
+					+th(6) Clear
 
 				tbody.stripe
 					for question_set in question_sets
 						tr
 							td: a(href=basePath(url('question_set', question_set)))= question_set.question_set
-							td= question_set.question_set_edition_count
-							td= question_set.tournament_count
-							td= question_set.team_count
+							td.r= question_set.question_set_edition_count
+							td.r= question_set.tournament_count
+							td.r= question_set.team_count
 							td= question_set.clear
