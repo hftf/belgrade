@@ -139,6 +139,25 @@ and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY t.question_ptr_id')
 
+tournaments = 'tou.*,
+qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+json_group_array(distinct te.name) as teams,
+count(distinct te.id) as team_count,
+count(distinct rm.id) as room_count,
+count(distinct g.id) as game_count
+from
+schema_team te, schema_tournament tou, schema_questionsetedition qse, schema_questionset qs,
+schema_game g, schema_room rm
+where
+qse.id = ?1
+and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and g.room_id = rm.id and rm.tournament_id = tou.id
+group by tou.id
+order by tou.date, tou.site_name
+;'
+
 tossups = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
@@ -311,6 +330,7 @@ module.exports =
 	edition:
 		qse_id: qse_id
 		edition: edition
+		tournaments: tournaments
 		tossups: tossups
 		bonuses: bonuses
 

@@ -100,10 +100,14 @@ path.sf
 	vector-effect: non-scaling-stroke
 	shape-rendering: geometricPrecision
 
-nav
+nav, table
 	li
 		display: inline-block
 		margin-right: 1em
+table
+	ol, ul
+		margin: 0
+		padding: 0
 
 blockquote
 	padding: 0 0.8em
@@ -206,6 +210,7 @@ th
 	font-weight: 600
 	text-align: left
 td, th
+	vertical-align: top
 	padding: 1px 6px
 .buzzes td
 	&:nth-child(-n+2),

@@ -14,6 +14,30 @@ html
 		.left
 			h1 #{edition.question_set} › #{edition.question_set_edition}
 
+			h2#tournaments Tournaments
+			table
+				thead
+					//- +th(6) Set edition
+					+th(6) Date
+					+th(8) Site
+					+th(3) Games
+					+th(3) Rooms
+					+th(3) Teams
+					+th(60)
+
+				tbody.stripe
+					for tournament in tournaments
+						tr
+							//- td= tournament.question_set_edition
+							td= tournament.date
+							+tdel(tournament.site_name)
+							td.r= tournament.game_count
+							td.r= tournament.room_count
+							td.r= tournament.team_count
+							td(style='width:60em;')
+								ul: for team in tournament.teams
+									li= team
+
 			h2#tossups Tossups
 			table
 				thead

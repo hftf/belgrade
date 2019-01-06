@@ -128,11 +128,16 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 
 			queries =
 				edition: ['get', allQueries.edition.edition, id]
+				tournaments: ['all', allQueries.edition.tournaments, id]
 				tossups: ['all', allQueries.edition.tossups, id]
 				bonuses: ['all', allQueries.edition.bonuses, id]
 
 			runQueries queries
 		.then (results) ->
+			for tournament in results.tournaments
+				tournament.teams = JSON.parse tournament.teams
+				tournament.teams.sort()
+
 			res.render 'edition.jade', results
 		.catch (err) ->
 			res.status 500
