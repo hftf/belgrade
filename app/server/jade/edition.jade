@@ -10,6 +10,7 @@ html
 	body
 		+header
 			li: a(href=basePath(url('question_set', edition)), aria-current='page')= edition.question_set
+			li: a(href=basePath(url('edition', edition)))= edition.question_set_edition
 
 		.left
 			h1 #{edition.question_set} › #{edition.question_set_edition}
