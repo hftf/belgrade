@@ -34,7 +34,6 @@ replaceM = (m, buzzes) ->
 	diffStat = buzzesToDiffStat(buzzes)
 
 	s = document.createElement 'span'
-	s.setAttribute 'class', 'word'
 
 	m.setAttribute 'class', 'line'
 	word_index = m.getAttribute 'v'
@@ -42,8 +41,9 @@ replaceM = (m, buzzes) ->
 	s.setAttribute 'data-index', word_index
 
 	n = document.createElement 'span'
-	l2 = l2c = ''
+	sc = l2 = l2c = ''
 	if buzzes
+		sc = ' has_buzzes'
 		l2c = ' last'
 		l2 = diffStat
 	n.setAttribute 'class', 'line lower' + l2c
@@ -51,6 +51,7 @@ replaceM = (m, buzzes) ->
 
 	m.parentNode.insertBefore s, m
 
+	s.setAttribute 'class', 'word' + sc
 	s.appendChild m
 	s.appendChild n
 
@@ -104,7 +105,7 @@ setRowHandlers = () ->
 	document.querySelectorAll('.buzzes tr').forEach (el) ->
 		el.onmouseover = rHA
 		el.onmouseout  = rHR
-	document.querySelectorAll('.question .word').forEach (el) ->
+	document.querySelectorAll('.question .word.has_buzzes').forEach (el) ->
 		el.onmouseover = wHA
 		el.onmouseout  = wHR
 
