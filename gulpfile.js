@@ -81,11 +81,11 @@ gulp.task('copy', function() {
     .pipe(gulp.dest('dist/data'));
 });
 
-gulp.task('build', ['scripts', 'styles', 'views', 'copy']);
+gulp.task('build', gulp.parallel('scripts', 'styles', 'views', 'copy'));
 
 gulp.task('watch', function () {
   lr.listen();
-  gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.styles,  ['styles']);
-  gulp.watch(paths.views,   ['views']);
+  gulp.watch(paths.scripts, gulp.series('scripts'));
+  gulp.watch(paths.styles,  gulp.series('styles'));
+  gulp.watch(paths.views,   gulp.series('views'));
 });
