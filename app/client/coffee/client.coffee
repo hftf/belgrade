@@ -110,18 +110,20 @@ graph = (a, allCategoryKdes, kdeXs) ->
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
 	gets = a.p
+	negs = a.n
 
 	c =
 		width: 41*16
 		height: 220
 		mt: 45
 		mb: 60
+		mz: 10
 		ml: 20
 		mr: 80
 
 	chart = d3.select '.chart'
 		.attr 'width',  c.width  + c.ml + c.mr
-		.attr 'height', c.height + c.mt + c.mb
+		.attr 'height', 2 * c.height + c.mt + c.mb + c.mz
 		.append 'g'
 		.attr 'transform', 'translate(' + c.ml + ',' + c.mt + ')'
 
@@ -134,11 +136,13 @@ graph = (a, allCategoryKdes, kdeXs) ->
 
 	# remove null buzz points
 	gets = gets.filter (x) -> !!x
+	negs = negs.filter (x) -> !!x
 	
 	histogramF = d3.histogram()
 		.domain domain
 		.thresholds thresholds
 	gets_data = histogramF gets
+	negs_data = histogramF negs
 
 	# normalize = R.over R.lensProp('length'), R.flip(R.divide) gets_data.length
 	# gets_data = R.map normalize, gets_data
@@ -155,10 +159,16 @@ graph = (a, allCategoryKdes, kdeXs) ->
 	barWidth = x(gets_data[0].x1 - gets_data[0].x0)
 	yMax = 1 + d3.max [
 			d3.max gets_data, R.prop 'length'
+			d3.max negs_data, R.prop 'length'
 			2 # d3.max R.flip(R.map) kdes, R.prop '1'
 		]
 	y = d3.scaleLinear()
 		.range [c.height, 0]
+		.domain [0, yMax]
+		# .domain [0, 30]
+		.nice 4
+	negs_y = d3.scaleLinear()
+		.range [c.height + c.mb, 2 * c.height + c.mb]
 		.domain [0, yMax]
 		# .domain [0, 30]
 		.nice 4
@@ -174,6 +184,18 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'x', 0
 		.attr 'width', barWidth
 		.attr 'height', (d) -> c.height - y(d.length)
+
+	negs_bar = chart.append 'g'
+		.selectAll 'g'
+		.data negs_data
+		.enter()
+		.append 'g'
+		.attr 'class', 'bar neg'
+		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + (c.height + c.mb) + ')'
+	negs_bar.append 'rect'
+		.attr 'x', 0
+		.attr 'width', barWidth
+		.attr 'height', (d) -> negs_y(d.length) - (c.height + c.mb)
 
 	# kde
 
@@ -253,6 +275,28 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'text-anchor', 'end'
 		.attr 'font-size', 'smaller'
 		.attr 'font-weight', '300'
+
+	ng = chart.append 'g'
+		.attr 'class', 'legend'
+		.attr 'transform', 'translate(8, ' + (2 * c.height + c.mb - 14) + ')'
+	ng.append 'rect'
+		.attr 'class', 'bar neg'
+		.attr 'x', '0'
+		.attr 'y', '-6'
+		.attr 'width', '30'
+		.attr 'height', '12'
+	ng.append 'text'
+		.text 'Incorrect buzzes'
+		.attr 'x', '78'
+		.attr 'y', '0'
+	ng.append 'text'
+		.text negs.length
+		.attr 'x', '68'
+		.attr 'y', '0'
+		.attr 'text-anchor', 'end'
+		.attr 'font-size', 'smaller'
+		.attr 'font-weight', '300'
+
 	# labels
 
 	ftp = 0.84
@@ -266,12 +310,19 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.ticks 4
 		.tickSize -c.height
 		.tickSizeOuter 0
+	negs_xaxis = d3.axisTop x
+		.ticks 4
+		.tickSize -c.height
+		.tickSizeOuter 0
 
 	yaxis = d3.axisRight y
 		.ticks 4
 		.tickSize -c.width
 		.tickSizeOuter 0
-		# .tickFormat ''
+	negs_yaxis = d3.axisRight negs_y
+		.ticks 4
+		.tickSize -c.width
+		.tickSizeOuter 0
 
 	noAxisDefault = (g) ->
 		g
@@ -293,6 +344,17 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'transform', 'translate(' + 40 + ',' + (c.height/2) + ') rotate(-90)'
 
 	chart.append 'g'
+		.attr 'class', 'y axis'
+		.attr 'transform', 'translate(' + (c.width) + ',0)'
+		.call negs_yaxis
+		.call noAxisDefault
+		.append 'text'
+		.attr 'class', 'label'
+		.text 'Negs'
+		.attr 'text-anchor', 'middle'
+		.attr 'transform', 'translate(' + 40 + ',' + (3*c.height/2 + c.mb) + ') rotate(-90)'
+
+	chart.append 'g'
 		.attr 'class', 'x axis'
 		.attr 'transform', 'translate(0,' + c.height + ')'
 		.call xaxis
@@ -301,6 +363,14 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'class', 'label'
 		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
+
+	chart.append 'g'
+		.attr 'class', 'x axis'
+		.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
+		.call negs_xaxis
+		.call noAxisDefault
+		.selectAll '.tick text'
+		.remove()
 
 	box = [
 		d3.quantile(gets, 0.2),
@@ -326,6 +396,11 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		'H0Z'
 	chart.append("path")
 		.attr("d", framePathD)
+		.attr("fill", "none")
+		.attr("stroke", "black")
+		.attr("transform", 'translate(0.5, 0.5)')
+	chart.append("path")
+		.attr("d", 'M0,' + (c.height + c.mb) + 'H' + c.width + 'v' + c.height + 'H0Z')
 		.attr("fill", "none")
 		.attr("stroke", "black")
 		.attr("transform", 'translate(0.5, 0.5)')
