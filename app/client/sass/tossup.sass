@@ -77,8 +77,12 @@ header a
 		// fill: $color6
 		shape-rendering: crispEdges
 	.neg
-		&, rect, text
+		&, rect
+			stroke: rgba($color2, 0.8)
+			fill: none
+		text
 			fill: rgba($color2, 0.8)
+			stroke: none
 
 	path.kde
 		fill: none

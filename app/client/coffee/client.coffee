@@ -191,20 +191,29 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.enter()
 		.append 'g'
 		.attr 'class', 'bar neg'
-		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
 		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + (c.height + c.mb) + ')'
+		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
 	negs_bar.append 'rect'
 		.attr 'x', barWidth / 2 - 1
 		.attr 'width', 2
 		.attr 'x', 0
 		.attr 'width', barWidth
-		.attr 'height', (d) -> c.height - y(d.length)
 		.attr 'height', (d) -> negs_y(d.length) - (c.height + c.mb)
+		.attr 'height', (d) -> c.height - y(d.length)
+		.attr 'fill', 'none'
 	negs_bar.append 'text'
 		.attr 'x', barWidth / 2
-		.attr 'y', (d) -> c.height - y(d.length) - 4
+		.attr 'y', (d) -> 16
 		.attr 'text-anchor', 'middle'
 		.text (d) -> d.length || ''
+
+	histLine = d3.line()
+		.curve d3.curveStepAfter
+		.x (d) -> x d.x0
+		.y (d) -> y d.length
+	chart.append 'path'
+		.attr 'class', 'bar neg'
+		.attr 'd', histLine negs_data
 
 	# kde
 
