@@ -81,7 +81,7 @@ splitWordM = (question, groupedBuzzesByWord) ->
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
 window.loadData = () ->
-	graph window.tossup.a.p, window.tossup.a, window.allCategoryKdes.d, window.allCategoryKdes.kdeXs
+	graph window.tossup.a, window.allCategoryKdes.d, window.allCategoryKdes.kdeXs
 
 	groups = groupBuzzesByWord window.tossup.b
 	question = document.querySelector '.question'
@@ -106,9 +106,11 @@ setRowHandlers = () ->
 		el.onmouseover = wHA
 		el.onmouseout  = wHR
 
-graph = (points, a, allCategoryKdes, kdeXs) ->
+graph = (a, allCategoryKdes, kdeXs) ->
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
+	gets = a.p
+
 	c =
 		width: 41*16
 		height: 220
@@ -131,17 +133,18 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.map (v) -> parseFloat v.toFixed 4
 
 	# remove null buzz points
-	points = points.filter (x) -> !!x
-	data = (d3.histogram()
+	gets = gets.filter (x) -> !!x
+	
+	histogramF = d3.histogram()
 		.domain domain
 		.thresholds thresholds
-		) points
+	gets_data = histogramF gets
 
-	# normalize = R.over R.lensProp('length'), R.flip(R.divide) data.length
-	# data = R.map normalize, data
+	# normalize = R.over R.lensProp('length'), R.flip(R.divide) gets_data.length
+	# gets_data = R.map normalize, gets_data
 
 	# last = 0
-	# for i in data
+	# for i in gets_data
 	# 	i.length = last + i.length
 	# 	last = i.length
 
@@ -149,8 +152,9 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.range [0, c.width]
 		.domain domain
 
+	barWidth = x(gets_data[0].x1 - gets_data[0].x0)
 	yMax = 1 + d3.max [
-			d3.max data, R.prop 'length'
+			d3.max gets_data, R.prop 'length'
 			2 # d3.max R.flip(R.map) kdes, R.prop '1'
 		]
 	y = d3.scaleLinear()
@@ -159,16 +163,16 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		# .domain [0, 30]
 		.nice 4
 
-	bar = chart.selectAll 'g'
-		.data data
+	gets_bar = chart.append 'g'
+		.selectAll 'g'
+		.data gets_data
 		.enter()
 		.append 'g'
 		.attr 'class', 'bar'
 		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
-
-	bar.append 'rect'
+	gets_bar.append 'rect'
 		.attr 'x', 0
-		.attr 'width', x(data[0].x1 - data[0].x0)
+		.attr 'width', barWidth
 		.attr 'height', (d) -> c.height - y(d.length)
 
 	# kde
@@ -243,7 +247,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr 'x', '78'
 		.attr 'y', '0'
 	legend.append 'text'
-		.text points.length
+		.text gets.length
 		.attr 'x', '68'
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
@@ -299,17 +303,17 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
 
 	box = [
-		d3.quantile(points, 0.2),
-		d3.quantile(points, 0.4),
-		d3.quantile(points, 0.5),
-		d3.quantile(points, 0.6),
-		d3.quantile(points, 0.8)
+		d3.quantile(gets, 0.2),
+		d3.quantile(gets, 0.4),
+		d3.quantile(gets, 0.5),
+		d3.quantile(gets, 0.6),
+		d3.quantile(gets, 0.8)
 	]
 	xbox = box.map x
 
 	framePathD =
 		'M0,' + c.height  + 'L0,0'
-	if points.length > 1
+	if gets.length > 1
 		framePathD +=
 		'H'   + xbox[0] + 'V-4'    +
 		'H'   + xbox[1] + 'V-8'    +
@@ -326,7 +330,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr("stroke", "black")
 		.attr("transform", 'translate(0.5, 0.5)')
 
-	if points.length <= 1
+	if gets.length <= 1
 		return
 
 	topaxisg = chart.append("g")
