@@ -5,7 +5,7 @@ var coffeeify = require('gulp-coffeeify');
 var coffee = require('gulp-coffee');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
-var jade = require('gulp-jade');
+var pug = require('gulp-pug');
 var plumber = require('gulp-plumber');
 
 var lr = require('gulp-livereload');
@@ -71,7 +71,7 @@ gulp.task('styles', function () {
 gulp.task('views', function () {
   return gulp.src(paths.views)
     .pipe(plumber())
-    .pipe(jade())
+    .pipe(pug())
     .pipe(gulp.dest('dist'))
     .pipe(lr());
 });

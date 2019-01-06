@@ -89,9 +89,9 @@ namedRouter.registerAppHelpers server
 router.use express.static './dist'
 router.use '/images', express.static './app/images'
 
-server.set 'view engine', 'jade'
-server.set 'views', './app/server/jade'
-# server.locals.pretty = '\t'
+server.set 'view engine', 'pug'
+server.set 'views', './app/server/pug'
+server.locals.pretty = '\t'
 
 
 router.get '/question_sets/', 'question_sets', (req, res, next) ->
@@ -99,7 +99,7 @@ router.get '/question_sets/', 'question_sets', (req, res, next) ->
 		question_sets: ['all', allQueries.question_sets.question_sets]
 	runQueries queries
 		.then (results) ->
-			res.render 'question_sets.jade', results
+			res.render 'question_sets.pug', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -112,7 +112,7 @@ router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next
 		editions:     ['all', allQueries.question_set.editions,     id]
 	runQueries queries
 		.then (results) ->
-			res.render 'question_set.jade', results
+			res.render 'question_set.pug', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -138,7 +138,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 				tournament.teams = JSON.parse tournament.teams
 				tournament.teams.sort()
 
-			res.render 'edition.jade', results
+			res.render 'edition.pug', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -163,7 +163,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 			results['raw'] = get_question_html('tossup', results['tossup'])
 			results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
 
-			res.render 'tossup.jade', results
+			res.render 'tossup.pug', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -187,7 +187,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		.then (results) ->
 			results['raw'] = get_question_html('bonus', results['bonus'])
 
-			res.render 'bonus.jade', results
+			res.render 'bonus.pug', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
@@ -246,7 +246,7 @@ router.get '/js/categories/:question_set_id.js', 'categories', (req, res, next) 
 			res.send err.stack
 
 router.get '/notices.html', 'notices', (req, res, next) ->
-	res.render 'notices.jade'
+	res.render 'notices.pug'
 
 router.get '/', 'home', (req, res, next) ->
 	res.send 'Hi'
