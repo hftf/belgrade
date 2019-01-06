@@ -102,8 +102,10 @@ and q.category_id = c.id
 # group_concat(round(negs.p * 1.0 / words, 3))
 # (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value < 0 order by p) negs
 
-fakerollup = (select, group) ->
-	"SELECT null AS rollup, #{select} #{group} UNION ALL SELECT 1 as rollup, #{select}"
+fakerollup = (select, group, order) ->
+	if !order
+		order = ''
+	"SELECT null AS rollup, #{select} #{group} UNION ALL SELECT 1 as rollup, #{select} #{order}"
 
 qs = fakerollup('t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
@@ -139,7 +141,7 @@ and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY t.question_ptr_id')
 
-tournaments = 'tou.*,
+tournaments = fakerollup('tou.*,
 qse.name as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
@@ -153,10 +155,9 @@ schema_game g, schema_room rm
 where
 qse.id = ?1
 and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
-and g.room_id = rm.id and rm.tournament_id = tou.id
-group by tou.id
-order by tou.date, tou.site_name
-;'
+and g.room_id = rm.id and rm.tournament_id = tou.id',
+'group by tou.id',
+'order by tou.date, tou.site_name')
 
 tossups = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,

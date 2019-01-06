@@ -28,16 +28,22 @@ html
 
 				tbody.stripe
 					for tournament in tournaments
-						tr
-							//- td= tournament.question_set_edition
-							td= tournament.date
-							+tdel(tournament.site_name)
+						- var cls = (tournament.rollup) ? 'rollup' : '';
+						tr(class=cls)
+							if !tournament.rollup
+								//- td= tournament.question_set_edition
+								td= tournament.date
+								+tdel(tournament.site_name)
+							else
+								th Grand total
+								td
 							td.r= tournament.game_count
 							td.r= tournament.room_count
 							td.r= tournament.team_count
 							td(style='width:60em;')
-								ul: for team in tournament.teams
-									li= team
+								if !tournament.rollup
+									ul: for team in tournament.teams
+										li= team
 
 			h2#tossups Tossups
 			table
