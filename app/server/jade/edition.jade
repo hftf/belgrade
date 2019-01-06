@@ -1,0 +1,65 @@
+doctype html
+include includes/global.jade
+html
+	head
+		meta(charset='utf-8')
+		include includes/base.jade
+		include includes/analytics.jade
+		+css
+		+title(`every.buzz ⬢ ${edition.question_set} › ${edition.question_set_edition}`)
+	body
+		+header
+			li: a(href=basePath(url('question_set', edition)), aria-current='page')= edition.question_set
+
+		.left
+			h1 #{edition.question_set} › #{edition.question_set_edition}
+
+			h2#tossups Tossups
+			table
+				thead
+					+th(6) Set edition
+					+th(3) Packet
+					+th(3) Tossup
+					+th(3) Author
+					+th(15) Category
+					+th(18) Answer
+					+th(3): abbr(title='Number of words in power') Pwds
+					+th(3): abbr(title='Number of words') Wds
+
+				tbody.stripe
+					for tossup in tossups
+						tr
+							td= tossup.question_set_edition
+							td= tossup.packet_letter
+							td= tossup.position
+							td(title=tossup.author)= tossup.initials
+							td= tossup.category
+							td.el(title=tossup.answer)
+								a(href=basePath(url('tossup', tossup)))
+									= tossup.answer
+							td= tossup.power_words
+							td= tossup.words
+
+			h2#bonuses Bonuses
+			table
+				thead
+					+th(6) Set edition
+					+th(3) Packet
+					+th(3) Bonus
+					+th(3) Author
+					+th(15) Category
+					+th(18) Part 1
+					+th(18) Part 2
+					+th(18) Part 3
+
+				tbody.stripe
+					for bonus in bonuses
+						tr
+							td= bonus.question_set_edition
+							td= bonus.packet_letter
+							td= bonus.position
+							td(title=bonus.author)= bonus.initials
+							td= bonus.category
+							+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
+							+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
+							+tdel(bonus.answer3, href=basePath(url('bonus', bonus)))

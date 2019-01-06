@@ -32,6 +32,11 @@ from schema_bonus b, schema_question q, schema_packet p, schema_questionsetediti
 where b.slug = $bonus_slug and qse.slug = $question_set_edition_slug and qs.slug = $question_set_slug
 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 ';
+qse_id = 'select qse.id
+from schema_questionsetedition qse, schema_questionset qs
+where qse.slug = $question_set_edition_slug and qs.slug = $question_set_slug
+and qse.question_set_id = qs.id
+';
 
 q1 = 'select
 te.name team_name,
@@ -134,7 +139,7 @@ and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_i
 and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY t.question_ptr_id')
 
-qlt = 'select t.*, q.*,
+tossups = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
 qse.slug as question_set_edition_slug,
@@ -145,11 +150,11 @@ from
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 where
-qs.slug = ?1
+qse.id = ?1
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
-qlb = 'select b.*, q.*,
+bonuses = 'select b.*, q.*,
 b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.name as question_set_edition,
@@ -161,12 +166,40 @@ from
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 where
-qs.slug = ?1
+qse.id = ?1
 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
 
-qst = 'select
+edition = 'select
+qse.*,
+qse.slug as question_set_edition_slug,
+qse.name as question_set_edition,
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
+from
+schema_questionsetedition qse, schema_questionset qs
+where
+qse.id = ?1
+and qse.question_set_id = qs.id
+;'
+
+question_set__editions = 'select
+qse.*,
+count(distinct qse.id) as question_set_edition_count,
+count(distinct tou.id) as tournament_count,
+count(distinct te.id) as team_count,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
+from
+schema_questionset qs, schema_questionsetedition qse, schema_tournament tou, schema_team te
+where
+qs.slug = ?1
+and qse.question_set_id = qs.id and tou.question_set_edition_id = qse.id and te.tournament_id = tou.id
+group by qse.id
+;'
+question_set = 'select
 qs.*,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
@@ -175,17 +208,18 @@ schema_questionset qs
 where
 qs.slug = ?1
 ;'
-qss = 'select
+
+question_sets = 'select
 qs.*,
 count(distinct qse.id) as question_set_edition_count,
-count(distinct t.id) as tournament_count,
+count(distinct tou.id) as tournament_count,
 count(distinct te.id) as team_count,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
-schema_questionset qs, schema_questionsetedition qse, schema_tournament t, schema_team te
+schema_questionset qs, schema_questionsetedition qse, schema_tournament tou, schema_team te
 where
-qse.question_set_id = qs.id and t.question_set_edition_id = qse.id and te.tournament_id = t.id
+qse.question_set_id = qs.id and tou.question_set_edition_id = qse.id and te.tournament_id = tou.id
 group by qs.id
 ;'
 
@@ -268,12 +302,17 @@ and q.category_id = c.id and q.author_id = a.id',
 
 module.exports =
 	question_sets:
-		question_sets: qss
+		question_sets: question_sets
 
 	question_set:
-		question_set: qst
-		tossups: qlt
-		bonuses: qlb
+		question_set: question_set
+		editions: question_set__editions
+
+	edition:
+		qse_id: qse_id
+		edition: edition
+		tossups: tossups
+		bonuses: bonuses
 
 	tossup:
 		t_id: t_id

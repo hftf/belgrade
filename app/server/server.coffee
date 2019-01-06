@@ -109,15 +109,31 @@ router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next
 
 	queries =
 		question_set: ['get', allQueries.question_set.question_set, id]
-		tossups:      ['all', allQueries.question_set.tossups,      id]
-		bonuses:      ['all', allQueries.question_set.bonuses,      id]
+		editions:     ['all', allQueries.question_set.editions,     id]
 	runQueries queries
 		.then (results) ->
-			for type in ['tossups', 'bonuses']
-				results[type + 'ByEdition'] = R.groupBy R.prop('question_set_edition'), results[type]
-				delete results[type]
-
 			res.render 'question_set.jade', results
+		.catch (err) ->
+			res.status 500
+			res.send err.stack
+
+router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/', 'edition', (req, res, next) ->
+	params =
+		$question_set_slug         : req.params.question_set_slug
+		$question_set_edition_slug : req.params.question_set_edition_slug
+
+	db.get allQueries.edition.qse_id, params
+		.then (result) ->
+			id = result.id
+
+			queries =
+				edition: ['get', allQueries.edition.edition, id]
+				tossups: ['all', allQueries.edition.tossups, id]
+				bonuses: ['all', allQueries.edition.bonuses, id]
+
+			runQueries queries
+		.then (results) ->
+			res.render 'edition.jade', results
 		.catch (err) ->
 			res.status 500
 			res.send err.stack
