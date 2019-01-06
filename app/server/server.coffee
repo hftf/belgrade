@@ -233,6 +233,9 @@ router.get '/', 'home', (req, res, next) ->
 server.use '/jank', router
 # server.use router
 
+server.get '/fonts/*', (req, res, next) ->
+	res.send ''
+
 port = 3000
 server.listen port, ->
 	console.log 'server listening on port ' + port
