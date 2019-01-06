@@ -32,7 +32,7 @@ html
 				h2 Editions of this bonus
 					span.dag †
 				table
-					colgroup(span=4)
+					colgroup(span=5)
 					colgroup(span=2)
 						col
 						col
@@ -52,6 +52,7 @@ html
 							+th(3) Packet
 							+th(3) Bonus
 							+th(26.1) Answers
+							+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
 
 							+th(3) Rooms
 
@@ -79,9 +80,10 @@ html
 									td= edition.packet_letter
 									td= edition.position
 									+tdel(edition.answers)
+									td.r= formatPct2(edition.similarity)
 								else
 									th Grand total #[span.dag †]
-									td.warning(colspan=3) Warning: Comparing editions is not reliable!
+									td.warning(colspan=4) Warning: Comparing editions is not reliable!
 
 								td.r= edition.countRooms
 

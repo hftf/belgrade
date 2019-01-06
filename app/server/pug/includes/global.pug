@@ -37,5 +37,13 @@ mixin tdel(c, href)
 
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
 - function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
+-
+	function formatPct2(n) {
+		if (isNaN(n)) return '';
+		if (n == 0) return '=';
+		var np = 100*n;
+		var fixed = (np < 0.1) ? 2 : (np < 10) ? 1 : 0;
+		return np.toFixed(fixed)+'%';
+	}
 - function bl(c, n) { return c ? n : ''; }
 - function bldiff(c, n) { var d = c - n; return c ? (d ? n : '=') : ''; }

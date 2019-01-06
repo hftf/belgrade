@@ -32,7 +32,7 @@ html
 				h2 Editions of this tossup
 					span.dag †
 				table
-					colgroup(span=6)
+					colgroup(span=7)
 					colgroup(span=2)
 					colgroup(span=3)
 					colgroup(span=3)
@@ -49,6 +49,7 @@ html
 							+th(18) Answer
 							+th(3): abbr(title='Number of words in power') Pwds
 							+th(3): abbr(title='Number of words') Wds
+							+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
 
 							+th(3) Rooms
 
@@ -79,9 +80,10 @@ html
 									+tdel(edition.answer)
 									td.r= edition.power_words
 									td.r= edition.words
+									td.r= formatPct2(edition.similarity)
 								else
 									th Grand total #[span.dag †]
-									td.warning(colspan=5) Warning: Comparing editions is not reliable!
+									td.warning(colspan=6) Warning: Comparing editions is not reliable!
 
 								td.r= edition.countRooms
 

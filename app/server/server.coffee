@@ -58,6 +58,15 @@ scan_packet = (packet_filename, question_type, question_number) ->
                 packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
             ]
 # END NEW
+
+sim = require 'string-similarity'
+striptags = require 'striptags'
+
+similarity = (h1, h2) ->
+	h1 = striptags h1, [], '\n'
+	h2 = striptags h2, [], '\n'
+	1 - sim.compareTwoStrings h1, h2
+
 classifyBuzz = (buzz) ->
 	if buzz.buzz_value <= 0
 		'neg'
@@ -167,6 +176,10 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 
 		results['raw'] = get_question_html('tossup', results['tossup'])
 		results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
+		for edition in results['editions']
+			unless edition['rollup'] or edition['question_ptr_id'] == id
+				edition_raw = get_question_html('tossup', edition)
+				edition.similarity = similarity(edition_raw, results['raw'])
 
 		res.render 'tossup.pug', results
 	catch err
@@ -193,6 +206,10 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results = runQueries queries
 
 		results['raw'] = get_question_html('bonus', results['bonus'])
+		for edition in results['editions']
+			unless edition['rollup'] or edition['question_ptr_id'] == id
+				edition_raw = get_question_html('bonus', edition)
+				edition.similarity = similarity(edition_raw, results['raw'])
 
 		res.render 'bonus.pug', results
 	catch err
