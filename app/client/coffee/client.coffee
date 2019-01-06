@@ -191,11 +191,20 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.enter()
 		.append 'g'
 		.attr 'class', 'bar neg'
+		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
 		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + (c.height + c.mb) + ')'
 	negs_bar.append 'rect'
+		.attr 'x', barWidth / 2 - 1
+		.attr 'width', 2
 		.attr 'x', 0
 		.attr 'width', barWidth
+		.attr 'height', (d) -> c.height - y(d.length)
 		.attr 'height', (d) -> negs_y(d.length) - (c.height + c.mb)
+	negs_bar.append 'text'
+		.attr 'x', barWidth / 2
+		.attr 'y', (d) -> c.height - y(d.length) - 4
+		.attr 'text-anchor', 'middle'
+		.text (d) -> d.length || ''
 
 	# kde
 
@@ -276,6 +285,8 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'font-size', 'smaller'
 		.attr 'font-weight', '300'
 
+	ng = legend.append 'g'
+		.attr 'transform', 'translate(0, ' + (h + 22) + ')'
 	ng = chart.append 'g'
 		.attr 'class', 'legend'
 		.attr 'transform', 'translate(8, ' + (2 * c.height + c.mb - 14) + ')'
@@ -285,6 +296,11 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'y', '-6'
 		.attr 'width', '30'
 		.attr 'height', '12'
+	ng.append 'text'
+		.text '#'
+		.attr 'x', '15'
+		.attr 'y', '0'
+		.attr 'text-anchor', 'middle'
 	ng.append 'text'
 		.text 'Incorrect buzzes'
 		.attr 'x', '78'
