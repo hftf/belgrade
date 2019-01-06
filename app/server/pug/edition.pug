@@ -27,29 +27,33 @@ html
 					//- +th(6) Set edition
 					+th(6) Date
 					+th(8) Site
-					+th(3) Games
 					+th(3) Rooms
 					+th(3) Teams
 					+th(60)
+					+th(3) Games
 
 				tbody.stripe
-					for tournament in tournaments
-						- var cls = (tournament.rollup) ? 'rollup' : '';
-						tr(class=cls)
-							if !tournament.rollup
-								//- td= tournament.question_set_edition
-								td= tournament.date
-								+tdel(tournament.site_name)
-							else
-								th Grand total
-								td
-							td.r= tournament.game_count
+					for tournament in tournaments.entries
+						tr
+							//- td= tournament.question_set_edition
+							td= tournament.date
+							+tdel(tournament.site_name)
 							td.r= tournament.room_count
 							td.r= tournament.team_count
 							td(style='width:60em;')
-								if !tournament.rollup
-									ul: for team in tournament.teams
-										li= team
+								ul: for team in tournament.teams
+									li= team
+							td.r= tournament.game_count
+
+				tfoot
+					for tournament in tournaments.rollup
+						tr.rollup
+							th Grand total
+							td
+							td.r= tournament.room_count
+							td.r= tournament.team_count
+							td
+							td.r= tournament.game_count
 
 			h2#tossups Tossups
 			table.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')

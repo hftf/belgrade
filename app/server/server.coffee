@@ -80,6 +80,8 @@ runQueries = (queries) ->
 		db.prepare(query)[method] params...
 	R.mapObjIndexed runQuery, queries
 
+unrollup = R.groupBy (row) -> if row.rollup then 'rollup' else 'entries'
+
 server = express()
 router = new express.Router
 
@@ -146,7 +148,8 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 	try
 		results = runQueries queries
 
-		for tournament in results.tournaments
+		results['tournaments'] = unrollup results['tournaments']
+		for tournament in results.tournaments.entries
 			tournament.teams = JSON.parse tournament.teams
 			tournament.teams.sort()
 
