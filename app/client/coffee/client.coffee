@@ -303,16 +303,17 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		d3.quantile(points, 0.6),
 		d3.quantile(points, 0.8)
 	]
+	xbox = box.map x
 
 	framePathD =
 		'M0,' + c.height  + 'L0,0'
 	if points.length > 1
 		framePathD +=
-		'H'   + x(box[0]) + 'V-4'    +
-		'H'   + x(box[1]) + 'V-8'    +
-		'H'   + x(box[2]) + 'V0 V-8' +
-		'H'   + x(box[3]) + 'V-4'    +
-		'H'   + x(box[4]) + 'V0'
+		'H'   + xbox[0] + 'V-4'    +
+		'H'   + xbox[1] + 'V-8'    +
+		'H'   + xbox[2] + 'V0 V-8' +
+		'H'   + xbox[3] + 'V-4'    +
+		'H'   + xbox[4] + 'V0'
 	framePathD +=
 		'H'   + c.width   +
 		'V'   + c.height  +
@@ -328,30 +329,29 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 
 	topaxisg = chart.append("g")
 		.attr("font-size","10")
-	txt = topaxisg.append("text")
-		.attr("transform", 'translate(' + ( 3 + x(box[0]) ) + ',-6) rotate(-90)')
-		.attr("text-anchor","start")		
-	txt.append("tspan").text("20% of").attr("x","0").attr("dy","0")
-	txt.append("tspan").text("buzzes").attr("x","0").attr("dy","8")
-	if (x(box[1]) - x(box[0]) > 16)
+		.attr("text-anchor","start")
+	if true
+		lh = if xbox[1] - xbox[0] > 7 then -6 else -10
+		txt = topaxisg.append("text")
+			.attr("transform", 'translate(' + ( 3 + xbox[0] ) + ',' + lh + ') rotate(-90)')
+		txt.append("tspan").text("20% of").attr("x","0").attr("dy","-8")
+		txt.append("tspan").text("buzzes").attr("x","0").attr("dy","8")
+	if (xbox[1] - xbox[0] > 9 and xbox[2] - xbox[1] > 9)
 		topaxisg.append("text")
 			.text("40%")
-			.attr("transform", 'translate(' + ( 3 + x(box[1]) ) + ',-10) rotate(-90)')
-			.attr("text-anchor","start")
-	if (x(box[2]) - x(box[1]) > 8)
+			.attr("transform", 'translate(' + ( 3 + xbox[1] ) + ',-10) rotate(-90)')
+	if (xbox[2] - xbox[1] > 9 or xbox[1] - xbox[0] > 9)
 		topaxisg.append("text")
 			.text("Median")
-			.attr("transform", 'translate(' + ( 3 + x(box[2]) ) + ',-10) rotate(-90)')
-			.attr("text-anchor","start")
-	if (x(box[3]) - x(box[2]) > 8)
+			.attr("transform", 'translate(' + ( 3 + xbox[2] ) + ',-10) rotate(-90)')
+	if (xbox[3] - xbox[2] > 9 and xbox[4] - xbox[3] > 9)
 		topaxisg.append("text")
 			.text("60%")
-			.attr("transform", 'translate(' + ( 3 + x(box[3]) ) + ',-10) rotate(-90)')
-			.attr("text-anchor","start")
-	if (x(box[4]) - x(box[3]) > 8)
+			.attr("transform", 'translate(' + ( 3 + xbox[3] ) + ',-10) rotate(-90)')
+	if (xbox[4] - xbox[3] > 9 or xbox[3] - xbox[2] > 9)
+		lh = if xbox[4] - xbox[3] > 7 then -6 else -10
 		topaxisg.append("text")
 			.text("80%")
-			.attr("transform", 'translate(' + ( 3 + x(box[4]) ) + ',-6) rotate(-90)')
-			.attr("text-anchor","start")
+			.attr("transform", 'translate(' + ( 3 + xbox[4] ) + ',' + lh + ') rotate(-90)')
 
 	x # hack return
