@@ -296,9 +296,6 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
 
-	if not points.length
-		return
-
 	box = [
 		d3.quantile(points, 0.2),
 		d3.quantile(points, 0.4),
@@ -307,10 +304,28 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		d3.quantile(points, 0.8)
 	]
 
+	framePathD =
+		'M0,' + c.height  + 'L0,0'
+	if points.length > 1
+		framePathD +=
+		'H'   + x(box[0]) + 'V-4'    +
+		'H'   + x(box[1]) + 'V-8'    +
+		'H'   + x(box[2]) + 'V0 V-8' +
+		'H'   + x(box[3]) + 'V-4'    +
+		'H'   + x(box[4]) + 'V0'
+	framePathD +=
+		'H'   + c.width   +
+		'V'   + c.height  +
+		'H0Z'
 	chart.append("path")
-		.attr("d", 'M0,' + c.height + ' L0,0 H' + x(box[0]) + ' V-4 H' + x(box[1]) + ' V-8 H' + x(box[2]) + ' V0 V-8 H' + x(box[3]) + ' V-4 H' + x(box[4]) + ' V0 H' + c.width)
+		.attr("d", framePathD)
 		.attr("fill", "none")
 		.attr("stroke", "black")
+		.attr("transform", 'translate(0.5, 0.5)')
+
+	if points.length <= 1
+		return
+
 	topaxisg = chart.append("g")
 		.attr("font-size","10")
 	txt = topaxisg.append("text")
