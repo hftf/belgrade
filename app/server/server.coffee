@@ -2,9 +2,7 @@ express = require 'express'
 NamedRouter = require 'named-routes'
 
 R = require 'ramda'
-q = require 'q'
-sqlite = require 'sqlite3'
-sql = require 'q-sqlite3'
+sqlite = require 'better-sqlite3'
 
 red = (s) -> '\x1b[91;1m[ERROR] ' + s + '\x1b[0m';
 console.error = R.compose console.error, red
@@ -16,7 +14,7 @@ allQueries = require './queries'
 
 
 dbfname = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/db.sqlite3'
-db = new sql.Database new sqlite.Database dbfname
+db = new sqlite dbfname, { readonly: true }
 
 
 # TODO rename
@@ -69,10 +67,9 @@ classifyBuzz = (buzz) ->
 		'get'
 
 runQueries = (queries) ->
-	runQuery = ([method, query...]) -> db[method].apply db, query
-	pf = R.compose q.all, R.map runQuery
-	pf R.values queries
-		.then R.zipObj R.keys queries
+	runQuery = ([method, query, params]) ->
+		db.prepare(query)[method] params
+	R.mapObjIndexed runQuery, queries
 
 server = express()
 router = new express.Router
@@ -97,153 +94,165 @@ server.locals.pretty = '\t'
 router.get '/question_sets/', 'question_sets', (req, res, next) ->
 	queries =
 		question_sets: ['all', allQueries.question_sets.question_sets]
-	runQueries queries
-		.then (results) ->
-			res.render 'question_sets.pug', results
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		
+	try
+		results = runQueries queries
+
+		res.render 'question_sets.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next) ->
-	id = req.params.question_set_slug
+	id = id: req.params.question_set_slug
 
 	queries =
 		question_set: ['get', allQueries.question_set.question_set, id]
 		editions:     ['all', allQueries.question_set.editions,     id]
-	runQueries queries
-		.then (results) ->
-			res.render 'question_set.pug', results
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+
+	try
+		results = runQueries queries
+
+		res.render 'question_set.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/', 'edition', (req, res, next) ->
 	params =
-		$question_set_slug         : req.params.question_set_slug
-		$question_set_edition_slug : req.params.question_set_edition_slug
+		question_set_slug         : req.params.question_set_slug
+		question_set_edition_slug : req.params.question_set_edition_slug
 
-	db.get allQueries.edition.qse_id, params
-		.then (result) ->
-			id = result.id
+	id = id:
+		db.prepare allQueries.edition.qse_id
+		.get params
+		.id
 
-			queries =
-				edition: ['get', allQueries.edition.edition, id]
-				tournaments: ['all', allQueries.edition.tournaments, id]
-				tossups: ['all', allQueries.edition.tossups, id]
-				bonuses: ['all', allQueries.edition.bonuses, id]
+	queries =
+		edition: ['get', allQueries.edition.edition, id]
+		tournaments: ['all', allQueries.edition.tournaments, id]
+		tossups: ['all', allQueries.edition.tossups, id]
+		bonuses: ['all', allQueries.edition.bonuses, id]
 
-			runQueries queries
-		.then (results) ->
-			for tournament in results.tournaments
-				tournament.teams = JSON.parse tournament.teams
-				tournament.teams.sort()
+	try
+		results = runQueries queries
 
-			res.render 'edition.pug', results
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		for tournament in results.tournaments
+			tournament.teams = JSON.parse tournament.teams
+			tournament.teams.sort()
+
+		res.render 'edition.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/tossups/:tossup_slug.html', 'tossup', (req, res, next) ->
 	params =
-		$question_set_slug         : req.params.question_set_slug
-		$question_set_edition_slug : req.params.question_set_edition_slug
-		$tossup_slug               : req.params.tossup_slug
+		question_set_slug         : req.params.question_set_slug
+		question_set_edition_slug : req.params.question_set_edition_slug
+		tossup_slug               : req.params.tossup_slug
 
-	db.get allQueries.tossup.t_id, params
-		.then (result) ->
-			id = result.question_ptr_id
+	id = id:
+		db.prepare allQueries.tossup.t_id
+		.get params
+		.question_ptr_id
 
-			queries =
-				tossup:   ['get', allQueries.tossup.tossup,   id]
-				buzzes:   ['all', allQueries.tossup.buzzes,   id]
-				editions: ['all', allQueries.tossup.editions, id]
+	queries =
+		tossup:   ['get', allQueries.tossup.tossup,   id]
+		buzzes:   ['all', allQueries.tossup.buzzes,   id]
+		editions: ['all', allQueries.tossup.editions, id]
 
-			runQueries queries
-		.then (results) ->
-			results['raw'] = get_question_html('tossup', results['tossup'])
-			results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
+	try 
+		results = runQueries queries
 
-			res.render 'tossup.pug', results
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		results['raw'] = get_question_html('tossup', results['tossup'])
+		results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
+
+		res.render 'tossup.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/bonuses/:bonus_slug.html', 'bonus', (req, res, next) ->
 	params =
-		$question_set_slug         : req.params.question_set_slug
-		$question_set_edition_slug : req.params.question_set_edition_slug
-		$bonus_slug                : req.params.bonus_slug
+		question_set_slug         : req.params.question_set_slug
+		question_set_edition_slug : req.params.question_set_edition_slug
+		bonus_slug                : req.params.bonus_slug
 
-	db.get allQueries.bonus.b_id, params
-		.then (result) ->
-			id = result.question_ptr_id
+	id = id:
+		db.prepare allQueries.bonus.b_id
+		.get params
+		.question_ptr_id
 
-			queries =
-				bonus:        ['get', allQueries.bonus.bonus,        id]
-				performances: ['all', allQueries.bonus.performances, id]
-				editions:     ['all', allQueries.bonus.editions,     id]
+	queries =
+		bonus:        ['get', allQueries.bonus.bonus,        id]
+		performances: ['all', allQueries.bonus.performances, id]
+		editions:     ['all', allQueries.bonus.editions,     id]
 
-			runQueries queries
-		.then (results) ->
-			results['raw'] = get_question_html('bonus', results['bonus'])
+	try
+		results = runQueries queries
 
-			res.render 'bonus.pug', results
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		results['raw'] = get_question_html('bonus', results['bonus'])
+
+		res.render 'bonus.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
-	id = req.params.question_ptr_id
+	id = id: req.params.question_ptr_id
 	
 	queries =
 		a: ['get', allQueries.tossup_data.a, id]
 		b: ['all', allQueries.tossup.buzzes, id]
 
-	runQueries queries
-		.then (results) ->
-			results.a.p = JSON.parse results.a.p
-			results.a.p.sort()
-			results.a.n = JSON.parse results.a.n
-			results.a.n.sort()
+	try
+		results = runQueries queries
 
-			res.setHeader 'Cache-Control', 'public, max-age=3600'
-			res.setHeader 'Content-Type', 'application/javascript'
-			res.send "window.tossup = #{JSON.stringify(results)};";
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		results.a.p = JSON.parse results.a.p
+		results.a.p.sort()
+		results.a.n = JSON.parse results.a.n
+		results.a.n.sort()
+
+		res.setHeader 'Cache-Control', 'public, max-age=3600'
+		res.setHeader 'Content-Type', 'application/javascript'
+		res.send "window.tossup = #{JSON.stringify(results)};";
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/js/categories/:question_set_id.js', 'categories', (req, res, next) ->
-	id = req.params.question_set_id
+	id = id: req.params.question_set_id
 
 	queries =
 		d: ['all', allQueries.categories.d, id]
 
-	runQueries queries
-		.then (results) ->
-			domainp = [0, 1]
-			deltaX = 4/(41*16) #0.005
-			results.kdeXs = kdeXs = R.append 1, d3.range domainp..., deltaX
-			for d in results.d
-				categoryPoints =
-					# R.filter R.gt(1),
-					JSON.parse(d.p)
-				kdeF = kde()
-					.sample categoryPoints
-					# .kernel (x) -> 1*+(-.5<x<.5)
-					# .bandwidth 0.03
-					.bounds domainp
-				kdePts = kdeF kdeXs
-				kdeYs = R.map ((p) -> +p[1].toFixed 4), kdePts
-				d.kdeYs = kdeYs
-				delete d.p
+	try
+		results = runQueries queries
 
-			res.setHeader 'Cache-Control', 'public, max-age=3600'
-			res.setHeader 'Content-Type', 'application/javascript'
-			res.send "window.allCategoryKdes = #{JSON.stringify(results)};";
-		.catch (err) ->
-			res.status 500
-			res.send err.stack
+		domainp = [0, 1]
+		deltaX = 4/(41*16) #0.005
+		results.kdeXs = kdeXs = R.append 1, d3.range domainp..., deltaX
+		for d in results.d
+			categoryPoints =
+				# R.filter R.gt(1),
+				JSON.parse(d.p)
+			kdeF = kde()
+				.sample categoryPoints
+				# .kernel (x) -> 1*+(-.5<x<.5)
+				# .bandwidth 0.03
+				.bounds domainp
+			kdePts = kdeF kdeXs
+			kdeYs = R.map ((p) -> +p[1].toFixed 4), kdePts
+			d.kdeYs = kdeYs
+			delete d.p
+
+		res.setHeader 'Cache-Control', 'public, max-age=3600'
+		res.setHeader 'Content-Type', 'application/javascript'
+		res.send "window.allCategoryKdes = #{JSON.stringify(results)};";
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/notices.html', 'notices', (req, res, next) ->
 	res.render 'notices.pug'

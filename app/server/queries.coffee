@@ -15,7 +15,7 @@ FROM
 WHERE
 	q.category_id = cp.id
 	AND c.lft <= cp.lft AND cp.rght <= c.rght AND c.tree_id = cp.tree_id
-	AND c.question_set_id = ?1
+	AND c.question_set_id = $id
 	AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
 	AND buzz_location IS NOT NULL AND buzz_value > 0
 GROUP BY
@@ -58,7 +58,7 @@ where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = 
 and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id
-and tossup_id = ?1 order by buzz_location is null, buzz_location, bounceback, buzz_value desc'
+and tossup_id = $id order by buzz_location is null, buzz_location, bounceback, buzz_value desc'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,
@@ -78,7 +78,7 @@ schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition q
 schema_category c, schema_author a
 left join schema_tossup prev on prev.question_ptr_id = t.question_ptr_id-1
 left join schema_tossup next on next.question_ptr_id = t.question_ptr_id+1
-where t.question_ptr_id = ?1
+where t.question_ptr_id = $id
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
@@ -92,7 +92,7 @@ c.name as category, c.lft, c.rght, c.level, c.tree_id,
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c
-where t.question_ptr_id = ?1
+where t.question_ptr_id = $id
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id
 ;'
@@ -100,7 +100,7 @@ and q.category_id = c.id
 # q.category_id >= cp.lft and q.category_id <= cp.rght
    # and cp.level = 1 and cp.lft <= c.lft and cp.rght >= c.rght
 # group_concat(round(negs.p * 1.0 / words, 3))
-# (select buzz_location p from schema_gameeventtossup get where get.tossup_id = ?1 and buzz_value < 0 order by p) negs
+# (select buzz_location p from schema_gameeventtossup get where get.tossup_id = $id and buzz_value < 0 order by p) negs
 
 fakerollup = (select, group, order) ->
 	if !order
@@ -133,7 +133,7 @@ LEFT JOIN schema_gameeventtossup get ON get.tossup_id = t.question_ptr_id
 LEFT JOIN schema_gameevent ge ON ge.id = get.gameevent_ptr_id 
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
 LEFT JOIN schema_game g ON gt.game_id = g.id
-where t0.question_ptr_id = ?1 and t0.question_ptr_id = q0.id
+where t0.question_ptr_id = $id and t0.question_ptr_id = q0.id
 and 2 <=
 (t0.answer like t.answer) +
 (q0.category_id = q.category_id)
@@ -153,7 +153,7 @@ from
 schema_team te, schema_tournament tou, schema_questionsetedition qse, schema_questionset qs,
 schema_game g, schema_room rm
 where
-qse.id = ?1
+qse.id = $id
 and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and g.room_id = rm.id and rm.tournament_id = tou.id',
 'group by tou.id',
@@ -171,7 +171,7 @@ from
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 where
-qse.id = ?1
+qse.id = $id
 and t.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
@@ -188,7 +188,7 @@ from
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 where
-qse.id = ?1
+qse.id = $id
 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
@@ -202,7 +202,7 @@ qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question
 from
 schema_questionsetedition qse, schema_questionset qs
 where
-qse.id = ?1
+qse.id = $id
 and qse.question_set_id = qs.id
 ;'
 
@@ -217,7 +217,7 @@ qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question
 from
 schema_questionset qs, schema_questionsetedition qse, schema_tournament tou, schema_team te
 where
-qs.slug = ?1
+qs.slug = $id
 and qse.question_set_id = qs.id and tou.question_set_edition_id = qse.id and te.tournament_id = tou.id
 group by qse.id
 ;'
@@ -228,7 +228,7 @@ qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question
 from
 schema_questionset qs
 where
-qs.slug = ?1
+qs.slug = $id
 ;'
 
 question_sets = 'select
@@ -257,7 +257,7 @@ schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_r
 where ge.id = geb.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id
-and bonus_id = ?1 order by total desc, value1 desc, value2 desc, value3 desc
+and bonus_id = $id order by total desc, value1 desc, value2 desc, value3 desc
 ;'
 qb = 'select b.*, q.*,
 b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
@@ -276,7 +276,7 @@ schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qs
 schema_category c, schema_author a
 left join schema_bonus prev on prev.question_ptr_id = b.question_ptr_id-1
 left join schema_bonus next on next.question_ptr_id = b.question_ptr_id+1
-where b.question_ptr_id = ?1 and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+where b.question_ptr_id = $id and b.question_ptr_id = q.id and q.packet_id = p.id and p.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and q.category_id = c.id and q.author_id = a.id
 ;'
 # --left join schema_bonus prev on prev.question_ptr_id = (select max(question_ptr_id) from schema_bonus where question_ptr_id < b.question_ptr_id)
@@ -311,7 +311,7 @@ LEFT JOIN (SELECT *, value1+value2+value3 AS total FROM schema_gameeventbonus) g
 LEFT JOIN schema_gameevent ge ON ge.id = geb.gameevent_ptr_id 
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
 LEFT JOIN schema_game g ON gt.game_id = g.id
-where b0.question_ptr_id = ?1 and b0.question_ptr_id = q0.id
+where b0.question_ptr_id = $id and b0.question_ptr_id = q0.id
 and 2 <=
 (b0.answer1 like b.answer1) +
 (b0.answer2 like b.answer2) +
