@@ -67,8 +67,8 @@ classifyBuzz = (buzz) ->
 		'get'
 
 runQueries = (queries) ->
-	runQuery = ([method, query, params]) ->
-		db.prepare(query)[method] params
+	runQuery = ([method, query, params...]) ->
+		db.prepare(query)[method] params...
 	R.mapObjIndexed runQuery, queries
 
 server = express()
