@@ -17,7 +17,7 @@ mixin header
 				block
 
 mixin th(w)
-	th(style='min-width:#{w}em;')&attributes(attributes)
+	th(style=`min-width:${w}em;`)&attributes(attributes)
 		block
 mixin tdb(n, x)
 	+tdbar(n, x / n)
@@ -26,7 +26,7 @@ mixin tdbar(n, pct)
 		td.r.bar
 	else
 		- var disp = formatPct(pct);
-		td.r.bar(style=pct ? 'background-size: #{disp} 2px;' : '')&attributes(attributes)
+		td.r.bar(style=pct ? `background-size: ${disp} 2px;` : '')&attributes(attributes)
 			= disp
 mixin tdel(c, href)
 	td.el(title=c)
