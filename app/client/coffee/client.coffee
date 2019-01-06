@@ -126,7 +126,9 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	binwidth = 0.025
 	domainp = [0, 1]
 	domain = [0, 1 + binwidth]
-	thresholds = d3.range 0, 1 + binwidth, binwidth
+	thresholds =	
+		d3.range 0, 1 + binwidth, binwidth
+			.map (v) -> parseFloat v.toFixed 4
 
 	# remove null buzz points
 	points = points.filter (x) -> !!x
@@ -198,7 +200,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.attr 'stroke-width', kdeWidth category.level
 			.attr 'stroke-opacity', kdeOpacity category.level
 			.attr 'stroke-dasharray', kdeDash category.level
-			.attr 'd', line kdePts
+			.attr 'd', line(kdePts).replace /(\.\d)\d+/g, '$1'
 
 		h = 22 * (category.level + 1)
 		name = if category.level then category.name else 'All tossups'
