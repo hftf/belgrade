@@ -87,7 +87,7 @@ namedRouter.extendExpress router
 namedRouter.registerAppHelpers server
 
 router.use express.static './dist'
-router.use '/img', express.static './app/img'
+router.use '/images', express.static './app/images'
 
 server.set 'view engine', 'jade'
 server.set 'views', './app/server/jade'

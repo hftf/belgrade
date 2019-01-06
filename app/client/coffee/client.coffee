@@ -3,9 +3,6 @@ kdep = require './kde'
 R = require 'ramda'
 
 
-main = ->
-	do loadData
-
 # NEW
 tick_delta = 0.1
 replaceMs = (p, groupedBuzzesByWord, words) ->
@@ -83,7 +80,7 @@ splitWordM = (question, groupedBuzzesByWord) ->
 
 groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
 
-loadData = () ->
+window.loadData = () ->
 	graph window.tossup.a.p, window.tossup.a, window.allCategoryKdes.d, window.allCategoryKdes.kdeXs
 
 	groups = groupBuzzesByWord window.tossup.b
@@ -339,5 +336,3 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 			.attr("text-anchor","start")
 
 	x # hack return
-
-do main

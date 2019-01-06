@@ -22,7 +22,7 @@ html
 			h1= question_set.question_set
 
 			h2 Editions
-			table
+			table.dataTable.compact
 				thead
 					+th(11) Question set
 					+th(6) Set edition
@@ -39,3 +39,4 @@ html
 							td.r= edition.tournament_count
 							td.r= edition.team_count
 
+		script(src=basePath('/js/all.js'))

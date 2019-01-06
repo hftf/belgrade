@@ -165,7 +165,8 @@ qse.name as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 t.slug as tossup_slug,
-c.name as category, a.name as author, a.initials
+c.name as category, c.lft,
+a.name as author, a.initials
 from
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
@@ -181,7 +182,8 @@ qse.name as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 b.slug as bonus_slug,
-c.name as category, a.name as author, a.initials
+c.name as category, c.lft,
+a.name as author, a.initials
 from
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a

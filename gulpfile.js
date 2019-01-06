@@ -15,7 +15,8 @@ var resolve = require('resolve');
 
 var paths = {
   scripts: ['app/client/coffee/**/*.coffee'],
-  styles:  ['app/client/sass/fonts.sass', 'app/client/sass/tossup.sass','app/client/sass/gloss.sass','app/client/sass/**/*.sass'],
+  styles:  ['app/client/sass/fonts.sass', 'app/client/sass/tossup.sass','app/client/sass/gloss.sass','app/client/sass/**/*.sass',
+    'node_modules/datatables.net-dt/css/jquery.dataTables.css'],
   views:   ['app/client/jade/**/*.jade'],
   data:    ['app/data/**/*']
 };

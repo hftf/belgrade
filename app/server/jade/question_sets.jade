@@ -15,7 +15,7 @@ html
 			p
 				| Data from some tournaments may be unavailable.
 
-			table
+			table.dataTable.compact
 				thead
 					+th(11) Question set
 					+th(6) Editions
@@ -31,3 +31,5 @@ html
 							td.r= question_set.tournament_count
 							td.r= question_set.team_count
 							td= question_set.clear
+
+		script(src=basePath('/js/all.js'))

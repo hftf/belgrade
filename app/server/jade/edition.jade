@@ -22,7 +22,7 @@ html
 					li: a(href='#bonuses') Bonuses
 
 			h2#tournaments Tournaments
-			table
+			table.dataTable.compact
 				thead
 					//- +th(6) Set edition
 					+th(6) Date
@@ -52,11 +52,11 @@ html
 										li= team
 
 			h2#tossups Tossups
-			table
+			table.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
 					+th(6) Set edition
-					+th(3) Packet
-					+th(3) Tossup
+					+th(3)(data-name='packet') Packet
+					+th(3)(data-name='position') Tossup
 					+th(3) Author
 					+th(15) Category
 					+th(18) Answer
@@ -69,8 +69,8 @@ html
 							td= tossup.question_set_edition
 							td= tossup.packet_letter
 							td= tossup.position
-							td(title=tossup.author)= tossup.initials
-							td= tossup.category
+							td(title=tossup.author, data-search=tossup.author)= tossup.initials
+							td(data-order='#{tossup.lft}')= tossup.category
 							td.el(title=tossup.answer)
 								a(href=basePath(url('tossup', tossup)))
 									= tossup.answer
@@ -78,11 +78,11 @@ html
 							td= tossup.words
 
 			h2#bonuses Bonuses
-			table
+			table.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
 					+th(6) Set edition
-					+th(3) Packet
-					+th(3) Bonus
+					+th(3)(data-name='packet') Packet
+					+th(3)(data-name='position') Bonus
 					+th(3) Author
 					+th(15) Category
 					+th(18) Part 1
@@ -95,8 +95,10 @@ html
 							td= bonus.question_set_edition
 							td= bonus.packet_letter
 							td= bonus.position
-							td(title=bonus.author)= bonus.initials
-							td= bonus.category
+							td(title=bonus.author, data-search=bonus.author)= bonus.initials
+							td(data-order='#{bonus.lft}')= bonus.category
 							+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer3, href=basePath(url('bonus', bonus)))
+
+		script(src=basePath('/js/all.js'))
