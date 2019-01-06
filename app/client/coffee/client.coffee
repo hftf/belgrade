@@ -126,33 +126,32 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	binwidth = 0.025
 	domainp = [0, 1]
 	domain = [0, 1 + binwidth]
-	thresholds = d3.range 0, 1 + 2 * binwidth, binwidth
+	thresholds = d3.range 0, 1 + binwidth, binwidth
 
 	# remove null buzz points
 	points = points.filter (x) -> !!x
-	data = (d3.layout.histogram()
-		.bins thresholds
-		.frequency true
+	data = (d3.histogram()
+		.domain domain
+		.thresholds thresholds
 		) points
 
-	normalize = R.over R.lensProp('y'), R.flip(R.divide) binwidth
-	# only use if frequency = true
+	# normalize = R.over R.lensProp('length'), R.flip(R.divide) data.length
 	# data = R.map normalize, data
 
 	# last = 0
 	# for i in data
-	# 	i.y = last + i.y
-	# 	last = i.y
+	# 	i.length = last + i.length
+	# 	last = i.length
 
-	x = d3.scale.linear()
+	x = d3.scaleLinear()
 		.range [0, c.width]
 		.domain domain
 
 	yMax = 1 + d3.max [
-			d3.max data, R.prop 'y'
+			d3.max data, R.prop 'length'
 			2 # d3.max R.flip(R.map) kdes, R.prop '1'
 		]
-	y = d3.scale.linear()
+	y = d3.scaleLinear()
 		.range [c.height, 0]
 		.domain [0, yMax]
 		# .domain [0, 30]
@@ -163,27 +162,27 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.enter()
 		.append 'g'
 		.attr 'class', 'bar'
-		.attr 'transform', (d) -> 'translate(' + x(d.x) + ',' + y(d.y) + ')'
+		.attr 'transform', (d) -> 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
 
 	bar.append 'rect'
 		.attr 'x', 0
-		.attr 'width', x(data[0].dx)
-		.attr 'height', (d) -> c.height - y(d.y)
+		.attr 'width', x(data[0].x1 - data[0].x0)
+		.attr 'height', (d) -> c.height - y(d.length)
 
 	# kde
 
-	line = d3.svg.line()
-		.interpolate 'basis'
+	line = d3.line()
+		.curve d3.curveBasis
 		.x (d) -> x d[0]
 		.y (d) -> y d[1]
 
 	legend = chart.append 'g'
 		.attr 'class', 'legend'
 		.attr 'transform', 'translate(8, 14)'
-	kdeWidth = d3.scale.linear()
+	kdeWidth = d3.scaleLinear()
 		.range [8, 2, 1]
 		.domain [0, 2, 3]
-	kdeOpacity = d3.scale.linear()
+	kdeOpacity = d3.scaleLinear()
 		.range [0.4, 1, 1]
 		.domain [0, 2, 3]
 	kdeDash = (x) -> {0: '', 1: '', 2: '', 3: '4'}[x]
@@ -253,30 +252,34 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 	ftp = 0.84
 	pwds = a.power_words / a.words
 
-	xaxis = d3.svg.axis()
-		.scale x
+	xaxis = d3.axisBottom x
 		# .tickValues [.5, .84, 1]
 		# .tickValues [0, .2, .4, .6, .8, 1, pwds]
 		# .tickFormat (x) -> if x is ftp then 'FTP' else if x is pwds then '*' else d3.format('0%') x
-		.tickFormat d3.format('0%')
+		.tickFormat d3.format('.0%')
 		.ticks 4
 		.tickSize -c.height
-		.outerTickSize 0
-		.orient 'bottom'
+		.tickSizeOuter 0
 
-	yaxis = d3.svg.axis()
-		.scale y
+	yaxis = d3.axisRight y
 		.ticks 4
 		.tickSize -c.width
-		.outerTickSize 0
+		.tickSizeOuter 0
 		# .tickFormat ''
-		.orient 'right'
+
+	noAxisDefault = (g) ->
+		g
+			.attr 'font-size', null
+			.attr 'font-family', null
+			.attr 'fill', null
+			.select('.domain').remove()
 
 	# commented?
 	chart.append 'g'
 		.attr 'class', 'y axis'
 		.attr 'transform', 'translate(' + (c.width) + ',0)'
 		.call yaxis
+		.call noAxisDefault
 		.append 'text'
 		.attr 'class', 'label'
 		.text 'Buzzes'
@@ -287,6 +290,7 @@ graph = (points, a, allCategoryKdes, kdeXs) ->
 		.attr 'class', 'x axis'
 		.attr 'transform', 'translate(0,' + c.height + ')'
 		.call xaxis
+		.call noAxisDefault
 		.append 'text'
 		.attr 'class', 'label'
 		.text 'Position in tossup'
