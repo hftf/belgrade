@@ -177,7 +177,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results['raw'] = get_question_html('tossup', results['tossup'])
 		results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
 		for edition in results['editions']
-			unless edition['rollup'] or edition['question_ptr_id'] == id
+			unless edition['rollup'] or edition['question_ptr_id'] == id.id
 				edition_raw = get_question_html('tossup', edition)
 				edition.similarity = similarity(edition_raw, results['raw'])
 
@@ -207,7 +207,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 
 		results['raw'] = get_question_html('bonus', results['bonus'])
 		for edition in results['editions']
-			unless edition['rollup'] or edition['question_ptr_id'] == id
+			unless edition['rollup'] or edition['question_ptr_id'] == id.id
 				edition_raw = get_question_html('bonus', edition)
 				edition.similarity = similarity(edition_raw, results['raw'])
 

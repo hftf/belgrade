@@ -126,7 +126,7 @@ COUNT(CASE WHEN get.buzz_location IS NOT NULL THEN 1 END) AS countBzPts,
 round(AVG(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.words), 3) avgBzPt,
 round(min(CASE WHEN get.buzz_value > 0 THEN get.buzz_location END * 1.0 / t.words), 3) firstBzPt
 from 
-schema_tossup t0, schema_question q0, 
+schema_tossup t0, schema_question q0, schema_packet p0, schema_questionsetedition qse0, schema_questionset qs0,
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 LEFT JOIN schema_gameeventtossup get ON get.tossup_id = t.question_ptr_id 
@@ -134,6 +134,8 @@ LEFT JOIN schema_gameevent ge ON ge.id = get.gameevent_ptr_id
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
 LEFT JOIN schema_game g ON gt.game_id = g.id
 where t0.question_ptr_id = $id and t0.question_ptr_id = q0.id
+and q0.packet_id = p0.id and p0.question_set_edition_id = qse0.id and qse0.question_set_id = qs0.id
+and qs0.id = qs.id
 and 2 <=
 (t0.answer like t.answer) +
 (q0.category_id = q.category_id)
@@ -304,7 +306,7 @@ COUNT(CASE WHEN total >= 20 THEN 1 END) atleast20,
 COUNT(CASE WHEN total >= 30 THEN 1 END) atleast30,
 COUNT(DISTINCT game_id) AS countRooms
 from 
-schema_bonus b0, schema_question q0, 
+schema_bonus b0, schema_question q0, schema_packet p0, schema_questionsetedition qse0, schema_questionset qs0,
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
 LEFT JOIN (SELECT *, value1+value2+value3 AS total FROM schema_gameeventbonus) geb ON geb.bonus_id = b.question_ptr_id 
@@ -312,6 +314,8 @@ LEFT JOIN schema_gameevent ge ON ge.id = geb.gameevent_ptr_id
 LEFT JOIN schema_gameteam gt ON ge.game_team_id = gt.id
 LEFT JOIN schema_game g ON gt.game_id = g.id
 where b0.question_ptr_id = $id and b0.question_ptr_id = q0.id
+and q0.packet_id = p0.id and p0.question_set_edition_id = qse0.id and qse0.question_set_id = qs0.id
+and qs0.id = qs.id
 and 2 <=
 (b0.answer1 like b.answer1) +
 (b0.answer2 like b.answer2) +
