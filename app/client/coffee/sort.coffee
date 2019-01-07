@@ -8,6 +8,7 @@ $(document).ready () ->
 		pageLength: 20
 		lengthChange: false
 		autoWidth: false
+		stateSave: true
 
 	$ '.dataTable'
 		.DataTable options
