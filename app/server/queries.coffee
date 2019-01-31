@@ -58,7 +58,7 @@ where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = 
 and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id
-and tossup_id = $id order by buzz_location is null, buzz_location, bounceback, buzz_value desc'
+and tossup_id = $id order by buzz_location is null, buzz_location, bounceback, buzz_value desc, answer_given COLLATE NOCASE, team_name COLLATE NOCASE'
 # buzz_location is not null
 
 q2 = 'select t.*, q.*,
@@ -259,7 +259,7 @@ schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_r
 where ge.id = geb.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id
-and bonus_id = $id order by total desc, value1 desc, value2 desc, value3 desc
+and bonus_id = $id order by total desc, value1 desc, value2 desc, value3 desc, team_name COLLATE NOCASE
 ;'
 qb = 'select b.*, q.*,
 b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
