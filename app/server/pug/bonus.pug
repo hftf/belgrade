@@ -122,7 +122,7 @@ html
 				table
 					colgroup(span=2)
 					colgroup(span=3)
-					colgroup(span=1)
+					colgroup(span=2)
 					colgroup(span=3)
 					thead
 						tr
@@ -132,6 +132,7 @@ html
 							+th(8).el(title=bonus.answer2)= bonus.answer2
 							+th(8).el(title=bonus.answer3)= bonus.answer3
 							+th(7) Notes
+							th: abbr(title='Protested') Pro?
 							+th(7) Site
 							+th(2) Rm
 							+th(2) Rd
@@ -144,6 +145,7 @@ html
 								td.r= geb.value2
 								td.r= geb.value3
 								+tdel(geb.answer_given)
+								td= geb.protested
 								+tdel(geb.tournament_name)
 								td= geb.room_number
 								td= geb.round_number
