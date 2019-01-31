@@ -9,7 +9,6 @@ include includes/global.pug
 //- team/player pages
 //- show no-link old sets in list of question sets for now (2016 terrapin... smt)
 //- delete app/db
-//- rel=preload, prefetch, defer
 //- dropdown question sets in header quick switch
 //- acf regs- no authors or powers, dont show cols
 //- prev / next keyboard shortcut?
@@ -23,6 +22,7 @@ include includes/global.pug
 html
 	head
 		meta(charset='utf-8')
+		+preload
 		include includes/base.pug
 		include includes/analytics.pug
 		+css
