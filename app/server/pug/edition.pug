@@ -62,10 +62,12 @@ html
 					+th(6) Set edition
 					+th(3)(data-name='packet') Packet
 					+th(3)(data-name='position') Tossup
-					+th(3) Author
+					if edition.has_authors
+						+th(3) Author
 					+th(15) Category
 					+th(18) Answer
-					+th(3): abbr(title='Number of words in power') Pwds
+					if edition.has_powers
+						+th(3): abbr(title='Number of words in power') Pwds
 					+th(3): abbr(title='Number of words') Wds
 
 				tbody.stripe
@@ -74,12 +76,14 @@ html
 							td= tossup.question_set_edition
 							td= tossup.packet_letter
 							td= tossup.position
-							td(title=tossup.author, data-search=tossup.author)= tossup.initials
+							if edition.has_authors
+								td(title=tossup.author, data-search=tossup.author)= tossup.initials
 							td(data-order=tossup.lft)= tossup.category
 							td.el(title=tossup.answer)
 								a(href=basePath(url('tossup', tossup)))
 									= tossup.answer
-							td= tossup.power_words
+							if edition.has_powers
+								td= tossup.power_words
 							td= tossup.words
 
 			h2#bonuses Bonuses
@@ -88,7 +92,8 @@ html
 					+th(6) Set edition
 					+th(3)(data-name='packet') Packet
 					+th(3)(data-name='position') Bonus
-					+th(3) Author
+					if edition.has_authors
+						+th(3) Author
 					+th(15) Category
 					+th(18) Part 1
 					+th(18) Part 2
@@ -100,7 +105,8 @@ html
 							td= bonus.question_set_edition
 							td= bonus.packet_letter
 							td= bonus.position
-							td(title=bonus.author, data-search=bonus.author)= bonus.initials
+							if edition.has_authors
+								td(title=bonus.author, data-search=bonus.author)= bonus.initials
 							td(data-order=bonus.lft)= bonus.category
 							+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))

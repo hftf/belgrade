@@ -29,18 +29,22 @@ html
 						td Tossup #{tossup.position}
 						td: if tossup.next_slug
 							a(href=tossup.next_slug + '.html') →
-					tr: td(colspan=3) by #{tossup.author}
+					if tossup.has_authors
+						tr: td(colspan=3) by #{tossup.author}
 
 			.right
 				h2 Editions of this tossup
-					span.dag †
+					if editions.length > 2
+						span.dag †
 				table
-					colgroup(span=7)
-					colgroup(span=2)
-					colgroup(span=3)
-					colgroup(span=3)
+					- var firstcolspan = 5 + tossup.has_powers + (editions.length > 2);
+					colgroup(span=firstcolspan)
+					colgroup(span=1 + tossup.has_powers)
+					colgroup(span=2 + tossup.has_powers)
+					colgroup(span=2 + tossup.has_powers)
 						col
-						col
+						if tossup.has_powers
+							col
 						col
 					colgroup(span=2)
 					colgroup(span=2)
@@ -50,20 +54,25 @@ html
 							+th(3) Packet
 							+th(3) Tossup
 							+th(18) Answer
-							+th(3): abbr(title='Number of words in power') Pwds
+							if tossup.has_powers
+								+th(3): abbr(title='Number of words in power') Pwds
 							+th(3): abbr(title='Number of words') Wds
-							+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
+							if editions.length > 2
+								+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
 
 							+th(3) Rooms
 
-							+th(2): abbr(title='Gets') G
-							+th(2) 15s
+							if tossup.has_powers
+								+th(2): abbr(title='Gets') G
+
+								+th(2) 15s
 							+th(2) 10s
 							+th(2) −5s
 							//- +th(2) 0s
 
 							+th(3): abbr(title='Conversion') Conv
-							+th(3): abbr(title='Power %') Pow%
+							if tossup.has_powers
+								+th(3): abbr(title='Power %') Pow%
 							+th(3): abbr(title='Neg %') Neg%
 							
 							+th(3): abbr(title='First correct buzz location %') FB%
@@ -81,23 +90,32 @@ html
 									td= edition.packet_letter
 									td= edition.position
 									+tdel(edition.answer)
-									td.r= edition.power_words
+									if tossup.has_powers
+										td.r= edition.power_words
 									td.r= edition.words
-									td.r= formatPct2(edition.similarity)
+									if editions.length > 2
+										td.r= formatPct2(edition.similarity)
 								else
-									th Grand total #[span.dag †]
-									td.warning(colspan=6) Warning: Comparing editions is not reliable!
+									th Grand total
+										if editions.length > 2
+											span.dag †
+									td.warning(colspan=firstcolspan - 1)
+										if editions.length > 2
+											| Warning: Comparing editions is not reliable!
 
 								td.r= edition.countRooms
 
-								td.r= bl(edition.countRooms, edition.countG)
-								td.r= bl(edition.countRooms, edition.count15)
+								if tossup.has_powers
+									td.r= bl(edition.countRooms, edition.countG)
+
+									td.r= bl(edition.countRooms, edition.count15)
 								td.r= bl(edition.countRooms, edition.count10)
 								td.r= bl(edition.countRooms, edition.countN5)
 								//- td.r= bl(edition.countRooms, edition.count0)
 
 								+tdb(edition.countRooms, edition.countG)
-								+tdb(edition.countRooms, edition.count15)
+								if tossup.has_powers
+									+tdb(edition.countRooms, edition.count15)
 								+tdb(edition.countRooms, edition.countN5)
 
 								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))

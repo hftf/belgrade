@@ -67,6 +67,7 @@ qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.has_powers, qs.has_authors,
 qs.id as question_set_id,
 t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
@@ -200,7 +201,8 @@ qse.*,
 qse.slug as question_set_edition_slug,
 qse.name as question_set_edition,
 qs.slug as question_set_slug,
-qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.has_powers, qs.has_authors
 from
 schema_questionsetedition qse, schema_questionset qs
 where
@@ -268,6 +270,7 @@ qse.date as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.has_powers, qs.has_authors,
 b.slug as bonus_slug,
 c.name as category,
 a.name as author,

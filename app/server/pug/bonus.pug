@@ -27,13 +27,16 @@ html
 						td Bonus #{bonus.position}
 						td: if bonus.next_slug
 							a(href=bonus.next_slug + '.html') →
-					tr: td(colspan=3) by #{bonus.author}
+					if bonus.has_authors
+						tr: td(colspan=3) by #{bonus.author}
 
 			.right
 				h2 Editions of this bonus
-					span.dag †
+					if editions.length > 2
+						span.dag †
 				table
-					colgroup(span=5)
+					- var firstcolspan = 4 + (editions.length > 2);
+					colgroup(span=firstcolspan)
 					colgroup(span=2)
 						col
 						col
@@ -53,7 +56,8 @@ html
 							+th(3) Packet
 							+th(3) Bonus
 							+th(26.1) Answers
-							+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
+							if editions.length > 2
+								+th(3): abbr(title='Bray–Curtis dissimilarity') Diff
 
 							+th(3) Rooms
 
@@ -81,10 +85,15 @@ html
 									td= edition.packet_letter
 									td= edition.position
 									+tdel(edition.answers)
-									td.r= formatPct2(edition.similarity)
+									if editions.length > 2
+										td.r= formatPct2(edition.similarity)
 								else
-									th Grand total #[span.dag †]
-									td.warning(colspan=4) Warning: Comparing editions is not reliable!
+									th Grand total
+										if editions.length > 2
+											span.dag †
+									td.warning(colspan=firstcolspan - 1)
+										if editions.length > 2
+											| Warning: Comparing editions is not reliable!
 
 								td.r= edition.countRooms
 
