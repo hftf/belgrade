@@ -28,6 +28,7 @@ html
 					//- +th(6) Set edition
 					+th(6) Date
 					+th(8) Site
+					+th(2): a(href='http://collegequizbowlcalendar.com/map/'): abbr(title='Region') Reg
 					+th(3) Rooms
 					+th(3) Teams
 					+th(60)(data-orderable='false')
@@ -39,6 +40,7 @@ html
 							//- td= tournament.question_set_edition
 							td= tournament.date
 							+tdel(tournament.site_name)
+							td= tournament.region
 							td.r= tournament.room_count
 							td.r= tournament.team_count
 							td(style='width:60em;')
@@ -50,7 +52,7 @@ html
 					for tournament in tournaments.rollup
 						tr.rollup
 							th Grand total
-							td
+							td(colspan=2)
 							td.r= tournament.room_count
 							td.r= tournament.team_count
 							td

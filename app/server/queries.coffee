@@ -160,7 +160,7 @@ qse.id = $id
 and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
 and g.room_id = rm.id and rm.tournament_id = tou.id',
 'group by tou.id',
-'order by tou.date, tou.site_name')
+'order by tou.date, tou.region, tou.site_name')
 
 tossups = 'select t.*, q.*,
 p.name as packet_name, p.letter as packet_letter, p.filename as filename,
