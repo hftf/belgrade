@@ -249,7 +249,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.attr 'y', '0'
 			.attr 'text-anchor', 'end'
 			.attr 'font-size', 'smaller'
-			.attr 'font-weight', '300'
+			# .attr 'font-weight', '300'
 		legendCategory.append 'text'
 			.text '†'
 			.attr 'x', '68'
@@ -274,7 +274,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
 		.attr 'font-size', 'smaller'
-		.attr 'font-weight', '300'
+		# .attr 'font-weight', '300'
 
 	ng = chart.append 'g'
 		.attr 'class', 'legend'
@@ -295,7 +295,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
 		.attr 'font-size', 'smaller'
-		.attr 'font-weight', '300'
+		# .attr 'font-weight', '300'
 
 	# labels
 

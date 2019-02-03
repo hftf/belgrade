@@ -186,15 +186,15 @@ svg, .line.last, .next_tick
 .get
 	color: $colorget
 	blockquote &
-		font-weight: 500
+		font-weight: 600
 .bb
 	color: darken($color4, 20)
 	blockquote &
-		font-weight: 300
+		font-weight: 400
 .neg
 	color: darken($color2, 15)
 	blockquote &
-		font-weight: 400
+		font-weight: 500
 
 .serif, .dag
 	font-family: var(--base-serif-font)
@@ -278,6 +278,9 @@ tr.rollup
 table.dataTable
 	width: auto !important
 	margin: 0 !important
+
+	thead th, tfoot th
+		font-weight: 600 !important
 .dataTables_wrapper
 	width: -webkit-fit-content
 	width: fit-content

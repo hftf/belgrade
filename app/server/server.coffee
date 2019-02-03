@@ -99,7 +99,7 @@ router.use '/images', express.static './app/images'
 
 server.set 'view engine', 'pug'
 server.set 'views', './app/server/pug'
-server.locals.pretty = '\t'
+# server.locals.pretty = '\t'
 
 
 router.get '/question_sets/', 'question_sets', (req, res, next) ->
