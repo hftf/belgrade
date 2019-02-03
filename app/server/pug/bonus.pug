@@ -143,6 +143,7 @@ html
 							+th(8).el(title=bonus.answer3)= bonus.answer3
 							+th(7) Notes
 							th: abbr(title='Protested') Pro?
+							+th(8) Opponent
 							+th(7) Site
 							+th(2) Rm
 							+th(2) Rd
@@ -156,6 +157,7 @@ html
 								td.r= geb.value3
 								+tdel(geb.answer_given)
 								td= geb.protested
+								+tdel(geb.opponent)
 								+tdel(geb.tournament_name)
 								td= geb.room_number
 								td= geb.round_number

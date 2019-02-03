@@ -253,12 +253,15 @@ qb1 = 'select
 te.name team_name,
 geb.*,
 value1+value2+value3 as total,
+te2.name opponent,
 tou.site_name tournament_name,
 rm.number room_number,
 r.number round_number
 from schema_gameeventbonus geb, schema_bonus b, schema_team te, schema_tournament tou,
-schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2
 where ge.id = geb.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
 and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
 and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id
 and bonus_id = $id order by total desc, value1 desc, value2 desc, value3 desc, team_name COLLATE NOCASE
