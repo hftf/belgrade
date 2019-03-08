@@ -18,6 +18,8 @@ $colorget: #757
 // $color8: #fccde5
 // $color9: #d9d9d9
 
+$colorlink: #27248f
+
 
 html
 	--base-sans-font: 'BentonSansCond', sans-serif
@@ -64,10 +66,10 @@ h3
 
 header
 	border-bottom: 1px solid #ccc
-header a
-	&:not(:hover)
-		color: inherit
-		text-decoration: none
+
+a
+	color: $colorlink
+	text-decoration: none
 	&:hover
 		text-decoration: underline
 
@@ -278,6 +280,7 @@ tr.rollup
 table.dataTable
 	width: auto !important
 	margin: 0 !important
+	// border-collapse: collapse !important
 
 	thead th, tfoot th
 		font-weight: 600 !important
