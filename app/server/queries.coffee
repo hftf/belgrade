@@ -149,10 +149,11 @@ and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY t.question_ptr_id')
 
 tournaments = fakerollup('tou.*,
+tou.slug as tournament_slug,
 qse.name as question_set_edition,
 qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
-json_group_array(distinct te.name) as teams,
+json_group_array(DISTINCT json_object("team_name", te.name, "team_slug", te.slug)) as teams,
 count(distinct te.id) as team_count,
 count(distinct rm.id) as room_count,
 count(distinct g.id) as game_count

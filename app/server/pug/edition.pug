@@ -45,7 +45,7 @@ html
 							td.r= tournament.team_count
 							td(style='width:60em;')
 								ul: for team in tournament.teams
-									li= team
+									li: a(href=basePath(team.team_url))= team.team_name
 							td.r= tournament.game_count
 
 				tfoot

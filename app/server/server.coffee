@@ -151,7 +151,10 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results['tournaments'] = unrollup results['tournaments']
 		for tournament in results.tournaments.entries
 			tournament.teams = JSON.parse tournament.teams
-			tournament.teams.sort()
+			tournament.teams = R.sortBy R.prop('team_name'), tournament.teams
+			for team in tournament.teams
+				url_params = { ...team, question_set_slug: results['edition']['question_set_slug'], tournament_slug: tournament['tournament_slug'] }
+				team.team_url = namedRouter.build('team', url_params)
 
 		res.render 'edition.pug', results
 	catch err
