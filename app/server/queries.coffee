@@ -40,7 +40,9 @@ and qse.question_set_id = qs.id
 
 q1 = 'select
 te.name team_name,
+te.slug team_slug,
 pl.name player_name,
+pl.slug player_slug,
 buzz_value,
 buzz_location p,
 case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 100.0 / words) end buzz_location_pct,
@@ -48,7 +50,9 @@ bounceback,
 answer_given,
 protested,
 te2.name opponent,
+te2.slug opponent_slug,
 tou.site_name tournament_name,
+tou.slug tournament_slug,
 rm.number room_number,
 r.number round_number
 from schema_gameeventtossup get, schema_tossup t, schema_player pl, schema_team te, schema_tournament tou,
@@ -251,10 +255,13 @@ group by qs.id
 
 qb1 = 'select
 te.name team_name,
+te.slug team_slug,
 geb.*,
 value1+value2+value3 as total,
 te2.name opponent,
+te2.slug opponent_slug,
 tou.site_name tournament_name,
+tou.slug tournament_slug,
 rm.number room_number,
 r.number round_number
 from schema_gameeventbonus geb, schema_bonus b, schema_team te, schema_tournament tou,

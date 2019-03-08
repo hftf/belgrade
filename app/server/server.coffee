@@ -178,7 +178,14 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results = runQueries queries
 
 		results['raw'] = get_question_html('tossup', results['tossup'])
-		results['buzzes'].map (buzz) -> buzz.class = classifyBuzz(buzz)
+		results['buzzes'].map (buzz) ->
+			buzz.class = classifyBuzz(buzz)
+			url_params = { ...buzz, question_set_slug: results['tossup']['question_set_slug'] }
+			buzz.team_url   = namedRouter.build('team', url_params)
+			buzz.player_url = namedRouter.build('player', url_params)
+			url_params.team_slug = buzz.opponent_slug
+			buzz.opponent_url = namedRouter.build('team', url_params)
+
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
 				edition_raw = get_question_html('tossup', edition)
@@ -208,6 +215,12 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 	try
 		results = runQueries queries
 
+		results['performances'].map (performance) ->
+			url_params = { ...performance, question_set_slug: results['bonus']['question_set_slug'] }
+			performance.team_url   = namedRouter.build('team', url_params)
+			url_params.team_slug = performance.opponent_slug
+			performance.opponent_url = namedRouter.build('team', url_params)
+
 		results['raw'] = get_question_html('bonus', results['bonus'])
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
@@ -218,6 +231,21 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 	catch err
 		res.status 500
 		res.send err.stack
+
+
+router.get '/question_sets/:question_set_slug/tournaments/:tournament_slug/teams/:team_slug.html', 'team', (req, res, next) ->
+	params =
+		question_set_slug : req.params.question_set_slug
+		tournament_slug   : req.params.tournament_slug
+		team_slug         : req.params.team_slug
+
+router.get '/question_sets/:question_set_slug/tournaments/:tournament_slug/teams/:team_slug/players/:player_slug.html', 'player', (req, res, next) ->
+	params =
+		question_set_slug : req.params.question_set_slug
+		tournament_slug   : req.params.tournament_slug
+		team_slug         : req.params.team_slug
+		player_slug       : req.params.player_slug
+
 
 router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
 	id = id: req.params.question_ptr_id
