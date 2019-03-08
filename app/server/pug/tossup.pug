@@ -25,10 +25,10 @@ html
 					tr: td(colspan=3)= tossup.packet_name
 					tr
 						td: if tossup.prev_slug
-							a(href=tossup.prev_slug + '.html') ←
+							a(href=tossup.prev_slug + '.html', accesskey='k') ←
 						td Tossup #{tossup.position}
 						td: if tossup.next_slug
-							a(href=tossup.next_slug + '.html') →
+							a(href=tossup.next_slug + '.html', accesskey='j') →
 					if tossup.has_authors
 						tr: td(colspan=3) by #{tossup.author}
 
