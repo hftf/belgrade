@@ -216,10 +216,8 @@ th
 td, th
 	vertical-align: top
 	padding: 1px 6px
-.buzzes td
-	&:nth-child(-n+2),
-	&:nth-child(n+8)
-		color: black
+.buzzes td:not(.bg)
+	color: black
 
 tbody.stripe
 	tr:nth-child(2n)

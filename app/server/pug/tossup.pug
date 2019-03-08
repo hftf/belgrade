@@ -172,12 +172,12 @@ html
 							tr(data-index=buzz.p class=buzz.class)
 								+tdel(buzz.team_name, basePath(buzz.team_url))
 								+tdel(buzz.player_name, basePath(buzz.player_url))
-								td.r= formatNegative(buzz.buzz_value)
-								td.r= buzz.p
-								td.r= buzz.buzz_location_pct
-								td= buzz.bounceback
-								+tdel(buzz.answer_given)
-								td= buzz.protested
+								td.r.bg= formatNegative(buzz.buzz_value)
+								td.r.bg= buzz.p
+								td.r.bg= buzz.buzz_location_pct
+								td.bg= buzz.bounceback
+								+tdel(buzz.answer_given).bg
+								td.bg= buzz.protested
 								+tdel(buzz.opponent, basePath(buzz.opponent_url))
 								+tdel(buzz.tournament_name)
 								td= buzz.room_number
