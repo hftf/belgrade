@@ -153,7 +153,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 			tournament.teams = JSON.parse tournament.teams
 			tournament.teams = R.sortBy R.prop('team_name'), tournament.teams
 			for team in tournament.teams
-				url_params = { ...team, question_set_slug: results['edition']['question_set_slug'], tournament_slug: tournament['tournament_slug'] }
+				url_params = { ...team, question_set_slug: results['edition']['question_set_slug'], tournament_site_slug: tournament['tournament_site_slug'] }
 				team.team_url = namedRouter.build('team', url_params)
 
 		res.render 'edition.pug', results
@@ -236,18 +236,18 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		res.send err.stack
 
 
-router.get '/question_sets/:question_set_slug/tournaments/:tournament_slug/teams/:team_slug.html', 'team', (req, res, next) ->
+router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/teams/:team_slug.html', 'team', (req, res, next) ->
 	params =
-		question_set_slug : req.params.question_set_slug
-		tournament_slug   : req.params.tournament_slug
-		team_slug         : req.params.team_slug
+		question_set_slug    : req.params.question_set_slug
+		tournament_site_slug : req.params.tournament_site_slug
+		team_slug            : req.params.team_slug
 
-router.get '/question_sets/:question_set_slug/tournaments/:tournament_slug/teams/:team_slug/players/:player_slug.html', 'player', (req, res, next) ->
+router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/teams/:team_slug/players/:player_slug.html', 'player', (req, res, next) ->
 	params =
-		question_set_slug : req.params.question_set_slug
-		tournament_slug   : req.params.tournament_slug
-		team_slug         : req.params.team_slug
-		player_slug       : req.params.player_slug
+		question_set_slug    : req.params.question_set_slug
+		tournament_site_slug : req.params.tournament_site_slug
+		team_slug            : req.params.team_slug
+		player_slug          : req.params.player_slug
 
 
 router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
