@@ -11,11 +11,13 @@ FROM
 	schema_category cp,
 	schema_question q,
 	schema_tossup t,
-	schema_gameeventtossup get
+	schema_gameeventtossup get,
+	schema_questionset qs
 WHERE
 	q.category_id = cp.id
 	AND c.lft <= cp.lft AND cp.rght <= c.rght AND c.tree_id = cp.tree_id
-	AND c.question_set_id = $id
+	AND c.question_set_id = qs.id
+	AND qs.slug = $question_set_slug
 	AND get.tossup_id = t.question_ptr_id AND q.id = t.question_ptr_id
 	AND buzz_location IS NOT NULL AND buzz_value > 0
 GROUP BY

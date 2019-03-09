@@ -250,8 +250,16 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		player_slug          : req.params.player_slug
 
 
-router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
-	id = id: req.params.question_ptr_id
+router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/tossups/:tossup_slug.js', 'tossup_data', (req, res, next) ->
+	params =
+		question_set_slug         : req.params.question_set_slug
+		question_set_edition_slug : req.params.question_set_edition_slug
+		tossup_slug               : req.params.tossup_slug
+
+	id = id:
+		db.prepare allQueries.tossup.t_id
+		.get params
+		.question_ptr_id
 	
 	queries =
 		a: ['get', allQueries.tossup_data.a, id]
@@ -272,11 +280,11 @@ router.get '/js/tossups/:question_ptr_id.js', 'tossup_data', (req, res, next) ->
 		res.status 500
 		res.send err.stack
 
-router.get '/js/categories/:question_set_id.js', 'categories', (req, res, next) ->
-	id = id: req.params.question_set_id
+router.get '/question_sets/:question_set_slug/categories.js', 'categories', (req, res, next) ->
+	slug = question_set_slug: req.params.question_set_slug
 
 	queries =
-		d: ['all', allQueries.categories.d, id]
+		d: ['all', allQueries.categories.d, slug]
 
 	try
 		results = runQueries queries
