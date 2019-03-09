@@ -19,7 +19,9 @@
     "named-routes": "^2.0.6",
     "datatables.net-dt": "^1.10.19",
     "string-similarity": "^3.0.0",
-    "striptags": "^3.1.1"
+    "striptags": "^3.1.1",
+    "html2bbcode": "^1.2.6",
+    "clipboard-polyfill": "^2.7.0"
   },
   "devDependencies": {
     "browserify": "^16.2.3",

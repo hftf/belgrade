@@ -4,6 +4,17 @@ NamedRouter = require 'named-routes'
 R = require 'ramda'
 sqlite = require 'better-sqlite3'
 
+HTML2BBCode = require('html2bbcode').HTML2BBCode
+h2b_s = new HTML2BBCode()
+h2b = (h) ->
+	h2 = h
+		.join('\n')
+		.replace(/span class="s1">|span>/g, 'u>')
+		.replace(/<\/rb><rp>/g, '</rb><span style="color:#58c">')
+		.replace(/<\/rp><\/ruby>/g, '</span></ruby>')
+		.replace(/<\/?rp>/g, '')
+	h2b_s.feed(h2).toString()
+
 red = (s) -> '\x1b[91;1m[ERROR] ' + s + '\x1b[0m';
 console.error = R.compose console.error, red
 
@@ -54,7 +65,7 @@ scan_packet = (packet_filename, question_type, question_number) ->
     for line, index in packet_file
         if line.startsWith(util.format(META[question_type]['line_startswith_template'], question_number))
             return [
-                packet_file.slice(index, index + 1),
+                packet_file.slice(index, index + 1).join('\n'),
                 packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
             ]
 # END NEW
@@ -181,6 +192,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results = runQueries queries
 
 		results['raw'] = get_question_html('tossup', results['tossup'])
+		results['bbcode'] = h2b results['raw']
 		results['buzzes'].map (buzz) ->
 			buzz.class = classifyBuzz(buzz)
 			url_params = { ...buzz, question_set_slug: results['tossup']['question_set_slug'] }
@@ -225,6 +237,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 			performance.opponent_url = namedRouter.build('team', url_params)
 
 		results['raw'] = get_question_html('bonus', results['bonus'])
+		results['bbcode'] = h2b results['raw']
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
 				edition_raw = get_question_html('bonus', edition)

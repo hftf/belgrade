@@ -1,6 +1,7 @@
 d3 = require 'd3'
 kdep = require './kde'
 R = require 'ramda'
+clipboard = require 'clipboard-polyfill'
 
 
 # NEW
@@ -436,3 +437,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.attr("transform", 'translate(' + ( 3 + xbox[4] ) + ',' + lh + ') rotate(-90)')
 
 	x # hack return
+
+window.copy_bbcode = (el) ->
+	text_url = el.dataset.text.replace('__url__', window.location.href);
+	clipboard.writeText text_url

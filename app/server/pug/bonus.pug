@@ -125,6 +125,7 @@ html
 					div.question
 						!= raw[0]
 						!= raw[1]
+				button(onclick='copy_bbcode(this);' data-text=`[quote="${bonus.question_set_name} › ${bonus.question_set_edition} edition › ${bonus.packet_name}" url=__url__]\n${bbcode}[/quote]`) Copy text as BBcode
 
 			.right
 
@@ -161,3 +162,5 @@ html
 								+tdel(geb.tournament_name)
 								td= geb.room_number
 								td= geb.round_number
+
+		script(src=basePath('/js/all.js'))
