@@ -1,0 +1,47 @@
+.typeahead
+    position: relative
+    display: inline-block
+    width: 500px
+
+.typeahead-results
+    font: 14px Arial; 
+    position: absolute
+    border: 1px solid #d4d4d4
+    z-index: 99
+    top: 100%
+    left: 0
+    right: 0
+    div
+        cursor: pointer
+        background-color: #fff
+    div.typeahead-set
+        font-weight: bold
+
+.typeahead-result
+    border-bottom: 1px solid #d4d4d4
+    padding: 10px
+    &:hover
+        background-color: #e9e9e9
+        div
+            background-color: #e9e9e9
+    &.typeahead-active
+        background-color: #0097cf
+        color: white
+        div
+            background-color: #0097cf
+            color: white
+
+.typeahead-secondary-text
+    color: #8899a6
+    font-weight: 500
+    text-transform: uppercase
+    font-size: 75%
+
+.typeahead-score
+    float: right
+
+.typeahead-editions
+    padding-top: 5px
+
+.underline
+    text-decoration: underline
