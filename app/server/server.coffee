@@ -408,6 +408,57 @@ router.get '/question_sets/:question_set_slug/categories.js', 'categories', (req
 		res.status 500
 		res.send err.stack
 
+router.get '/index.json', 'index', (req, res, next) ->
+	queries =
+		set: ['all', allQueries.question_sets.question_sets_index]
+
+	try
+		results = runQueries queries
+
+		sets = R.map ((qs) -> 
+			name: qs.name
+			url: namedRouter.build 'question_set', { question_set_slug: qs.slug }, 'get'
+		), results.set
+
+		res.setHeader 'Content-Type', 'application/json'
+		res.send JSON.stringify(sets)
+	catch err
+		res.status 500
+		res.send err.stack
+
+router.get '/question_sets/:question_set_slug/index.json', 'question_set_index', (req, res, next) ->
+	id = id: req.params.question_set_slug
+
+	queries =
+		tossup: ['all', allQueries.question_set.tossups_index, id]
+		bonus:  ['all', allQueries.question_set.bonuses_index, id]
+		team:   ['all', allQueries.question_set.team_index,    id]
+		player: ['all', allQueries.question_set.player_index,  id]
+		
+	try
+		results = runQueries queries
+		pages = []
+
+		Object.keys(results).forEach((page_type) ->
+			pages.push(...R.map ((qs) -> 
+				return
+					name: qs.name
+					slug: qs[page_type + '_slug']
+					page_type: page_type
+					url: namedRouter.build page_type, qs
+					team_count: qs.team_count
+					edition_slug: qs.question_set_edition_slug
+					team_name: qs.team_name
+					tournament_name: qs.tournament_site_name
+			), results[page_type])
+		)
+
+		res.setHeader 'Content-Type', 'application/javascript'
+		res.send JSON.stringify(pages)
+	catch err
+		res.status 500
+		res.send err.stack
+
 router.get '/notices.html', 'notices', (req, res, next) ->
 	res.render 'notices.pug'
 

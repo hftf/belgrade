@@ -31,6 +31,8 @@ mixin header
 				li: a(href=basePath(url('notices'))) Notices
 				li: a(href=basePath(url('question_sets'))) Question sets
 				block
+				li: div.typeahead
+						input(type='text' placeholder="Search every.buzz").search
 
 mixin th(w)
 	th(style=`min-width:${w}em;`)&attributes(attributes)
