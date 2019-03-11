@@ -1,0 +1,141 @@
+doctype html
+include includes/global.pug
+html
+	head
+		meta(charset='utf-8')
+		+preload
+		include includes/base.pug
+		include includes/analytics.pug
+		+css
+		+title(`every.buzz ⬢ ${team.question_set} › ${team.question_set_edition} › ${team.team_name}`)
+	body
+		+header
+			li: a(href=basePath(url('question_set', team)))= team.question_set
+			li: a(href=basePath(url('edition', team)))= team.question_set_edition
+
+		.left
+			h1 #{team.team_name} at #{team.tournament_name}
+
+			h2#players Players
+			ul: for player in team.players
+				li: a(href=basePath(player.player_url))= player.player_name
+
+			h2#tossups Tossups
+
+			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')
+				colgroup(span=3)
+				colgroup(span=4 + team.has_authors)
+				colgroup(span=4)
+				colgroup(span=3)
+				thead
+					tr
+						//- +th(6) Set edition
+						+th(9) Opponent
+						//- +th(7) Site
+						+th(2) Rm
+						+th(2) Rd
+
+						+th(3)(data-name='packet') Packet
+						+th(3)(data-name='position') Tossup
+						if team.has_authors
+							+th(3) Author
+						+th(15) Category
+						+th(18) Answer
+						//- if edition.has_powers
+						//- +th(3): abbr(title='Number of words in power') Pwds
+						//- +th(3): abbr(title='Number of words') Wds
+
+						th Value
+						th: abbr(title='Buzz location') BzPt
+						th: abbr(title='Buzz location %') BzPt%
+						+th(3) Rank
+
+						th: abbr(title='Bounceback') BB?
+						+th(9) Answer
+						th: abbr(title='Protested') Pro?
+
+
+				tbody.stripe.buzzes
+					for buzz in buzzes
+						tr(data-index=buzz.p class=buzz.class)
+
+							//- td= buzz.question_set_edition
+							+tdel(buzz.opponent, basePath(buzz.opponent_url))
+							//- +tdel(buzz.tournament_name)
+							td= buzz.room_number
+							td= buzz.round_number
+
+							td= buzz.packet_letter
+							td= buzz.position
+							if team.has_authors
+								td(title=buzz.author, data-search=buzz.author)= buzz.initials
+							td(data-order=buzz.lft)= buzz.category
+							+tdel(buzz.answer, basePath(buzz.tossup_url))
+							//- if edition.has_powers
+							//- td= buzz.power_words
+							//- td= buzz.words
+
+							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
+							td.r.bg= buzz.p
+							td.r.bg= buzz.buzz_location_pct
+							td
+
+							td.bg= buzz.bounceback
+							+tdel(buzz.answer_given).bg
+							td.bg= buzz.protested
+
+			h2#bonuses Bonuses
+
+			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')
+				colgroup(span=3)
+				colgroup(span=4 + team.has_authors)
+				colgroup(span=4)
+				colgroup(span=2)
+				thead
+					tr
+						//- +th(6) Set edition
+						+th(9) Opponent
+						//- +th(7) Site
+						+th(2) Rm
+						+th(2) Rd
+
+						+th(3)(data-name='packet') Packet
+						+th(3)(data-name='position') Bonus
+						if team.has_authors
+							+th(3) Author
+						+th(15) Category
+						+th(18) Answers
+
+						+th(3) Total
+						+th(3) Part 1
+						+th(3) Part 2
+						+th(3) Part 3
+
+						+th(9) Notes
+						th: abbr(title='Protested') Pro?
+
+				tbody.stripe
+					for geb in bonuses
+						tr
+							//- td= geb.question_set_edition
+							+tdel(geb.opponent, basePath(geb.opponent_url))
+							//- +tdel(geb.tournament_name)
+							td= geb.room_number
+							td= geb.round_number
+
+							td= geb.packet_letter
+							td= geb.position
+							if team.has_authors
+								td(title=geb.author, data-search=geb.author)= geb.initials
+							td(data-order=geb.lft)= geb.category
+							+tdel(geb.answers, basePath(geb.bonus_url))
+
+							td.r= geb.total
+							td.r= geb.value1
+							td.r= geb.value2
+							td.r= geb.value3
+
+							+tdel(geb.answer_given)
+							td= geb.protested
+
+		script(src=basePath('/js/all.js'))

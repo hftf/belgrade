@@ -1,0 +1,103 @@
+doctype html
+include includes/global.pug
+html
+	head
+		meta(charset='utf-8')
+		+preload
+		include includes/base.pug
+		include includes/analytics.pug
+		+css
+		+title(`every.buzz ⬢ ${player.question_set} › ${player.question_set_edition} › ${player.team_name} › ${player.player_name}`)
+	body
+		+header
+			li: a(href=basePath(url('question_set', player)))= player.question_set
+			li: a(href=basePath(url('edition', player)))= player.question_set_edition
+
+		.left
+			h1 #{player.player_name} (#[a(href=basePath(url('team', player))) #{player.team_name}]) at #{player.tournament_name}
+
+			h2#tossups Tossups
+
+			//- h3#round    By round
+			//- h3#category By category
+
+			//- table
+			//- 	thead
+			//- 		tr
+			//- 			+th(2) Category
+
+			//- 			+th(2) TUH
+			//- 			+th(2) Buzzes
+
+			//- 			if player.has_powers
+			//- 				+th(2) 15s
+			//- 			+th(2) 10s
+			//- 			+th(2) −5s
+			//- 			// +th(2) 0s
+
+			//- 			+th(2) Pts
+
+			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')
+				colgroup(span=3)
+				colgroup(span=4 + player.has_authors)
+				colgroup(span=4)
+				colgroup(span=3)
+				thead
+					tr
+						//- +th(6) Set edition
+						+th(9) Opponent
+						//- +th(7) Site
+						+th(2) Rm
+						+th(2) Rd
+
+						+th(3)(data-name='packet') Packet
+						+th(3)(data-name='position') Tossup
+						if player.has_authors
+							+th(3) Author
+						+th(15) Category
+						+th(18) Answer
+						//- if edition.has_powers
+						//- +th(3): abbr(title='Number of words in power') Pwds
+						//- +th(3): abbr(title='Number of words') Wds
+
+						th Value
+						th: abbr(title='Buzz location') BzPt
+						th: abbr(title='Buzz location %') BzPt%
+						+th(3) Rank
+
+						th: abbr(title='Bounceback') BB?
+						+th(9) Answer
+						th: abbr(title='Protested') Pro?
+
+
+				tbody.stripe.buzzes
+					for buzz in buzzes
+						tr(data-index=buzz.p class=buzz.class)
+
+							//- td= buzz.question_set_edition
+							+tdel(buzz.opponent, basePath(buzz.opponent_url))
+							//- +tdel(buzz.tournament_name)
+							td= buzz.room_number
+							td= buzz.round_number
+
+							td= buzz.packet_letter
+							td= buzz.position
+							if player.has_authors
+								td(title=buzz.author, data-search=buzz.author)= buzz.initials
+							td(data-order=buzz.lft)= buzz.category
+							+tdel(buzz.answer, basePath(buzz.tossup_url))
+							//- if edition.has_powers
+							//- td= buzz.power_words
+							//- td= buzz.words
+
+							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
+							td.r.bg= buzz.p
+							td.r.bg= buzz.buzz_location_pct
+							td
+
+							td.bg= buzz.bounceback
+							+tdel(buzz.answer_given).bg
+							td.bg= buzz.protested
+
+
+		script(src=basePath('/js/all.js'))

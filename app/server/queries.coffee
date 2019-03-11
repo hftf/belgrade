@@ -344,6 +344,182 @@ and q.category_id = c.id and q.author_id = a.id',
 'GROUP BY b.question_ptr_id')
 
 
+te_id = 'select te.id
+from schema_team te, schema_tournament tou, schema_questionsetedition qse, schema_questionset qs
+where te.slug = $team_slug and tou.site_slug = $tournament_site_slug and qs.slug = $question_set_slug
+and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+';
+team = 'select
+te.name as team_name,
+te.slug as team_slug,
+json_group_array(DISTINCT json_object("player_name", pl.name, "player_slug", pl.slug)) as players,
+tou.name as tournament_name,
+tou.site_slug as tournament_site_slug,
+qse.*,
+qse.slug as question_set_edition_slug,
+qse.name as question_set_edition,
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.has_powers, qs.has_authors
+from
+schema_player pl, schema_team te, schema_tournament tou,
+schema_questionsetedition qse, schema_questionset qs
+where
+te.id = $id
+and pl.team_id = te.id and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id
+and qse.question_set_id = qs.id
+group by te.id
+;'
+team_buzzes = '
+select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+te.name team_name,
+te.slug team_slug,
+pl.name player_name,
+pl.slug player_slug,
+t.slug as tossup_slug,
+c.name as category, c.lft,
+a.name as author, a.initials,
+buzz_value,
+buzz_location p,
+case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 100.0 / words) end buzz_location_pct,
+bounceback,
+answer_given,
+protested,
+te2.name opponent,
+te2.slug opponent_slug,
+tou.site_name tournament_name,
+tou.site_slug tournament_site_slug,
+rm.number room_number,
+r.number round_number
+from schema_gameeventtossup get, schema_tossup t, schema_question q, schema_packet p,
+schema_player pl, schema_team te, schema_tournament tou,
+schema_questionsetedition qse, schema_questionset qs,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2,
+schema_category c, schema_author a
+where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
+and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id
+and q.packet_id = p.id and t.question_ptr_id = q.id
+and q.category_id = c.id and q.author_id = a.id
+and te.id = $id
+order by r.id, q.position'
+# buzz_location is not null
+# r.number sorts as string -> using r.id instead fixme
+team_bonuses = '
+select b.*, q.*,
+b.answer1||" / "||b.answer2||" / "||b.answer3 as answers,
+geb.*,
+value1+value2+value3 as total,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+te.name team_name,
+te.slug team_slug,
+b.slug as bonus_slug,
+c.name as category, c.lft,
+a.name as author, a.initials,
+answer_given,
+protested,
+te2.name opponent,
+te2.slug opponent_slug,
+tou.site_name tournament_name,
+tou.site_slug tournament_site_slug,
+rm.number room_number,
+r.number round_number
+from schema_gameeventbonus geb, schema_bonus b, schema_question q, schema_packet p,
+schema_team te, schema_tournament tou,
+schema_questionsetedition qse, schema_questionset qs,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2,
+schema_category c, schema_author a
+where ge.id = geb.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
+and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and geb.bonus_id = b.question_ptr_id and gt.team_id = te.id
+and q.packet_id = p.id and b.question_ptr_id = q.id
+and q.category_id = c.id and q.author_id = a.id
+and te.id = $id
+order by r.id, q.position'
+
+pl_id = 'select pl.id
+from schema_player pl, schema_team te, schema_tournament tou, schema_questionsetedition qse, schema_questionset qs
+where pl.slug = $player_slug and te.slug = $team_slug and tou.site_slug = $tournament_site_slug and qs.slug = $question_set_slug
+and pl.team_id = te.id and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+';
+player = 'select
+pl.name as player_name,
+pl.slug as player_slug,
+te.name as team_name,
+te.slug as team_slug,
+tou.name as tournament_name,
+tou.site_slug as tournament_site_slug,
+qse.*,
+qse.slug as question_set_edition_slug,
+qse.name as question_set_edition,
+qs.slug as question_set_slug,
+qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
+qs.has_powers, qs.has_authors
+from
+schema_player pl, schema_team te, schema_tournament tou,
+schema_questionsetedition qse, schema_questionset qs
+where
+pl.id = $id
+and pl.team_id = te.id and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id
+and qse.question_set_id = qs.id
+;'
+player_buzzes = '
+select t.*, q.*,
+p.name as packet_name, p.letter as packet_letter, p.filename as filename,
+qse.name as question_set_edition,
+qse.slug as question_set_edition_slug,
+qs.slug as question_set_slug,
+te.name team_name,
+te.slug team_slug,
+pl.name player_name,
+pl.slug player_slug,
+t.slug as tossup_slug,
+c.name as category, c.lft,
+a.name as author, a.initials,
+buzz_value,
+buzz_location p,
+case when buzz_location is null then "" else printf("%.0f%%", buzz_location * 100.0 / words) end buzz_location_pct,
+bounceback,
+answer_given,
+protested,
+te2.name opponent,
+te2.slug opponent_slug,
+tou.site_name tournament_name,
+tou.site_slug tournament_site_slug,
+rm.number room_number,
+r.number round_number
+from schema_gameeventtossup get, schema_tossup t, schema_question q, schema_packet p,
+schema_player pl, schema_team te, schema_tournament tou,
+schema_questionsetedition qse, schema_questionset qs,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2,
+schema_category c, schema_author a
+where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
+and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
+and get.tossup_id = t.question_ptr_id and get.player_id = pl.id and pl.team_id = te.id
+and q.packet_id = p.id and t.question_ptr_id = q.id
+and q.category_id = c.id and q.author_id = a.id
+and pl.id = $id
+order by r.id, q.position'
+# buzz_location is not null
+# r.number sorts as string -> using r.id instead fixme
+
+
 module.exports =
 	question_sets:
 		question_sets: question_sets
@@ -376,3 +552,13 @@ module.exports =
 
 	categories:
 		d: q_
+
+	team:
+		te_id: te_id
+		team: team
+		buzzes: team_buzzes
+		bonuses: team_bonuses
+	player:
+		pl_id: pl_id
+		player: player
+		buzzes: player_buzzes

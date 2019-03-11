@@ -255,12 +255,68 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		tournament_site_slug : req.params.tournament_site_slug
 		team_slug            : req.params.team_slug
 
+	id = id:
+		db.prepare allQueries.team.te_id
+		.get params
+		.id
+	queries =
+		team: ['get', allQueries.team.team, id]
+		buzzes: ['all', allQueries.team.buzzes, id]
+		bonuses: ['all', allQueries.team.bonuses, id]
+
+	try
+		results = runQueries queries
+
+		results['team']['players'] = JSON.parse results['team']['players']
+		for player in results['team']['players']
+			url_params = { ...player, question_set_slug: results['team']['question_set_slug'], tournament_site_slug: results['team']['tournament_site_slug'], team_slug: results['team']['team_slug'] }
+			player.player_url = namedRouter.build('player', url_params)
+		results['buzzes'].map (buzz) ->
+			buzz.class = classifyBuzz(buzz)
+			url_params = { ...buzz, question_set_slug: results['team']['question_set_slug'] }
+			buzz.tossup_url = namedRouter.build('tossup', url_params)
+			url_params.team_slug = buzz.opponent_slug
+			buzz.opponent_url = namedRouter.build('team', url_params)
+		results['bonuses'].map (geb) ->
+			url_params = { ...geb, question_set_slug: results['team']['question_set_slug'] }
+			geb.bonus_url = namedRouter.build('bonus', url_params)
+			url_params.team_slug = geb.opponent_slug
+			geb.opponent_url = namedRouter.build('team', url_params)
+
+		res.render 'team.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
+
 router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/teams/:team_slug/players/:player_slug.html', 'player', (req, res, next) ->
 	params =
 		question_set_slug    : req.params.question_set_slug
 		tournament_site_slug : req.params.tournament_site_slug
 		team_slug            : req.params.team_slug
 		player_slug          : req.params.player_slug
+
+	id = id:
+		db.prepare allQueries.player.pl_id
+		.get params
+		.id
+	queries =
+		player: ['get', allQueries.player.player, id]
+		buzzes: ['all', allQueries.player.buzzes, id]
+
+	try
+		results = runQueries queries
+
+		results['buzzes'].map (buzz) ->
+			buzz.class = classifyBuzz(buzz)
+			url_params = { ...buzz, question_set_slug: results['player']['question_set_slug'] }
+			buzz.tossup_url = namedRouter.build('tossup', url_params)
+			url_params.team_slug = buzz.opponent_slug
+			buzz.opponent_url = namedRouter.build('team', url_params)
+
+		res.render 'player.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/tossups/:tossup_slug.js', 'tossup_data', (req, res, next) ->
