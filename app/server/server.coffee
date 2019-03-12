@@ -24,7 +24,7 @@ d3 = require 'd3'
 allQueries = require './queries'
 
 
-dbfname = '/Users/jbrow/Documents/quizbowl/every.buzz/db.sqlite3'
+dbfname = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/db.sqlite3'
 db = new sqlite dbfname, { readonly: true }
 
 
@@ -414,13 +414,14 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 		pages = []
 
 		Object.keys(results).forEach((page_type) ->
-			pages.push(...R.map ((qs) -> 
+			pages.push(...R.map ((qs) ->
 				return
 					name: qs.name
 					slug: qs[page_type + '_slug']
 					page_type: page_type
 					url: namedRouter.build page_type, qs
 					team_count: qs.team_count
+					category: qs.category
 					edition_slug: qs.question_set_edition_slug
 					team_name: qs.team_name
 					tournament_name: qs.tournament_site_name

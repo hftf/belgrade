@@ -253,6 +253,7 @@ question_set_tossups_index = 'select
 	qs.name question_set_name,
 	qse.slug question_set_edition_slug,
 	qse.name question_set_edition_name,
+	c.name category,
 	count(*) team_count
 from
 	schema_question q
@@ -262,9 +263,10 @@ join schema_questionset qs on qse.question_set_id = qs.id
 join schema_tossup t on q.id = t.question_ptr_id
 left join schema_tournament tn on qse.id = tn.question_set_edition_id
 left join schema_team tm on tn.id = tm.tournament_id
+left join schema_category c on q.category_id = c.id
 where
 qs.slug = $id
-group by q.id, t.answer, t.slug, qs.slug, qs.name, qse.slug, qse.name
+group by q.id, t.answer, t.slug, qs.slug, qs.name, qse.slug, qse.name, c.name
 order by t.slug
 ;'
 
@@ -274,6 +276,7 @@ question_set_bonuses_index = 'select
 	b.slug bonus_slug,
 	qs.slug question_set_slug,
 	qse.slug question_set_edition_slug,
+	c.name category,
 	count(*) team_count
 from
 	schema_question q
@@ -283,9 +286,10 @@ join schema_questionset qs on qse.question_set_id = qs.id
 join schema_bonus b on q.id = b.question_ptr_id
 left join schema_tournament tn on qse.id = tn.question_set_edition_id
 left join schema_team tm on tn.id = tm.tournament_id
+left join schema_category c on q.category_id = c.id
 where
 qs.slug = $id
-group by q.id, b.answer1 || " / " || b.answer2 || " / " || b.answer3, b.slug, qs.slug, qs.name, qse.slug, qse.name
+group by q.id, b.answer1 || " / " || b.answer2 || " / " || b.answer3, b.slug, qs.slug, qs.name, qse.slug, qse.name, c.name
 order by b.slug
 ;'
 

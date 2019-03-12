@@ -29,9 +29,12 @@ initLunr = ->
         $.when.apply(null, deferreds).done( ->
             index.forEach ((set) ->
                 set.lunrIndex = lunr(->
-                    @field 'name'
                     @ref 'url'
-                    
+                    @field 'name',
+                        boost: 10
+                    @field 'category',
+                        boost: 1
+
                     @pipeline.remove(lunr.trimmer)
                     @pipeline.remove(lunr.stemmer)
                     @pipeline.remove(lunr.porterStemmer)
@@ -39,7 +42,6 @@ initLunr = ->
                     @add 
                         name: set.set_name
                         url: set.set_url
-                        page_type: 'set'
 
                     set.pages.forEach ((page) ->
                         try
@@ -65,10 +67,20 @@ search = (query) ->
         set_name: set.set_name
         set_url: set.set_url
         set_results: set.lunrIndex.query((q) ->
-            q.term query, 
-                boost: 100
-            q.term '*' + query + '*',
+            q.term query,
                 boost: 10
+            q.term '*' + query + '*',
+                boost: 1
+
+            queryTerms = query.split(' ')
+            
+            if queryTerms.length > 1
+                queryTerms.forEach (term) ->                      
+                    q.term term, 
+                        boost: 5
+                    q.term '*' + term + '*',
+                        boost: 1
+                    return
             
             return
         ).map (result) ->
@@ -80,7 +92,9 @@ search = (query) ->
                 
                 return
             )
-            match.score = Math.floor(result.score * 100) / 100
+
+            if match
+                match.score = Math.floor(result.score * 100) / 100
 
             return match
     .filter (set) ->
@@ -99,7 +113,7 @@ initUI = ->
         
         prevQuery = query
         results = search(query.trim())
-        renderTypeahead '.search', results, query, perSetLimit, (e) ->
+        renderTypeahead '.search', results, query.trim(), perSetLimit, (e) ->
             destination = $(e.target).data "href"
 
             if !destination

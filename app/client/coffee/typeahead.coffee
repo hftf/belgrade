@@ -57,7 +57,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
                                 mainLink = ''
                                 currentTeamCount = 0
                                 resultCount = resultCount + 1
-                        else if result.page_type != 'set'
+                        else if result && result.page_type != 'set'
                             menu.append (
                                 templates[result.page_type]
                                     url: "/jank" + result.url
@@ -71,12 +71,12 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
                 return
     
     addEvents = () ->
-        $('body').off 'click'
+        $('html').off 'click'
         $('.search').off 'keydown'
         $('.typeahead-result').off 'click'
         $('.typeahead-result').off 'mouseover'
 
-        $('body').on 'click', (e) ->
+        $('html').on 'click', (e) ->
             if !$(e.target).hasClass('.typeahead-results') && $(e.target).parents(".typeahead-results").length == 0
                 $('.typeahead-results').remove()
             return
