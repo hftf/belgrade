@@ -20,6 +20,162 @@ html
 			ul: for player in team.players
 				li: a(href=basePath(player.player_url))= player.player_name
 
+			h2#categories Categories
+
+			table
+				colgroup(span=1)
+					col
+
+				// Tossups
+				colgroup(span=1)
+					col
+				colgroup(span=2)
+				colgroup(span=2)
+					col
+					col
+				colgroup(span=3 + 2 * team.has_powers)
+				colgroup(span=2 + team.has_powers)
+					col
+					if team.has_powers
+						col
+					col
+				colgroup(span=2)
+					//- col
+					//- col
+
+				colgroup(span=1, style='border:none;')
+					col
+
+				// Bonuses
+				colgroup(span=1)
+					col
+				colgroup(span=3)
+					col
+					col
+					col
+				colgroup(span=4)
+				colgroup(span=5)
+					col
+					col
+					col
+					col
+					col
+				thead
+					tr
+						th
+						th(colspan=12 + 3 * team.has_powers) Tossups
+						th
+						th(colspan=13) Bonuses
+					tr
+						+th(12) Category
+
+						// Tossups
+						//- +th(2) BP?
+						+th(3) Heard
+						+th(3) Buzzes
+						//- +th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
+						+th(3) Pts
+						+th(3) PPT
+						+th(3) PPBz
+
+						if team.has_powers
+							+th(2): abbr(title='Gets') G
+
+							+th(2) 15s
+						+th(2) 10s
+						+th(2) −5s
+						+th(2) 0s
+
+						+th(3): abbr(title='Conversion') Conv
+						if team.has_powers
+							+th(3): abbr(title='Power %') Pow%
+						+th(3): abbr(title='Neg %') Neg%
+						
+						+th(3): abbr(title='First correct buzz location %') FB%
+						+th(3): abbr(title='Average correct buzz location %') Avg%
+
+						+th(1)
+
+						// Bonuses
+						+th(3) Heard
+
+						+th(3).bar Pts
+						+th(3).bar PPB
+						+th(3).bar Avg
+
+						+th(2) 0s
+						+th(2) 10s
+						+th(2) 20s
+						+th(2) 30s
+
+						+th(1.5): abbr(title='survival function') sf
+						+th(3).bar ≥0
+						+th(3).bar ≥10
+						+th(3).bar ≥20
+						+th(3).bar =30
+				tbody.categories
+					for category in categories
+						tr(class='category-' + category.level)
+							th.el: span(style='padding-left:' + category.level + 'em;')
+								= category.level ? category.name : 'All categories'
+
+
+							td.r= category.t_countRooms
+
+							//- td.r= bldiff(category.t_countRooms, category.t_countRoomsBzPt)
+							td.r= bl(category.t_countRooms, category.t_countBzs)
+							//- td.r= bldiff(category.t_countBzs, category.t_countBzPts)
+							td.r= bl(category.t_countRooms, formatNegative(category.t_sum))
+							
+							+tdavg(category.t_countRooms, category.t_sum / category.t_countRooms, 15)
+							+tdavg(category.t_countRooms, category.t_sum / category.t_countBzs,   15)
+
+							if team.has_powers
+								td.r= bl(category.t_countRooms, category.t_countG)
+
+								td.r= bl(category.t_countRooms, category.t_count15)
+							td.r= bl(category.t_countRooms, category.t_count10)
+							td.r= bl(category.t_countRooms, category.t_countN5)
+							td.r= bl(category.t_countRooms, category.t_count0)
+
+							+tdb(category.t_countRooms, category.t_countG)
+							if team.has_powers
+								+tdb(category.t_countRooms, category.t_count15)
+							+tdb(category.t_countRooms, category.t_countN5)
+
+							td.r= bl(category.t_countRooms, formatPct(category.t_firstBzPt))
+							td.r= bl(category.t_countRooms, formatPct(category.t_avgBzPt))
+
+							td
+
+							td.r= category.b_countRooms
+
+							td.r= category.b_sumT
+							+tdppb(category.b_countRooms, category.b_avgT)
+							+tdbar(category.b_countRooms, category.b_avgT)
+
+							td.r= bl(category.b_countRooms, category.b_count0)
+							td.r= bl(category.b_countRooms, category.b_count10)
+							td.r= bl(category.b_countRooms, category.b_count20)
+							td.r= bl(category.b_countRooms, category.b_count30)
+
+							td(style='line-height: 0;')
+								if category.b_countRooms
+									- var w = 40;
+									- var p = w * 0.1;
+									- var s = w / category.b_atleast0;
+									svg(width=20 height=15 viewBox=`${-p} ${-p} ${w+2*p} ${w+2*p}` preserveAspectRatio='none' style='vertical-align: baseline;')
+										path.sf(d=`M 0 ${w-s*category.b_atleast0} L 10 ${w-s*category.b_atleast10} L 20 ${w-s*category.b_atleast20} L 30 ${w-s*category.b_atleast30} L 40 ${w}`)
+							+tdb(category.b_countRooms, category.b_atleast0)
+							+tdb(category.b_countRooms, category.b_atleast10)
+							+tdb(category.b_countRooms, category.b_atleast20)
+							+tdb(category.b_countRooms, category.b_atleast30)
+
+
+
+
+
+
 			h2#tossups Tossups
 
 			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')

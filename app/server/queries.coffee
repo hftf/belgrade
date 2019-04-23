@@ -519,6 +519,123 @@ order by r.id, q.position'
 # buzz_location is not null
 # r.number sorts as string -> using r.id instead fixme
 
+perf_by_cat ='
+SELECT * FROM (
+SELECT
+	c.id,
+	c.name,
+	c.lft,
+	c.level,
+
+SUM(cb.total)     b_sumT,
+AVG(cb.total)/30  b_avgT,
+AVG(cb.value1)/10 b_avg1,
+AVG(cb.value2)/10 b_avg2,
+AVG(cb.value3)/10 b_avg3,
+
+COUNT(CASE WHEN cb.total = 0   THEN 1 END) b_count0,
+COUNT(CASE WHEN cb.total = 10  THEN 1 END) b_count10,
+COUNT(CASE WHEN cb.total = 20  THEN 1 END) b_count20,
+COUNT(CASE WHEN cb.total = 30  THEN 1 END) b_count30,
+COUNT(CASE WHEN cb.total >= 0  THEN 1 END) b_atleast0,
+COUNT(CASE WHEN cb.total >= 10 THEN 1 END) b_atleast10,
+COUNT(CASE WHEN cb.total >= 20 THEN 1 END) b_atleast20,
+COUNT(CASE WHEN cb.total >= 30 THEN 1 END) b_atleast30,
+COUNT(DISTINCT cb.gameevent_ptr_id) AS b_countRooms
+
+FROM
+	schema_category c
+JOIN schema_questionset qs ON c.question_set_id = qs.id
+
+LEFT JOIN (
+	SELECT
+		*,
+		value1+value2+value3 AS total
+	FROM
+		schema_category cp
+		JOIN schema_question q             ON cp.id  = q.category_id
+		JOIN schema_bonus b                ON q.id   = b.question_ptr_id
+		JOIN schema_packet p               ON p.id   = q.packet_id
+		JOIN schema_gameeventbonus geb     ON geb.bonus_id = b.question_ptr_id
+		JOIN schema_gameevent ge           ON ge.id  = geb.gameevent_ptr_id
+		JOIN schema_gameteam gt            ON gt.id  = ge.game_team_id
+		JOIN schema_team te                ON te.id  = gt.team_id
+		JOIN schema_tournament tou         ON tou.id = te.tournament_id
+		JOIN schema_game g                 ON g.id   = gt.game_id
+		JOIN schema_questionsetedition qse ON qse.id = tou.question_set_edition_id
+			AND qse.id = p.question_set_edition_id
+	WHERE te.slug = $team_slug) cb
+ON (c.lft <= cb.lft
+	AND cb.rght <= c.rght
+	AND c.tree_id = cb.tree_id)
+
+WHERE
+	c.question_set_id = qs.id
+	AND c.level <= 2
+	AND qs.slug = $question_set_slug
+GROUP BY
+	c.id
+ORDER BY
+	c.id
+) ccb
+LEFT JOIN
+(
+SELECT
+	c.id,
+	c.name,
+	c.lft,
+	c.level,
+	
+COALESCE(SUM(ct.buzz_value), 0) t_sum,
+COUNT(CASE WHEN ct.buzz_value = 15 THEN 1 END) t_count15,
+COUNT(CASE WHEN ct.buzz_value = 10 THEN 1 END) t_count10,
+COUNT(CASE WHEN ct.buzz_value = -5 THEN 1 END) t_countN5,
+COUNT(CASE WHEN ct.buzz_value =  0 THEN 1 END) t_count0,
+COUNT(CASE WHEN ct.buzz_value >  0 THEN 1 END) t_countG,
+COUNT(DISTINCT ct.gameevent_ptr_id) AS t_countRooms,
+COUNT(DISTINCT CASE WHEN ct.buzz_location THEN ct.game_id END) AS t_countRoomsBzPt,
+COUNT(CASE WHEN ct.buzz_value    IS NOT NULL THEN 1 END) AS t_countBzs,
+COUNT(CASE WHEN ct.buzz_location IS NOT NULL THEN 1 END) AS t_countBzPts,
+round(AVG(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_avgBzPt,
+round(min(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_firstBzPt
+
+FROM
+	schema_category c
+JOIN schema_questionset qs ON c.question_set_id = qs.id
+
+LEFT JOIN (
+	SELECT
+		*
+	FROM
+		schema_category cp
+		JOIN schema_question q             ON cp.id  = q.category_id
+		JOIN schema_tossup t               ON q.id   = t.question_ptr_id
+		JOIN schema_packet p               ON p.id   = q.packet_id
+		JOIN schema_gameeventtossup get    ON get.tossup_id = t.question_ptr_id
+		JOIN schema_gameevent ge           ON ge.id  = get.gameevent_ptr_id
+		JOIN schema_gameteam gt            ON gt.id  = ge.game_team_id
+		JOIN schema_team te                ON te.id  = gt.team_id
+		JOIN schema_tournament tou         ON tou.id = te.tournament_id
+		JOIN schema_game g                 ON g.id   = gt.game_id
+		JOIN schema_questionsetedition qse ON qse.id = tou.question_set_edition_id
+			AND qse.id = p.question_set_edition_id
+	WHERE te.slug = $team_slug) ct
+ON (c.lft <= ct.lft
+	AND ct.rght <= c.rght
+	AND c.tree_id = ct.tree_id)
+
+WHERE
+	c.question_set_id = qs.id
+	AND c.level <= 2
+	AND qs.slug = $question_set_slug
+GROUP BY
+	c.id
+ORDER BY
+	c.id
+) cct
+USING(id)
+GROUP BY ccb.id
+'
 
 module.exports =
 	question_sets:
@@ -562,3 +679,6 @@ module.exports =
 		pl_id: pl_id
 		player: player
 		buzzes: player_buzzes
+
+	perf:
+		categories: perf_by_cat

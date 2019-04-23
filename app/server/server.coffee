@@ -263,6 +263,7 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		team: ['get', allQueries.team.team, id]
 		buzzes: ['all', allQueries.team.buzzes, id]
 		bonuses: ['all', allQueries.team.bonuses, id]
+		categories: ['all', allQueries.perf.categories, params]
 
 	try
 		results = runQueries queries
