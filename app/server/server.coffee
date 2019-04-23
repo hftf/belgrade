@@ -119,7 +119,7 @@ server = express()
 router = new express.Router
 
 server.set 'basePath', '/jank'
-server.locals.basePath =
+basePath = server.locals.basePath =
 	(pathStr) ->
 		server.settings.basePath + pathStr
 
@@ -417,7 +417,7 @@ router.get '/index.json', 'index', (req, res, next) ->
 
 		sets = R.map ((qs) -> 
 			name: qs.name
-			url: namedRouter.build 'question_set', { question_set_slug: qs.slug }, 'get'
+			url: basePath namedRouter.build 'question_set', { question_set_slug: qs.slug }, 'get'
 		), results.set
 
 		res.setHeader 'Content-Type', 'application/json'
@@ -445,7 +445,7 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 					name: qs.name
 					slug: qs[page_type + '_slug']
 					page_type: page_type
-					url: namedRouter.build page_type, qs
+					url: basePath namedRouter.build page_type, qs
 					team_count: qs.team_count
 					edition_slug: qs.question_set_edition_slug
 					team_name: qs.team_name

@@ -8,7 +8,9 @@ set_result = '
 tossup_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<a href={{url}}>{{{name}}}</a> <span class="typeahead-secondary-text">Tossup</span><span class="typeahead-secondary-text typeahead-score">{{score}}</span>
+			<b class="typeahead-secondary-text typeahead-model">Tossup</b>
+			<a href={{url}}>{{{name}}}</a>
+			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>Editions: </span>
@@ -21,7 +23,9 @@ tossup_result = '
 bonus_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<a href={{url}}>{{{name}}}</a> <span class="typeahead-secondary-text">Bonus</span><span class="typeahead-secondary-text typeahead-score">{{score}}</span>
+			<b class="typeahead-secondary-text typeahead-model">Bonus</b>
+			<a href={{url}}>{{{name}}}</a>
+			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>Editions: </span>
@@ -34,20 +38,24 @@ bonus_result = '
 team_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<a href={{url}}>{{{name}}}</a> <span class="typeahead-secondary-text">Team</span><span class="typeahead-secondary-text typeahead-score">{{score}}</span>
+			<b class="typeahead-secondary-text typeahead-model">Team</b>
+			<a href={{url}}>{{{name}}}</a>
+			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
-			<span>Played @ {{tournament}}</span>
+			<span>at {{tournament}}</span>
 		</div>
 	</div>'
 
 player_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<a href={{url}}>{{{name}}}</a> <span class="typeahead-secondary-text">Player</span><span class="typeahead-secondary-text typeahead-score">{{score}}</span>
+			<b class="typeahead-secondary-text typeahead-model">Player</b>
+			<a href={{url}}>{{{name}}}</a>
+			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
-			<span>Played for {{team}} @ {{tournament}}</span>
+			<span>on team {{team}} @ {{tournament}}</span>
 		</div>
 	</div>'
 

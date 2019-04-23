@@ -6,6 +6,8 @@ constants = require('./constants')
 isQuestion = (page_type) ->
 	page_type == 'tossup' || page_type == 'bonus'
 
+editionAbbr = (edition_slug) -> edition_slug.substring 5
+
 renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 	init = () ->
 		$('.typeahead-results').remove()
@@ -23,7 +25,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 			arr.forEach (set) ->
 				menu.append (
 					templates["set"]
-						url: "/jank" + set.set_url
+						url: set.set_url
 						name: set.set_name
 				)
 
@@ -37,8 +39,9 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 					if resultCount < perSetLimit
 						if result && isQuestion(result.page_type)
 							currentEditions.push
-								url: "/jank" + result.url
-								name: result.edition_slug.substring(5)
+								url: result.url
+								name: editionAbbr result.edition_slug
+								team_count: result.team_count
 
 							if result.team_count > currentTeamCount
 								mainLink = result.url
@@ -47,9 +50,9 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 							if index + 1 == array.length || result.slug != array[index + 1].slug
 								menu.append (
 									templates[result.page_type]
-										url: "/jank" + mainLink
-										name: result.name.replace(searchTermRegExp, '<span class="underline">$1</span>');
-										score: result.score
+										url: mainLink
+										name: result.name.replace(searchTermRegExp, '<u>$1</u>');
+										score: result.score.toFixed 1
 										editions: currentEditions
 								)
 
@@ -60,9 +63,9 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 						else if result.page_type != 'set'
 							menu.append (
 								templates[result.page_type]
-									url: "/jank" + result.url
-									name: result.name.replace(searchTermRegExp, '<span class="underline">$1</span>');
-									score: result.score
+									url: result.url
+									name: result.name.replace(searchTermRegExp, '<u>$1</u>');
+									score: result.score.toFixed 1
 									team: result.team_name
 									tournament: result.tournament_name
 							)

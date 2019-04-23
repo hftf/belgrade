@@ -13,7 +13,7 @@ initLunr = ->
 		deferreds = []
 
 		sets.forEach((element) ->
-			deferreds.push( $.getJSON('/jank' + element.url + 'index.json')
+			deferreds.push( $.getJSON(element.url + 'index.json')
 				.done((results) ->
 					index.push(
 						set_name: element.name
@@ -75,12 +75,12 @@ search = (query) ->
 			match = set.pages.find((page) ->
 				try
 					return page.url == result.ref
-				catch e
-					console.log e
+				# catch e
+					# console.log e
 				
 				return
 			)
-			match.score = Math.floor(result.score * 100) / 100
+			match.score = result.score
 
 			return match
 	.filter (set) ->
