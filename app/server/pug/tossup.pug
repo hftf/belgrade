@@ -40,7 +40,7 @@ html
 					- var firstcolspan = 5 + tossup.has_powers + (editions.length > 2);
 					colgroup(span=firstcolspan)
 					colgroup(span=1 + tossup.has_powers)
-					colgroup(span=2 + tossup.has_powers)
+					colgroup(span=3 + tossup.has_powers)
 					colgroup(span=2 + tossup.has_powers)
 						col
 						if tossup.has_powers
@@ -68,7 +68,7 @@ html
 								+th(2) 15s
 							+th(2) 10s
 							+th(2) −5s
-							//- +th(2) 0s
+							+th(2) 0s
 
 							+th(3): abbr(title='Conversion') Conv
 							if tossup.has_powers
@@ -111,7 +111,7 @@ html
 									td.r= bl(edition.countRooms, edition.count15)
 								td.r= bl(edition.countRooms, edition.count10)
 								td.r= bl(edition.countRooms, edition.countN5)
-								//- td.r= bl(edition.countRooms, edition.count0)
+								td.r= bl(edition.countRooms, edition.count0)
 
 								+tdb(edition.countRooms, edition.countG)
 								if tossup.has_powers
