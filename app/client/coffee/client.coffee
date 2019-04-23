@@ -441,6 +441,6 @@ graph = (a, allCategoryKdes, kdeXs) ->
 
 	x # hack return
 
-window.copy_bbcode = (el) ->
+window.copy_lightweight = (el) ->
 	text_url = el.dataset.text.replace('__url__', window.location.href);
 	clipboard.writeText text_url

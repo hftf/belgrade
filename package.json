@@ -21,6 +21,7 @@
     "string-similarity": "^3.0.0",
     "striptags": "^3.1.1",
     "html2bbcode": "^1.2.6",
+    "turndown": "^5.0.3",
     "clipboard-polyfill": "^2.7.0"
   },
   "devDependencies": {

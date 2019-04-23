@@ -140,7 +140,8 @@ html
 							span.get Correct 
 							span.bb +Correct bounceback 
 							span.neg −Incorrect
-				button(onclick='copy_bbcode(this);' data-text=`[quote="${tossup.question_set_name} › ${tossup.question_set_edition} edition › ${tossup.packet_name}" url=__url__]\n${bbcode}[/quote]`) Copy text as BBcode
+				button(onclick='copy_lightweight(this);' data-text=`[quote="${tossup.question_set_name} › ${tossup.question_set_edition} edition › ${tossup.packet_name}" url=__url__]\n${bbcode}[/quote]`) Copy text as BBcode
+				button(onclick='copy_lightweight(this);' data-text=`__${tossup.question_set_name} › ${tossup.question_set_edition} edition › ${tossup.packet_name}__\n\n${markdown}`) Copy text as Markdown
 
 				h2(style="margin-bottom: 0;") Histogram
 				p(style="margin-top: -10px;")

@@ -14,6 +14,28 @@ h2b = (h) ->
 		.replace(/<\/rp><\/ruby>/g, '</span></ruby>')
 		.replace(/<\/?rp>/g, '')
 	h2b_s.feed(h2).toString()
+HTML2Markdown = require('turndown')
+h2m_s = new HTML2Markdown()
+escapes = [
+	[/\\/g,    '\\\\'],
+	[/\*/g,    '\\*'],
+	[/`/g,     '\\`'],
+	[/_/g,     '\\_'],
+	[/^(\d+)\. /g, '$1\\. ']
+]
+h2m_s.escape = (string) ->
+	escapes.reduce ((accumulator, escape) ->
+		accumulator.replace(escape[0], escape[1])
+		), string
+h2m = (h) ->
+	h2 = h
+		.join('\n')
+		.replace(/span class="s1">|span>/g, 'u>')
+	h2m_s.addRule 'underline', 
+		filter: ['u']
+		replacement: (v) -> '__' + v + '__'
+	h2m_s.turndown(h2).toString()
+		.replace(/ANSWER: ([^\n]+)/g, 'ANSWER: || $1 ||') # || = spoiler tag for Discord
 
 red = (s) -> '\x1b[91;1m[ERROR] ' + s + '\x1b[0m';
 console.error = R.compose console.error, red
@@ -192,7 +214,8 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results = runQueries queries
 
 		results['raw'] = get_question_html('tossup', results['tossup'])
-		results['bbcode'] = h2b results['raw']
+		results['bbcode']   = h2b results['raw']
+		results['markdown'] = h2m results['raw']
 		results['buzzes'].map (buzz) ->
 			buzz.class = classifyBuzz(buzz)
 			url_params = { ...buzz, question_set_slug: results['tossup']['question_set_slug'] }
@@ -237,7 +260,8 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 			performance.opponent_url = namedRouter.build('team', url_params)
 
 		results['raw'] = get_question_html('bonus', results['bonus'])
-		results['bbcode'] = h2b results['raw']
+		results['bbcode']   = h2b results['raw']
+		results['markdown'] = h2m results['raw']
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
 				edition_raw = get_question_html('bonus', edition)
