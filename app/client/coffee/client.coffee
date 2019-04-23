@@ -351,7 +351,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.call noAxisDefault
 		.append 'text'
 		.attr 'class', 'label'
-		.text 'Negs'
+		.text 'Incorrect buzzes'
 		.attr 'text-anchor', 'middle'
 		.attr 'transform', 'translate(' + 40 + ',' + (3*c.height/2 + c.mb) + ') rotate(-90)'
 
