@@ -275,6 +275,7 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 			buzz.class = classifyBuzz(buzz)
 			url_params = { ...buzz, question_set_slug: results['team']['question_set_slug'] }
 			buzz.tossup_url = namedRouter.build('tossup', url_params)
+			buzz.player_url = namedRouter.build('player', url_params)
 			url_params.team_slug = buzz.opponent_slug
 			buzz.opponent_url = namedRouter.build('team', url_params)
 		results['bonuses'].map (geb) ->

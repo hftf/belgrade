@@ -25,7 +25,7 @@ html
 			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')
 				colgroup(span=3)
 				colgroup(span=4 + team.has_authors)
-				colgroup(span=4)
+				colgroup(span=5)
 				colgroup(span=3)
 				thead
 					tr
@@ -45,6 +45,7 @@ html
 						//- +th(3): abbr(title='Number of words in power') Pwds
 						//- +th(3): abbr(title='Number of words') Wds
 
+						+th(9) Player
 						th Value
 						th: abbr(title='Buzz location') BzPt
 						th: abbr(title='Buzz location %') BzPt%
@@ -75,6 +76,7 @@ html
 							//- td= buzz.power_words
 							//- td= buzz.words
 
+							+tdel(buzz.player_name, basePath(buzz.player_url))
 							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
 							td.r.bg= buzz.p
 							td.r.bg= buzz.buzz_location_pct
