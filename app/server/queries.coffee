@@ -79,8 +79,8 @@ qs.id as question_set_id,
 t.slug as tossup_slug,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
 a.name as author,
-IFNULL(prev.slug,"") as prev_slug,
-IFNULL(next.slug,"") as next_slug
+prev.slug as prev_slug,
+next.slug as next_slug
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
@@ -430,8 +430,8 @@ qs.has_powers, qs.has_authors,
 b.slug as bonus_slug,
 c.name as category,
 a.name as author,
-IFNULL(prev.slug,"") as prev_slug,
-IFNULL(next.slug,"") as next_slug
+prev.slug as prev_slug,
+next.slug as next_slug
 from 
 schema_bonus b, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c, schema_author a
