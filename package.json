@@ -11,10 +11,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "d3": "~5.7.0",
-    "express": "^4.16.4",
+    "d3": "~5.11.0",
+    "express": "^4.17.1",
     "ramda": "^0.26.1",
-    "better-sqlite3": "^5.2.1",
+    "better-sqlite3": "^5.4.2",
     "science": "^1.9.3",
     "named-routes": "^2.0.7",
     "datatables.net-dt": "^1.10.19",
@@ -22,15 +22,15 @@
     "striptags": "^3.1.1",
     "html2bbcode": "^1.2.6",
     "turndown": "^5.0.3",
-    "clipboard-polyfill": "^2.7.0",
+    "clipboard-polyfill": "^2.8.6",
     "handlebars": "^4.1.0",
     "lunr": "^2.3.6",
     "lunr-unicode-normalizer": "git+https://github.com/nekdolan/lunr-unicode-normalizer.git",
-    "jquery": "^3.3.1"
+    "jquery": "^3.4.1"
   },
   "devDependencies": {
-    "browserify": "^16.2.3",
-    "gulp": "^4.0.0",
+    "browserify": "^16.5.0",
+    "gulp": "^4.0.2",
     "gulp-browserify": "^0.5.1",
     "gulp-coffee": "^3.0.3",
     "gulp-coffeeify": "^0.1.8",
@@ -39,9 +39,9 @@
     "gulp-livereload": "^4.0.1",
     "gulp-plumber": "^1.0.1",
     "gulp-sass": "^4.0.2",
-    "nodemon": "^1.4.1",
-    "resolve": "^1.1.7",
-    "watchify": "^3.3.1",
-    "webpack": "^4.28.3"
+    "nodemon": "^1.19.1",
+    "resolve": "^1.12.0",
+    "watchify": "^3.11.1",
+    "webpack": "^4.39.2"
   }
 }
