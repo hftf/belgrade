@@ -181,7 +181,7 @@ html
 			table.dataTable.compact(data-order='[[3,"asc"]]' data-column-defs='[{"targets": [3, 4], "orderData": [3, 4]}]')
 				colgroup(span=3)
 				colgroup(span=4 + team.has_authors)
-				colgroup(span=5)
+				colgroup(span=4)
 				colgroup(span=3)
 				thead
 					tr
@@ -205,7 +205,7 @@ html
 						th Value
 						th: abbr(title='Buzz location') BzPt
 						th: abbr(title='Buzz location %') BzPt%
-						+th(3) Rank
+						//- +th(3) Rank
 
 						+th(7): abbr(title='Bounceback') BB?
 						+th(9) Answer given
@@ -236,7 +236,7 @@ html
 							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
 							td.r.bg= buzz.p
 							td.r.bg= buzz.buzz_location_pct
-							td
+							//- td
 
 							td.bg= buzz.bounceback
 							+tdel(buzz.answer_given).bg
