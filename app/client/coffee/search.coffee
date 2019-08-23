@@ -9,7 +9,7 @@ perSetLimit = 5
 prevQuery = ''
 
 initLunr = ->
-	$.getJSON('/jank/index.json').done((sets) ->
+	$.getJSON('/jank/question_sets/index.json').done((sets) ->
 		deferreds = []
 
 		sets.forEach((element) ->
