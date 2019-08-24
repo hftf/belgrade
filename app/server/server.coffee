@@ -1,5 +1,6 @@
 express = require 'express'
 NamedRouter = require 'named-routes'
+compression = require 'compression'
 
 R = require 'ramda'
 sqlite = require 'better-sqlite3'
@@ -126,6 +127,8 @@ basePath = server.locals.basePath =
 namedRouter = new NamedRouter
 namedRouter.extendExpress router
 namedRouter.registerAppHelpers server
+
+router.use compression()
 
 router.use express.static './dist'
 router.use '/images', express.static './app/images'

@@ -26,7 +26,8 @@
     "handlebars": "^4.1.0",
     "lunr": "^2.3.6",
     "lunr-unicode-normalizer": "git+https://github.com/nekdolan/lunr-unicode-normalizer.git",
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "compression": "^1.7.4"
   },
   "devDependencies": {
     "browserify": "^16.5.0",
