@@ -74,34 +74,34 @@ html
 						+th(3) Heard
 						+th(3) Buzzes
 						//- +th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
-						+th(3) Pts
-						+th(3) PPT
-						+th(3) PPBz
+						+th(3): abbr(title='Points') Pts
+						+th(3): abbr(title='Points per tossup') PPT
+						+th(3): abbr(title='Points per buzz') PPBz
 
 						if team.has_powers
-							+th(2): abbr(title='Gets') G
+							+th(2): abbr(title='Gets (= 15s + 10s)') G
 
 							+th(2) 15s
 						+th(2) 10s
 						+th(2) −5s
 						+th(2) 0s
 
-						+th(3): abbr(title='Conversion') Conv
+						+th(3): abbr(title='Conversion rate (= Gets / Tossups Heard)') Conv
 						if team.has_powers
-							+th(3): abbr(title='Power %') Pow%
-						+th(3): abbr(title='Neg %') Neg%
+							+th(3): abbr(title='Power rate (= 15s / Tossups Heard)') Pow
+						+th(3): abbr(title='Neg rate (= −5s / Tossups Heard)') Neg
 						
-						+th(3): abbr(title='First correct buzz location %') FB%
-						+th(3): abbr(title='Average correct buzz location %') Avg%
+						+th(3): abbr(title='Buzz location % of first correct buzz') MinB%
+						+th(3): abbr(title='Average correct buzz location %') AvgB%
 
 						+th(1)
 
 						// Bonuses
 						+th(3) Heard
 
-						+th(3).bar Pts
-						+th(3).bar PPB
-						+th(3).bar Avg
+						+th(3).bar: abbr(title='Points') Pts
+						+th(3).bar: abbr(title='Points per bonus') PPB
+						+th(3).bar: abbr(title='Conversion rate (= PPB / 30)') Conv
 
 						+th(2) 0s
 						+th(2) 10s
@@ -187,8 +187,8 @@ html
 					tr
 						//- +th(6) Set edition
 						//- +th(7) Site
-						+th(2) Rm
-						+th(2) Rd
+						+th(2): abbr(title='Room') Rm
+						+th(2): abbr(title='Round') Rd
 						+th(9) Opponent
 
 						+th(3)(data-name='packet') Packet
@@ -253,8 +253,8 @@ html
 					tr
 						//- +th(6) Set edition
 						//- +th(7) Site
-						+th(2) Rm
-						+th(2) Rd
+						+th(2): abbr(title='Room') Rm
+						+th(2): abbr(title='Round') Rd
 						+th(9) Opponent
 
 						+th(3)(data-name='packet') Packet

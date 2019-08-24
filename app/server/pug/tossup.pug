@@ -63,20 +63,20 @@ html
 							+th(3) Rooms
 
 							if tossup.has_powers
-								+th(2): abbr(title='Gets') G
+								+th(2): abbr(title='Gets (= 15s + 10s)') G
 
 								+th(2) 15s
 							+th(2) 10s
 							+th(2) −5s
 							+th(2) 0s
 
-							+th(3): abbr(title='Conversion') Conv
+							+th(3): abbr(title='Conversion rate (= Gets / Rooms)') Conv
 							if tossup.has_powers
-								+th(3): abbr(title='Power %') Pow%
-							+th(3): abbr(title='Neg %') Neg%
+								+th(3): abbr(title='Power rate (= 15s / Rooms)') Pow
+							+th(3): abbr(title='Neg rate (= −5s / Rooms)') Neg
 							
-							+th(3): abbr(title='First correct buzz location %') FB%
-							+th(3): abbr(title='Average correct buzz location %') Avg%
+							+th(3): abbr(title='Buzz location % of first correct buzz') MinB%
+							+th(3): abbr(title='Average correct buzz location %') AvgB%
 
 							//- +th(2) BP?
 							+th(3) Buzzes
@@ -166,8 +166,8 @@ html
 							th: abbr(title='Protested') Pro?
 							+th(9) Opponent
 							+th(7) Site
-							+th(2) Rm
-							+th(2) Rd
+							+th(2): abbr(title='Room') Rm
+							+th(2): abbr(title='Round') Rd
 					tbody.stripe.buzzes
 						for buzz in buzzes
 							tr(data-index=buzz.p class=buzz.class)
