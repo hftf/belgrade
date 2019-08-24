@@ -7,6 +7,7 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var pug = require('gulp-pug');
 var plumber = require('gulp-plumber');
+var replace = require('gulp-replace');
 
 var lr = require('gulp-livereload');
 
@@ -28,6 +29,7 @@ gulp.task('scripts', function () {
       debug: true
     }))
     .pipe(concat('all.js'))
+    .pipe(replace(/sourceMappingURL/g, 'sourceFaffingURL'))
     .pipe(gulp.dest('dist/js'))
     .pipe(lr());
 });

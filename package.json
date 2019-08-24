@@ -38,6 +38,7 @@
     "gulp-pug": "^4.0.1",
     "gulp-livereload": "^4.0.1",
     "gulp-plumber": "^1.0.1",
+    "gulp-replace": "^1.0.0",
     "gulp-sass": "^4.0.2",
     "nodemon": "^1.19.1",
     "resolve": "^1.12.0",
