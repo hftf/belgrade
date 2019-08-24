@@ -143,8 +143,8 @@ html
 								+tdb(category.t_countRooms, category.t_count15)
 							+tdb(category.t_countRooms, category.t_countN5)
 
-							td.r= bl(category.t_countBzs, formatPct(category.t_firstBzPt))
-							td.r= bl(category.t_countBzs, formatPct(category.t_avgBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.t_firstBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.t_avgBzPt))
 
 							td
 
@@ -235,7 +235,7 @@ html
 							+tdel(buzz.player_name, basePath(buzz.player_url))
 							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
 							td.r.bg= buzz.p
-							td.r.bg= buzz.buzz_location_pct
+							td.r.bg= formatBzPct(buzz.buzz_location_pct)
 							//- td
 
 							td.bg= buzz.bounceback

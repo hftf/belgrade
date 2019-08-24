@@ -118,8 +118,8 @@ html
 									+tdb(edition.countRooms, edition.count15)
 								+tdb(edition.countRooms, edition.countN5)
 
-								td.r= bl(edition.countRooms, formatPct(edition.firstBzPt))
-								td.r= bl(edition.countRooms, formatPct(edition.avgBzPt))
+								td.r= bl(edition.countRooms, formatBzPct(edition.firstBzPt))
+								td.r= bl(edition.countRooms, formatBzPct(edition.avgBzPt))
 
 								//- td.r= bldiff(edition.countRooms, edition.countRoomsBzPt)
 								td.r= bl(edition.countRooms, edition.countBzs)
@@ -175,7 +175,7 @@ html
 								+tdel(buzz.player_name, basePath(buzz.player_url))
 								td.r.bg= formatNegative(buzz.buzz_value)
 								td.r.bg= buzz.p
-								td.r.bg= buzz.buzz_location_pct
+								td.r.bg= formatBzPct(buzz.buzz_location_pct)
 								td.bg= buzz.bounceback
 								+tdel(buzz.answer_given).bg
 								td.bg= buzz.protested

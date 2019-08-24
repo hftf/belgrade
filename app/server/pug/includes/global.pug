@@ -65,6 +65,7 @@ mixin tdel(c, href)
 
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }
 - function formatPct(n) { if (isNaN(n)) return ''; return (100*n).toFixed(0)+'%'; }
+- function formatBzPct(n) { if (isNaN(n)) return ''; return (1*n).toFixed(2); } //.replace(/^0/,'');
 - function formatAvg(n) { if (isNaN(n)) return ''; if (n<0) return '−'+Math.abs(n).toFixed(1); return n.toFixed(1); }
 -
 	function formatPct2(n) {

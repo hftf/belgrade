@@ -6,6 +6,8 @@ clipboard = require 'clipboard-polyfill'
 
 # NEW
 tick_delta = 0.1
+# formatBzPct = (next_tick) -> (next_tick*100).toFixed(0) + '%'
+formatBzPct = (next_tick) -> (next_tick*1).toFixed(2)
 replaceMs = (p, groupedBuzzesByWord, words) ->
 	ms = p.querySelectorAll('m')
 	last_word_index = null
@@ -20,7 +22,7 @@ replaceMs = (p, groupedBuzzesByWord, words) ->
 		if (word_index / words) > next_tick and word_index < words
 			s = document.createElement 'span'
 			s.setAttribute 'class', 'next_tick'
-			s.innerHTML = '<b>' + (next_tick*100).toFixed(0) + '%</b> ' + word_index
+			s.innerHTML = '<b>' + formatBzPct(next_tick) + '</b> ' + word_index
 			m.style.position = 'relative'
 			# m.parentNode.insertBefore s, m
 			m.appendChild s
@@ -307,7 +309,8 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		# .tickValues [.5, .84, 1]
 		# .tickValues [0, .2, .4, .6, .8, 1, pwds]
 		# .tickFormat (x) -> if x is ftp then 'FTP' else if x is pwds then '*' else d3.format('0%') x
-		.tickFormat d3.format('.0%')
+		# .tickFormat d3.format('.0%')
+		.tickFormat d3.format('.2f') # see formatBzPct
 		.ticks 4
 		.tickSize -c.height
 		.tickSizeOuter 0
