@@ -45,10 +45,10 @@ html
 				thead
 					tr
 						//- +th(6) Set edition
-						+th(9) Opponent
 						//- +th(7) Site
 						+th(2) Rm
 						+th(2) Rd
+						+th(9) Opponent
 
 						+th(3)(data-name='packet') Packet
 						+th(3)(data-name='position') Tossup
@@ -75,10 +75,10 @@ html
 						tr(data-index=buzz.p class=buzz.class)
 
 							//- td= buzz.question_set_edition
-							+tdel(buzz.opponent, basePath(buzz.opponent_url))
 							//- +tdel(buzz.tournament_name)
 							td= buzz.room_number
 							td= buzz.round_number
+							+tdel(buzz.opponent, basePath(buzz.opponent_url))
 
 							td= buzz.packet_letter
 							td= buzz.position
