@@ -157,28 +157,14 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 	id = id: req.params.question_set_slug
 
 	queries =
-		tossup: ['all', allQueries.question_set.tossups_index, id]
-		bonus:  ['all', allQueries.question_set.bonuses_index, id]
-		team:   ['all', allQueries.question_set.team_index,    id]
-		player: ['all', allQueries.question_set.player_index,  id]
+		pages: ['all', allQueries.question_set.question_set_index,  id]
 		
 	try
 		results = runQueries queries
-		pages = []
+		pages = R.map JSON.parse, R.pluck 'page', results.pages
 
-		Object.keys(results).forEach((page_type) ->
-			pages.push(...R.map ((qs) -> 
-				return
-					name: qs.name
-					slug: qs[page_type + '_slug']
-					page_type: page_type
-					url: basePath namedRouter.build page_type, qs
-					team_count: qs.team_count
-					edition_slug: qs.question_set_edition_slug
-					team_name: qs.team_name
-					tournament_name: qs.tournament_site_name
-			), results[page_type])
-		)
+		for page in pages
+			page.url = basePath namedRouter.build page.page_type, page
 
 		res.setHeader 'Content-Type', 'application/javascript'
 		res.send JSON.stringify(pages)

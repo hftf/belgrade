@@ -245,88 +245,108 @@ where
 qs.slug = $id
 ;'
 
-question_set_tossups_index = 'select
-	q.id,
-	t.answer name,
-	t.slug tossup_slug,
-	qs.slug question_set_slug,
-	qs.name question_set_name,
-	qse.slug question_set_edition_slug,
-	qse.name question_set_edition_name,
-	count(*) team_count
-from
-	schema_question q
-join schema_packet p on q.packet_id = p.id
-join schema_questionsetedition qse on p.question_set_edition_id = qse.id
-join schema_questionset qs on qse.question_set_id = qs.id
-join schema_tossup t on q.id = t.question_ptr_id
-left join schema_tournament tn on qse.id = tn.question_set_edition_id
-left join schema_team tm on tn.id = tm.tournament_id
-where
-qs.slug = $id
-group by q.id, t.answer, t.slug, qs.slug, qs.name, qse.slug, qse.name
-order by t.slug
-;'
+question_set_index = "with
+question_set_tossups_index as (
+	select
+	json_object(
+		'page_type',                 'tossup',
+		'id',                        q.id,
+		'name',                      t.answer,
+		'tossup_slug',               t.slug,
+		'question_set_slug',         qs.slug,
+		'question_set_name',         qs.name,
+		'question_set_edition_slug', qse.slug,
+		'question_set_edition_name', qse.name,
+		'team_count',                count(*)
+	) page
+	from
+		schema_question q
+	join schema_packet p on q.packet_id = p.id
+	join schema_questionsetedition qse on p.question_set_edition_id = qse.id
+	join schema_questionset qs on qse.question_set_id = qs.id
+	join schema_tossup t on q.id = t.question_ptr_id
+	left join schema_tournament tn on qse.id = tn.question_set_edition_id
+	left join schema_team tm on tn.id = tm.tournament_id
+	where
+	qs.slug = $id
+	group by q.id, t.answer, t.slug, qs.slug, qs.name, qse.slug, qse.name
+	order by t.slug
+),
+question_set_bonuses_index as (
+	select
+	json_object(
+		'page_type',                 'bonus',
+		'id',                        q.id,
+		'name',                      b.answer1 || ' / ' || b.answer2 || ' / ' || b.answer3,
+		'bonus_slug',                b.slug,
+		'question_set_slug',         qs.slug,
+		'question_set_edition_slug', qse.slug,
+		'team_count',                count(*)
+	) page
+	from
+		schema_question q
+	join schema_packet p on q.packet_id = p.id
+	join schema_questionsetedition qse on p.question_set_edition_id = qse.id
+	join schema_questionset qs on qse.question_set_id = qs.id
+	join schema_bonus b on q.id = b.question_ptr_id
+	left join schema_tournament tn on qse.id = tn.question_set_edition_id
+	left join schema_team tm on tn.id = tm.tournament_id
+	where
+	qs.slug = $id
+	group by q.id, b.answer1 || ' / ' || b.answer2 || ' / ' || b.answer3, b.slug, qs.slug, qs.name, qse.slug, qse.name
+	order by b.slug
+),
+question_set_team_index as (
+	select
+	json_object(
+		'page_type',                 'team',
+		'id',                        tm.id,
+		'name',                      tm.name,
+		'team_slug',                 tm.slug,
+		'tournament_site_name',      tn.site_name,
+		'tournament_site_slug',      tn.site_slug,
+		'question_set_edition_slug', qse.slug,
+		'question_set_slug',         qs.slug
+	) page
+	from
+		schema_team tm
+	join schema_tournament tn on tm.tournament_id = tn.id
+	join schema_questionsetedition qse on tn.question_set_edition_id = qse.id
+	join schema_questionset qs on qse.question_set_id = qs.id
+	where
+	qs.slug = $id
+	order by tm.name
+),
+question_set_player_index as (
+	select
+	json_object(
+		'page_type',                 'player',
+		'id',                        p.id,
+		'name',                      p.name,
+		'player_slug',               p.slug,
+		'team_slug',                 tm.slug,
+		'team_name',                 tm.name,
+		'tournament_site_name',      tn.site_name,
+		'tournament_site_slug',      tn.site_slug,
+		'question_set_edition_slug', qse.slug,
+		'question_set_slug',         qs.slug
+	) page
+	from
+		schema_player p
+	join schema_team tm on p.team_id = tm.id
+	join schema_tournament tn on tm.tournament_id = tn.id
+	join schema_questionsetedition qse on tn.question_set_edition_id = qse.id
+	join schema_questionset qs on qse.question_set_id = qs.id
+	where
+	qs.slug = $id
+	order by p.name
+)
 
-question_set_bonuses_index = 'select
-	q.id,
-	b.answer1 || " / " || b.answer2 || " / " || b.answer3 as name,
-	b.slug bonus_slug,
-	qs.slug question_set_slug,
-	qse.slug question_set_edition_slug,
-	count(*) team_count
-from
-	schema_question q
-join schema_packet p on q.packet_id = p.id
-join schema_questionsetedition qse on p.question_set_edition_id = qse.id
-join schema_questionset qs on qse.question_set_id = qs.id
-join schema_bonus b on q.id = b.question_ptr_id
-left join schema_tournament tn on qse.id = tn.question_set_edition_id
-left join schema_team tm on tn.id = tm.tournament_id
-where
-qs.slug = $id
-group by q.id, b.answer1 || " / " || b.answer2 || " / " || b.answer3, b.slug, qs.slug, qs.name, qse.slug, qse.name
-order by b.slug
-;'
-
-question_set_team_index = 'select
-	tm.id,
-	tm.name name,
-	tm.slug team_slug,
-	tn.site_name tournament_site_name,
-	tn.site_slug tournament_site_slug,
-	qse.slug question_set_edition_slug,
-	qs.slug question_set_slug
-from
-	schema_team tm
-join schema_tournament tn on tm.tournament_id = tn.id
-join schema_questionsetedition qse on tn.question_set_edition_id = qse.id
-join schema_questionset qs on qse.question_set_id = qs.id
-where
-qs.slug = $id
-order by tm.name
-;'
-
-question_set_player_index = 'select
-	p.id,
-	p.name name,
-	p.slug player_slug,
-	tm.slug team_slug,
-	tm.name team_name,
-	tn.site_name tournament_site_name,
-	tn.site_slug tournament_site_slug,
-	qse.slug question_set_edition_slug,
-	qs.slug question_set_slug
-from
-	schema_player p
-join schema_team tm on p.team_id = tm.id
-join schema_tournament tn on tm.tournament_id = tn.id
-join schema_questionsetedition qse on tn.question_set_edition_id = qse.id
-join schema_questionset qs on qse.question_set_id = qs.id
-where
-qs.slug = $id
-order by p.name
-;'
+select * from question_set_tossups_index union all
+select * from question_set_bonuses_index union all
+select * from question_set_team_index union all
+select * from question_set_player_index
+"
 
 question_sets = 'select
 qs.*,
@@ -736,10 +756,7 @@ module.exports =
 	question_set:
 		question_set: question_set
 		editions: question_set__editions
-		tossups_index: question_set_tossups_index
-		bonuses_index: question_set_bonuses_index
-		team_index: question_set_team_index
-		player_index: question_set_player_index
+		question_set_index: question_set_index
 
 
 	edition:

@@ -67,7 +67,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 									name: result.name.replace(searchTermRegExp, '<u>$1</u>');
 									score: result.score.toFixed 1
 									team: result.team_name
-									tournament: result.tournament_name
+									tournament: result.tournament_site_name
 							)
 							resultCount = resultCount + 1
 
