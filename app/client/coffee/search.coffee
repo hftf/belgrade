@@ -36,7 +36,7 @@ initLunr = ->
 					@pipeline.remove(lunr.stemmer)
 					@pipeline.remove(lunr.porterStemmer)
 
-					@add
+					set.pages.push
 						name: set.set_name
 						url: set.set_url
 						page_type: 'set'
