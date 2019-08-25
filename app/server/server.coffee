@@ -164,7 +164,7 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 		pages = R.map JSON.parse, R.pluck 'page', results.pages
 
 		for page in pages
-			page.url = basePath namedRouter.build page.page_type, page
+			page.url = basePath namedRouter.build page.model, page
 
 		res.setHeader 'Content-Type', 'application/javascript'
 		res.send JSON.stringify(pages)

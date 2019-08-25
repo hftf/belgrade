@@ -3,10 +3,10 @@ handlebars = require('handlebars')
 typeahead_templates = require('./handlebars/typeahead_templates')
 constants = require('./constants')
 
-isQuestion = (page_type) ->
-	page_type == 'tossup' || page_type == 'bonus'
+isQuestion = (model) ->
+	model == 'tossup' || model == 'bonus'
 
-editionAbbr = (edition_slug) -> edition_slug.substring 5
+editionAbbr = (question_set_edition_slug) -> question_set_edition_slug.substring 5
 
 renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 	init = () ->
@@ -14,17 +14,17 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 
 		if arr.length > 0
 			templates =
-				set:    handlebars.compile(typeahead_templates.set_result)
-				tossup: handlebars.compile(typeahead_templates.tossup_result)
-				bonus:  handlebars.compile(typeahead_templates.bonus_result)
-				team:   handlebars.compile(typeahead_templates.team_result)
-				player: handlebars.compile(typeahead_templates.player_result)
+				question_set: handlebars.compile(typeahead_templates.question_set_result)
+				tossup:       handlebars.compile(typeahead_templates.tossup_result)
+				bonus:        handlebars.compile(typeahead_templates.bonus_result)
+				team:         handlebars.compile(typeahead_templates.team_result)
+				player:       handlebars.compile(typeahead_templates.player_result)
 
 			menu = $('<div />', 'class': 'typeahead-results').appendTo($(input).parent())
 
 			arr.forEach (set) ->
 				menu.append (
-					templates["set"]
+					templates["question_set"]
 						url: set.set_url
 						name: set.set_name
 				)
@@ -37,10 +37,10 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 
 				set.set_results.forEach (result, index, array) ->
 					if resultCount < perSetLimit
-						if result && isQuestion(result.page_type)
+						if result && isQuestion(result.model)
 							currentEditions.push
 								url: result.url
-								name: editionAbbr result.edition_slug
+								name: editionAbbr result.question_set_edition_slug
 								team_count: result.team_count
 
 							if result.team_count > currentTeamCount
@@ -49,7 +49,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 
 							if index + 1 == array.length || result.slug != array[index + 1].slug
 								menu.append (
-									templates[result.page_type]
+									templates[result.model]
 										url: mainLink
 										name: result.name.replace(searchTermRegExp, '<u>$1</u>');
 										score: result.score.toFixed 1
@@ -60,9 +60,9 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 								mainLink = ''
 								currentTeamCount = 0
 								resultCount = resultCount + 1
-						else if result.page_type != 'set'
+						else if result.model != 'question_set'
 							menu.append (
-								templates[result.page_type]
+								templates[result.model]
 									url: result.url
 									name: result.name.replace(searchTermRegExp, '<u>$1</u>');
 									score: result.score.toFixed 1

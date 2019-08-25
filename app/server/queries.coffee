@@ -249,7 +249,7 @@ question_set_index = "with
 question_set_question_set_index as (
 	select
 	json_object(
-		'page_type',                 'question_set',
+		'model',                     'question_set',
 		'id',                        qs.id,
 		'name',                      qs.name,
 		'question_set_slug',         qs.slug,
@@ -266,7 +266,7 @@ question_set_question_set_index as (
 question_set_tossups_index as (
 	select
 	json_object(
-		'page_type',                 'tossup',
+		'model',                     'tossup',
 		'id',                        q.id,
 		'name',                      t.answer,
 		'tossup_slug',               t.slug,
@@ -292,7 +292,7 @@ question_set_tossups_index as (
 question_set_bonuses_index as (
 	select
 	json_object(
-		'page_type',                 'bonus',
+		'model',                     'bonus',
 		'id',                        q.id,
 		'name',                      b.answer1 || ' / ' || b.answer2 || ' / ' || b.answer3,
 		'bonus_slug',                b.slug,
@@ -316,7 +316,7 @@ question_set_bonuses_index as (
 question_set_team_index as (
 	select
 	json_object(
-		'page_type',                 'team',
+		'model',                     'team',
 		'id',                        tm.id,
 		'name',                      tm.name,
 		'team_slug',                 tm.slug,
@@ -337,7 +337,7 @@ question_set_team_index as (
 question_set_player_index as (
 	select
 	json_object(
-		'page_type',                 'player',
+		'model',                     'player',
 		'id',                        p.id,
 		'name',                      p.name,
 		'player_slug',               p.slug,

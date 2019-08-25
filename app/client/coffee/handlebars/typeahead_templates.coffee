@@ -1,4 +1,4 @@
-set_result = '
+question_set_result = '
 	<div class="typeahead-result typeahead-set" data-href="{{url}}">
 		<div>
 			<a href={{url}}>{{name}}</a>
@@ -60,8 +60,8 @@ player_result = '
 	</div>'
 
 module.exports =
-	set_result:    set_result
-	tossup_result: tossup_result
-	bonus_result:  bonus_result
-	team_result:   team_result
-	player_result: player_result
+	question_set_result: question_set_result
+	tossup_result:       tossup_result
+	bonus_result:        bonus_result
+	team_result:         team_result
+	player_result:       player_result
