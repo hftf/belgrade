@@ -246,6 +246,23 @@ qs.slug = $id
 ;'
 
 question_set_index = "with
+question_set_question_set_index as (
+	select
+	json_object(
+		'page_type',                 'question_set',
+		'id',                        qs.id,
+		'name',                      qs.name,
+		'question_set_slug',         qs.slug,
+		'question_set_name',         qs.name,
+		'clear',                     qs.clear
+	) page
+	from
+		schema_questionset qs
+	where
+	qs.slug = $id
+	group by qs.id, qs.slug, qs.name
+	order by qs.slug
+),
 question_set_tossups_index as (
 	select
 	json_object(
@@ -342,6 +359,7 @@ question_set_player_index as (
 	order by p.name
 )
 
+select * from question_set_question_set_index union all
 select * from question_set_tossups_index union all
 select * from question_set_bonuses_index union all
 select * from question_set_team_index union all
