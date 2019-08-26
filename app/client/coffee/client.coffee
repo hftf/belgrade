@@ -216,7 +216,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 	kdeOpacity = d3.scaleLinear()
 		.range [0.4, 1, 1]
 		.domain [0, 2, 3]
-	kdeDash = (x) -> {0: '', 1: '', 2: '', 3: '4'}[x]
+	kdeDash = (x) -> {0: '0', 1: '0', 2: '0', 3: '4'}[x]
 
 	for category in allCategoryKdes
 		unless category.lft <= a.lft and a.rght <= category.rght and a.tree_id == category.tree_id
