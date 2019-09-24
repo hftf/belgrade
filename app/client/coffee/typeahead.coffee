@@ -51,7 +51,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 								menu.append (
 									templates[result.model]
 										url: mainLink
-										name: result.name.replace(searchTermRegExp, '<u>$1</u>');
+										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
 										score: result.score.toFixed 1
 										editions: currentEditions
 								)
@@ -64,7 +64,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 							menu.append (
 								templates[result.model]
 									url: result.url
-									name: result.name.replace(searchTermRegExp, '<u>$1</u>');
+									name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
 									score: result.score.toFixed 1
 									team: result.team_name
 									tournament: result.tournament_site_name
