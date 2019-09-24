@@ -274,6 +274,10 @@ question_set_tossups_index as (
 		'question_set_name',         qs.name,
 		'question_set_edition_slug', qse.slug,
 		'question_set_edition_name', qse.name,
+		'packet',                    p.letter,
+		'position',                  q.position,
+		'category',                  c.name,
+		'author',                    a.initials,
 		'team_count',                count(*)
 	) page
 	from
@@ -282,6 +286,8 @@ question_set_tossups_index as (
 	join schema_questionsetedition qse on p.question_set_edition_id = qse.id
 	join schema_questionset qs on qse.question_set_id = qs.id
 	join schema_tossup t on q.id = t.question_ptr_id
+	join schema_category c on c.id = q.category_id
+	join schema_author a on a.id = q.author_id
 	left join schema_tournament tn on qse.id = tn.question_set_edition_id
 	left join schema_team tm on tn.id = tm.tournament_id
 	where
@@ -298,6 +304,10 @@ question_set_bonuses_index as (
 		'bonus_slug',                b.slug,
 		'question_set_slug',         qs.slug,
 		'question_set_edition_slug', qse.slug,
+		'packet',                    p.letter,
+		'position',                  q.position,
+		'category',                  c.name,
+		'author',                    a.initials,
 		'team_count',                count(*)
 	) page
 	from
@@ -306,6 +316,8 @@ question_set_bonuses_index as (
 	join schema_questionsetedition qse on p.question_set_edition_id = qse.id
 	join schema_questionset qs on qse.question_set_id = qs.id
 	join schema_bonus b on q.id = b.question_ptr_id
+	join schema_category c on c.id = q.category_id
+	join schema_author a on a.id = q.author_id
 	left join schema_tournament tn on qse.id = tn.question_set_edition_id
 	left join schema_team tm on tn.id = tm.tournament_id
 	where

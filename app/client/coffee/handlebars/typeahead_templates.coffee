@@ -18,6 +18,10 @@ tossup_result = '
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
 		</div>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">P{{packet}}, T{{position}}</span>
+			<span>{{author}}, {{category}}</span>
+		</div>
 	</div>'
 
 bonus_result = '
@@ -32,6 +36,10 @@ bonus_result = '
 			{{#each editions}}
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
+		</div>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">P{{packet}}, B{{position}}</span>
+			<span>{{author}}, {{category}}</span>
 		</div>
 	</div>'
 

@@ -54,7 +54,10 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
 										score: result.score.toFixed 1
 										width: result.score * 4
+										packet: result.packet
+										position: result.position
 										category: result.category
+										author: result.author
 										editions: currentEditions
 								)
 
