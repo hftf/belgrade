@@ -9,6 +9,14 @@ tick_delta = 0.1
 # formatBzPct = (next_tick) -> (next_tick*100).toFixed(0) + '%'
 formatBzPct = (next_tick) -> (next_tick*1).toFixed(2)
 replaceMs = (p, groupedBuzzesByWord, words) ->
+	if 'null' of groupedBuzzesByWord
+		pp = p.querySelector '.tu'
+		m = document.createElement 'm'
+		m.setAttribute 'v', 'null'
+		m.innerHTML = '(missing buzz location)'
+		pp.appendChild document.createTextNode ' '
+		pp.appendChild m
+
 	ms = p.querySelectorAll('m')
 	last_word_index = null
 	next_tick = tick_delta

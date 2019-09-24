@@ -171,7 +171,7 @@ html
 							+th(2): abbr(title='Round') Rd
 					tbody.stripe.buzzes
 						for buzz in buzzes
-							tr(data-index=buzz.p class=buzz.class)
+							tr(data-index=buzz.p||'null' class=buzz.class)
 								+tdel(buzz.team_name, basePath(buzz.team_url))
 								+tdel(buzz.player_name, basePath(buzz.player_url))
 								td.r.bg= formatNegative(buzz.buzz_value)
