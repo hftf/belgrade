@@ -120,8 +120,8 @@ setRowHandlers = () ->
 graph = (a, allCategoryKdes, kdeXs) ->
 	# points = [.01, 0.1, .5, 0.9, .99]
 	# points = (d3.range 0, 1, .003).map d3.scale.pow().exponent 2
-	gets = a.p
-	negs = a.n
+	gets_all = a.p
+	negs_all = a.n
 
 	c =
 		width: 41*16
@@ -129,8 +129,8 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		mt: 45
 		mb: 60
 		mz: 10
-		ml: 20
-		mr: 80
+		ml: 24 + 44
+		mr: 76
 
 	chart = d3.select '.chart'
 		.attr 'width',  c.width  + c.ml + c.mr
@@ -146,8 +146,10 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.map (v) -> parseFloat v.toFixed 4
 
 	# remove null buzz points
-	gets = gets.filter (x) -> !!x
-	negs = negs.filter (x) -> !!x
+	gets = gets_all.filter (x) -> !!x
+	negs = negs_all.filter (x) -> !!x
+	gets_null = gets_all.filter (x) -> !x
+	negs_null = negs_all.filter (x) -> !x
 	
 	histogramF = d3.histogram()
 		.domain domain
@@ -167,10 +169,12 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.range [0, c.width]
 		.domain domain
 
-	barWidth = x(gets_data[0].x1 - gets_data[0].x0)
+	barWidth = x(gets_data[0].x1) - x(gets_data[0].x0)
 	yMax = 1 + d3.max [
 			d3.max gets_data, R.prop 'length'
 			d3.max negs_data, R.prop 'length'
+			gets_null.length
+			negs_null.length
 			2 # d3.max R.flip(R.map) kdes, R.prop '1'
 		]
 	y = d3.scaleLinear()
@@ -208,6 +212,21 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'width', barWidth
 		.attr 'height', (d) -> negs_y(d.length) - (c.height + c.mb)
 
+	chart.append 'g'
+		.attr 'class', 'bar'
+		.attr 'transform', 'translate(0,' + y(gets_null.length) + ')'
+		.append 'rect'
+		.attr 'x', x(-0.075)
+		.attr 'width', barWidth
+		.attr 'height', c.height - y(gets_null.length)
+	chart.append 'g'
+		.attr 'class', 'bar neg'
+		.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
+		.append 'rect'
+		.attr 'x', x(-0.075)
+		.attr 'width', barWidth
+		.attr 'height', negs_y(negs_null.length) - (c.height + c.mb)
+
 	# kde
 
 	line = d3.line()
@@ -217,7 +236,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 
 	legend = chart.append 'g'
 		.attr 'class', 'legend'
-		.attr 'transform', 'translate(8, 14)'
+		.attr 'transform', 'translate(8,14)'
 	kdeWidth = d3.scaleLinear()
 		.range [8, 2, 1]
 		.domain [0, 2, 3]
@@ -242,7 +261,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		h = 22 * (category.level + 1)
 		name = if category.level then category.name else 'All tossups'
 		legendCategory = legend.append 'g'
-			.attr 'transform', 'translate(0, ' + h + ')'
+			.attr 'transform', 'translate(0,' + h + ')'
 		legendCategory.append 'path'
 			.attr 'class', 'kde'
 			.attr 'stroke-width', kdeWidth category.level
@@ -280,7 +299,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'x', '78'
 		.attr 'y', '0'
 	legend.append 'text'
-		.text gets.length
+		.text gets_all.length
 		.attr 'x', '68'
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
@@ -289,7 +308,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 
 	ng = chart.append 'g'
 		.attr 'class', 'legend'
-		.attr 'transform', 'translate(8, ' + (2 * c.height + c.mb - 14) + ')'
+		.attr 'transform', 'translate(8,' + (2 * c.height + c.mb - 14) + ')'
 	ng.append 'rect'
 		.attr 'class', 'bar neg'
 		.attr 'x', '0'
@@ -301,7 +320,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'x', '78'
 		.attr 'y', '0'
 	ng.append 'text'
-		.text negs.length
+		.text negs_all.length
 		.attr 'x', '68'
 		.attr 'y', '0'
 		.attr 'text-anchor', 'end'
@@ -366,16 +385,20 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'text-anchor', 'middle'
 		.attr 'transform', 'translate(' + 40 + ',' + (3*c.height/2 + c.mb) + ') rotate(-90)'
 
-	chart.append 'g'
+	gx = chart.append 'g'
 		.attr 'class', 'x axis'
 		.attr 'transform', 'translate(0,' + c.height + ')'
 		.call xaxis
 		.call noAxisDefault
-		.append 'text'
+	gx.append 'text'
 		.attr 'class', 'label'
 		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
-
+	if gets_null.length or negs_null.length
+		gx.append 'text'
+			.attr 'class', 'label'
+			.text 'missing'
+			.attr 'transform', 'translate(' + x(-0.0625) + ',40)'
 	chart.append 'g'
 		.attr 'class', 'x axis'
 		.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
@@ -410,12 +433,12 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr("d", framePathD)
 		.attr("fill", "none")
 		.attr("stroke", "black")
-		.attr("transform", 'translate(0.5, 0.5)')
+		.attr("transform", 'translate(0.5,0.5)')
 	chart.append("path")
 		.attr("d", 'M0,' + (c.height + c.mb) + 'H' + c.width + 'v' + c.height + 'H0Z')
 		.attr("fill", "none")
 		.attr("stroke", "black")
-		.attr("transform", 'translate(0.5, 0.5)')
+		.attr("transform", 'translate(0.5,0.5)')
 
 	if gets.length <= 1
 		return

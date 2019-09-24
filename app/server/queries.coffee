@@ -95,8 +95,8 @@ p.name as packet_name, p.letter as packet_letter, p.filename as filename,
 qse.date as question_set_edition,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 c.name as category, c.lft, c.rght, c.level, c.tree_id,
-(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value > 0) p,
-(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_location is not null and buzz_value <= 0) n
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value > 0) p,
+(select json_group_array(round(buzz_location * 1.0 / t.words,3)) from schema_gameeventtossup get where get.tossup_id = t.question_ptr_id and buzz_value <= 0) n
 from 
 schema_tossup t, schema_question q, schema_packet p, schema_questionsetedition qse, schema_questionset qs,
 schema_category c
