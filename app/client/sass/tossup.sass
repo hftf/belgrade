@@ -21,6 +21,7 @@ $colorget: #757
 $colorlink: #27248f
 
 
+// Basic
 html
 	--base-sans-font: 'BentonSansCond', sans-serif
 	--base-serif-font: 'Lyon Text', 'Times New Roman', Times, serif
@@ -75,37 +76,6 @@ a
 		text-decoration: underline
 	&:visited
 		color: darken($colorlink, 12)
-
-.chart
-	.bar rect
-		fill: rgba($colorget, 0.8)
-		// fill: $color6
-		shape-rendering: crispEdges
-	.neg, .neg rect
-		fill: rgba($color2, 0.8)
-
-	path.kde
-		fill: none
-		stroke: $color1
-
-	.axis path, .axis line
-		fill: none
-		stroke: black
-		shape-rendering: crispEdges
-
-	.x.axis .label
-		text-anchor: middle
-
-	.legend text
-		dominant-baseline: central
-
-path.sf
-	fill: none
-	stroke: $colorget
-	stroke-width: 1.5px
-	stroke-linecap: butt
-	vector-effect: non-scaling-stroke
-	shape-rendering: geometricPrecision
 
 nav, table
 	li
@@ -212,6 +182,11 @@ span[data-index="null"]
 .sans
 	font-family: var(--base-sans-font)
 
+.tabular-nums
+	font-variant-numeric: tabular-nums lining-nums
+
+
+// Tables
 table
 	font-size: 90%
 	font-variant-numeric: tabular-nums lining-nums
@@ -228,15 +203,13 @@ td, th
 .buzzes td:not(.bg)
 	color: black
 
+tr.hover
+	outline: 2px solid #ee7
+	background: #ee7 !important
+
 tbody.stripe
 	tr:nth-child(2n)
 		background: #f2f2f2
-
-.chart .axis .tick line
-	stroke: rgba(0,0,0,0.1)
-
-.tabular-nums
-	font-variant-numeric: tabular-nums lining-nums
 
 .cur
 	background: #ffc !important
@@ -255,10 +228,6 @@ col:not(:first-of-type)
 	max-width: 0
 	overflow: hidden
 	white-space: nowrap
-
-tr.hover
-	outline: 2px solid #ee7
-	background: #ee7 !important
 
 tbody.categories th
 	font-weight: inherit
@@ -321,3 +290,39 @@ ul.col
 	width: max-content
 	list-style: none
 	padding-left: 2em
+
+
+// SVG
+.chart
+	.bar rect
+		fill: rgba($colorget, 0.8)
+		// fill: $color6
+		shape-rendering: crispEdges
+	.neg, .neg rect
+		fill: rgba($color2, 0.8)
+
+	path.kde
+		fill: none
+		stroke: $color1
+
+	.axis path, .axis line
+		fill: none
+		stroke: black
+		shape-rendering: crispEdges
+
+	.axis .tick line
+		stroke: rgba(0,0,0,0.1)
+
+	.x.axis .label
+		text-anchor: middle
+
+	.legend text
+		dominant-baseline: central
+
+path.sf
+	fill: none
+	stroke: $colorget
+	stroke-width: 1.5px
+	stroke-linecap: butt
+	vector-effect: non-scaling-stroke
+	shape-rendering: geometricPrecision
