@@ -81,9 +81,7 @@ html
 							if edition.has_authors
 								td(title=tossup.author, data-search=tossup.author)= tossup.initials
 							td(data-order=tossup.lft)= tossup.category
-							td.el(title=tossup.answer)
-								a(href=basePath(url('tossup', tossup)))
-									= tossup.answer
+							+tdel(tossup.answer, basePath(url('tossup', tossup)))
 							if edition.has_powers
 								td= tossup.power_words
 							td= tossup.words

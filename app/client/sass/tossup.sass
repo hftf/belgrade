@@ -203,6 +203,8 @@ td, th
 .buzzes td:not(.bg)
 	color: black
 
+tr
+	background: white
 tr.hover
 	outline: 2px solid #ee7
 	background: #ee7 !important
@@ -228,6 +230,15 @@ col:not(:first-of-type)
 	max-width: 0
 	overflow: hidden
 	white-space: nowrap
+	position: relative
+.el:hover
+	overflow: visible
+	background: inherit
+.el:hover > span
+	z-index: 1
+	padding-right: 0.5em
+	background: inherit
+	position: relative
 
 tbody.categories th
 	font-weight: inherit

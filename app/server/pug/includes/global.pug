@@ -59,7 +59,7 @@ mixin tdavg(n, avg, max)
 		td.r.bar(style=avg ? `background-size: ${disp} 2px;` : '')&attributes(attributes)
 			= formatAvg(avg)
 mixin tdel(c, href)
-	td.el(title=c)&attributes(attributes)
+	td.el(title=c)&attributes(attributes): span
 		if href
 			a(href=href)= c
 		else

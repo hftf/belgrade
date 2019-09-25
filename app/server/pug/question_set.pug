@@ -46,9 +46,7 @@ html
 					for edition in editions
 						tr
 							td= edition.question_set
-							td.el(title=edition.name)
-								a(href=basePath(url('edition', edition)))
-									= edition.name
+							+tdel(edition.name, basePath(url('edition', edition)))
 							td.r= edition.tournament_count
 							td.r= edition.team_count
 
