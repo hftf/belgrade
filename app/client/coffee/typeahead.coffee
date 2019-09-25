@@ -59,6 +59,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 										category: result.category
 										author: result.author
 										editions: currentEditions
+										neditions: currentEditions.length > 1
 								)
 
 								currentEditions = []

@@ -12,12 +12,14 @@ tossup_result = '
 			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
+		{{#if neditions}}
 		<div class="typeahead-secondary typeahead-editions">
 			<span class="typeahead-model">Editions</span>
 			{{#each editions}}
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
 		</div>
+		{{/if}}
 		<div class="typeahead-secondary typeahead-editions">
 			<span class="typeahead-model">P{{packet}}, T{{position}}</span>
 			<span>{{author}}, {{category}}</span>
@@ -31,12 +33,14 @@ bonus_result = '
 			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
+		{{#if neditions}}
 		<div class="typeahead-secondary typeahead-editions">
 			<span class="typeahead-model">Editions</span>
 			{{#each editions}}
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
 		</div>
+		{{/if}}
 		<div class="typeahead-secondary typeahead-editions">
 			<span class="typeahead-model">P{{packet}}, B{{position}}</span>
 			<span>{{author}}, {{category}}</span>
