@@ -2,9 +2,8 @@ doctype html
 include includes/global.pug
 html
 	head
-		meta(charset='utf-8')
-		+preload
 		include includes/base.pug
+		+preload
 		include includes/analytics.pug
 		+css
 		+title(`every.buzz ⬢ ${player.question_set} › ${player.question_set_edition} › ${player.team_name} › ${player.player_name}`)

@@ -2,11 +2,10 @@ doctype html
 include includes/global.pug
 html
 	head
-		meta(charset='utf-8')
+		include includes/base.pug
 		+preload
 		link(rel='preload', href=basePath(url('tossup_data', tossup)), as='script')
 		link(rel='preload', href=basePath(url('categories', tossup)),  as='script')
-		include includes/base.pug
 		include includes/analytics.pug
 		+css
 		+title(`every.buzz ⬢ ${tossup.question_set} › ${tossup.question_set_edition} › ${tossup.packet_name}, Tossup ${tossup.position}: ${tossup.answer}`)
