@@ -1,0 +1,45 @@
+doctype html
+include includes/global.pug
+html
+	head
+		include includes/base.pug
+		include includes/analytics.pug
+		link(rel='stylesheet', href='/fonts/Benton/fonts.css')
+		style.
+			body { font-family: 'BentonSans', sans-serif; text-align: center;
+				display: grid; height: 100vh; margin: 0; place-items: center center; }
+			header h1 { font-weight: 800; font-size: 2.8em; margin-bottom: 0.3em; }
+			header h2 { font-weight: 400; font-size: 1.4em; margin-bottom: 1.7em; max-width: 23em; }
+			main h1 { font-weight: 400; font-size: 1.6em; }
+			.ticker { display: grid; grid-template-columns: repeat(2, max-content); grid-auto-flow: dense;
+			  column-gap: 0.3em; justify-content: center; }
+			.l, .c { text-align: left; }
+			.c { display: none; }
+			.r { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums lining-nums; }
+			.l:first-of-type, .r:first-of-type { font-size: 1.8em; }
+		+title(`every.buzz`)
+	body
+		div
+			header
+				h1 every.buzz
+				h2 Explore visualizations of detailed quizbowl stats by Ophir Lifshitz
+
+			main
+				.ticker
+					| #[b.r #{formatThousand(ticker.gameeventtossup)}] #[span.l buzzes recorded]
+					| #[span.c on]   #[+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')]
+					| #[span.c in]   #[+tickerPlural(ticker.game,                  'game',                 's')]
+					| #[span.c from] #[+tickerPlural(ticker.player,                'player',               's')]
+					| #[span.c and]  #[+tickerPlural(ticker.team,                  'team',                 's')]
+					| #[span.c at]   #[+tickerPlural(ticker.tournament,            'tournament',           's')]
+					| #[span.c and]  #[+tickerPlural(ticker.questionsetedition,    'question set edition', 's')]
+					| #[span.c and]  #[+tickerPlural(ticker.questionset,           'question set',         's', basePath(url('question_sets')))]
+
+		+js
+//
+	Send comments to quizbowl@ophir.li.
+
+	More coming soon!
+
+	Thank you to my supporters on Patreon!
+	https://www.patreon.com/hftf

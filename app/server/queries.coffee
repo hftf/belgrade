@@ -1,6 +1,21 @@
 
 # NEW 
 
+ticker = '
+SELECT
+(SELECT count(*) FROM schema_questionset)        as questionset,
+(SELECT count(*) FROM schema_questionsetedition) as questionsetedition,
+(SELECT count(*) FROM schema_tournament)         as tournament,
+(SELECT count(*) FROM schema_tossup)             as tossup,
+(SELECT count(*) FROM schema_bonus)              as bonus,
+(SELECT count(*) FROM schema_team)               as team,
+(SELECT count(*) FROM schema_player)             as player,
+(SELECT count(*) FROM schema_game)               as game,
+(SELECT count(*) FROM schema_gameeventtossup
+	WHERE buzz_value IS NOT NULL)                as gameeventtossup,
+(SELECT count(*) FROM schema_gameeventbonus)     as gameeventbonus
+'
+
 q_ = '
 SELECT
 	c.name, c.lft, c.rght, c.level, c.tree_id,
@@ -831,3 +846,6 @@ module.exports =
 
 	perf:
 		categories: perf_by_cat
+
+	home:
+		ticker: ticker

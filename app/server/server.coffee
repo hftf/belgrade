@@ -465,7 +465,11 @@ router.get '/notices.html', 'notices', (req, res, next) ->
 	res.render 'notices.pug'
 
 router.get '/', 'home', (req, res, next) ->
-	res.send 'Hi'
+	queries =
+		ticker: ['get', allQueries.home.ticker]
+	try
+		results = runQueries queries
+		res.render 'home.pug', results
 
 server.use '/jank', router
 # server.use router
