@@ -36,14 +36,15 @@ body
 	-moz-text-size-adjust: none
 	text-size-adjust: none
 
-.twocol
-	display: grid
-	grid-template-areas: "a b"
-	grid-gap: 2em
-	grid-template-columns: 800px max-content
+@media screen and (min-width: 768px)
+	.twocol
+		display: grid
+		grid-template-areas: "a b"
+		grid-gap: 2em
+		grid-template-columns: 800px max-content
 
-	&.skinny
-		grid-template-columns: 200px max-content
+		&.skinny
+			grid-template-columns: 200px max-content
 header.twocol
 	align-items: center
 	nav
@@ -79,8 +80,11 @@ a
 
 nav, table
 	li
-		display: inline-block
+		@media screen and (min-width: 768px)
+			display: inline-block
 		margin-right: 1em
+	ul
+		list-style: none
 table
 	ol, ul
 		margin: 0
@@ -294,16 +298,21 @@ table.dataTable
 	p.cont + p
 		margin-top: 0
 dl.grid
-	display: grid
-	grid-template: auto / 10em 1fr
+	@media screen and (min-width: 768px)
+		display: grid
+		grid-template: auto / 12em 1fr
 	padding-left: 2em
 
 	dd
 		margin-left: 1em
 
 ul.col
-	columns: 4
-	column-width: 10em
+	@media screen and (min-width: 480px)
+		columns: 2
+		column-width: 12em
+	@media screen and (min-width: 768px)
+		columns: 4
+		column-width: 12em
 	width: max-content
 	list-style: none
 	padding-left: 2em
