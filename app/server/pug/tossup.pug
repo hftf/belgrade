@@ -35,7 +35,7 @@ html
 				h2 Editions of this tossup
 					if editions.length > 2
 						span.dag †
-				table
+				table.small
 					- var firstcolspan = 5 + tossup.has_powers + (editions.length > 2);
 					colgroup(span=firstcolspan)
 					colgroup(span=1 + tossup.has_powers)
@@ -150,7 +150,7 @@ html
 			.right
 
 				h2 Buzzes
-				table
+				table.small
 					colgroup(span=5)
 					colgroup(span=3)
 					colgroup(span=4)

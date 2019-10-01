@@ -79,7 +79,7 @@ a
 		color: darken($colorlink, 12)
 
 nav, table
-	li
+	ul.compact li
 		@media screen and (min-width: 768px)
 			display: inline-block
 		margin-right: 1em
@@ -191,8 +191,9 @@ span[data-index="null"]
 
 
 // Tables
-table
+table.small
 	font-size: 90%
+table
 	font-variant-numeric: tabular-nums lining-nums
 
 	border-spacing: 0

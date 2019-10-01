@@ -16,7 +16,7 @@ html
 			h1 #{edition.question_set} › #{edition.question_set_edition}
 
 			nav
-				ul
+				ul.compact
 					li: a(href='#tournaments') Tournaments
 					li: a(href='#tossups') Tossups
 					li: a(href='#bonuses') Bonuses
@@ -43,7 +43,7 @@ html
 							td.r= tournament.room_count
 							td.r= tournament.team_count
 							td(style='width:60em;')
-								ul: for team in tournament.teams
+								ul.compact: for team in tournament.teams
 									li: a(href=basePath(team.team_url))= team.team_name
 							td.r= tournament.game_count
 
@@ -58,7 +58,7 @@ html
 							td.r= tournament.game_count
 
 			h2#tossups Tossups
-			table.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
+			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
 					+th(6) Set edition
 					+th(3)(data-name='packet') Packet
@@ -86,7 +86,7 @@ html
 							td= tossup.words
 
 			h2#bonuses Bonuses
-			table.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
+			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
 					+th(6) Set edition
 					+th(3)(data-name='packet') Packet
