@@ -161,12 +161,13 @@ count(distinct te.id) as team_count,
 count(distinct rm.id) as room_count,
 count(distinct g.id) as game_count
 from
-schema_team te, schema_tournament tou, schema_questionsetedition qse, schema_questionset qs,
-schema_game g, schema_room rm
+schema_tournament tou, schema_questionsetedition qse, schema_questionset qs
+left join schema_team te on te.tournament_id = tou.id
+left join schema_room rm on rm.tournament_id = tou.id
+left join schema_game g on g.room_id = rm.id
 where
 qse.id = $id
-and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id
-and g.room_id = rm.id and rm.tournament_id = tou.id',
+and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id',
 'group by tou.id',
 'order by tou.date, tou.region, tou.site_name')
 
@@ -228,10 +229,12 @@ qse.slug as question_set_edition_slug,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
-schema_questionset qs, schema_questionsetedition qse, schema_tournament tou, schema_team te
+schema_questionset qs
+left join schema_questionsetedition qse on qse.question_set_id = qs.id
+left join schema_tournament tou on tou.question_set_edition_id = qse.id
+left join schema_team te on te.tournament_id = tou.id
 where
 qs.slug = $id
-and qse.question_set_id = qs.id and tou.question_set_edition_id = qse.id and te.tournament_id = tou.id
 group by qse.id
 ;'
 
@@ -385,9 +388,10 @@ count(distinct te.id) as team_count,
 qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set
 from
-schema_questionset qs, schema_questionsetedition qse, schema_tournament tou, schema_team te
-where
-qse.question_set_id = qs.id and tou.question_set_edition_id = qse.id and te.tournament_id = tou.id
+schema_questionset qs
+left join schema_questionsetedition qse on qse.question_set_id = qs.id
+left join schema_tournament tou on tou.question_set_edition_id = qse.id
+left join schema_team te on te.tournament_id = tou.id
 group by qs.id
 ;'
 
@@ -395,6 +399,7 @@ question_sets_index = 'select
 qs.name, qs.slug
 from
 schema_questionset qs
+order by qs.id desc
 ;'
 
 qb1 = 'select
@@ -502,11 +507,12 @@ qs.slug as question_set_slug,
 qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question_set,
 qs.has_powers, qs.has_authors
 from
-schema_player pl, schema_team te, schema_tournament tou,
+schema_team te, schema_tournament tou,
 schema_questionsetedition qse, schema_questionset qs
+left join schema_player pl on pl.team_id = te.id
 where
 te.id = $id
-and pl.team_id = te.id and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id
+and te.tournament_id = tou.id and tou.question_set_edition_id = qse.id
 and qse.question_set_id = qs.id
 group by te.id
 ;'
