@@ -9,8 +9,8 @@ tossup_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
 			<b class="typeahead-secondary-text typeahead-model">Tossup</b>
+			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
-			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>Editions: </span>
@@ -24,8 +24,8 @@ bonus_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
 			<b class="typeahead-secondary-text typeahead-model">Bonus</b>
+			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
-			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>Editions: </span>
@@ -39,8 +39,8 @@ team_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
 			<b class="typeahead-secondary-text typeahead-model">Team</b>
+			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
-			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>at {{tournament}}</span>
@@ -51,8 +51,8 @@ player_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
 			<b class="typeahead-secondary-text typeahead-model">Player</b>
+			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
-			<span class="typeahead-secondary-text typeahead-score">{{score}}</span> 
 		</div>
 		<div class="typeahead-secondary-text typeahead-editions">
 			<span>on team {{team}} @ {{tournament}}</span>

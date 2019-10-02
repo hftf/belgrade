@@ -53,6 +53,8 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 										url: mainLink
 										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
 										score: result.score.toFixed 1
+										width: result.score * 4
+										category: result.category
 										editions: currentEditions
 								)
 
@@ -66,6 +68,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 									url: result.url
 									name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
 									score: result.score.toFixed 1
+									width: result.score * 4
 									team: result.team_name
 									tournament: result.tournament_site_name
 							)
