@@ -24,7 +24,7 @@ html
 			h2#tournaments Tournaments
 			table.dataTable.compact
 				thead
-					//- +th(6) Set edition
+					//- +th(6.5) Set edition
 					+th(6) Date
 					+th(8) Site
 					+th(2): a(href='http://collegequizbowlcalendar.com/map/'): abbr(title='Region') Reg
@@ -60,7 +60,7 @@ html
 			h2#tossups Tossups
 			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
-					+th(6) Set edition
+					+th(6.5) Set edition
 					+th(3)(data-name='packet') Packet
 					+th(3)(data-name='position') Tossup
 					if edition.has_authors
@@ -88,7 +88,7 @@ html
 			h2#bonuses Bonuses
 			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
 				thead
-					+th(6) Set edition
+					+th(6.5) Set edition
 					+th(3)(data-name='packet') Packet
 					+th(3)(data-name='position') Bonus
 					if edition.has_authors
