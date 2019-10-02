@@ -273,7 +273,6 @@ question_set_tossups_index as (
 		'question_set_slug',         qs.slug,
 		'question_set_name',         qs.name,
 		'question_set_edition_slug', qse.slug,
-		'question_set_edition_name', qse.name,
 		'packet',                    p.letter,
 		'position',                  q.position,
 		'category',                  c.name,

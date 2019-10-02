@@ -164,10 +164,15 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 		
 	try
 		results = runQueries queries
-		pages = R.map JSON.parse, R.pluck 'page', results.pages
+		pages = []
 
-		for page in pages
+		keepKey = (v, k) -> !R.test(/(id|(?<!edition)_slug)$/, k)
+		for result in results.pages
+			page = JSON.parse result.page
 			page.url = basePath namedRouter.build page.model, page
+			page.slug = page[page.model + '_slug']
+			page = R.pickBy keepKey, page
+			pages.push page
 
 		res.setHeader 'Content-Type', 'application/javascript'
 		res.send JSON.stringify(pages)
