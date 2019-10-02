@@ -24,9 +24,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 
 			arr.forEach (set) ->
 				menu.append (
-					templates["question_set"]
-						url: set.set_url
-						name: set.set_name
+					templates['question_set'] set
 				)
 
 				currentEditions = []
@@ -51,7 +49,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 								menu.append (
 									templates[result.model]
 										url: mainLink
-										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
+										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>')
 										score: result.score.toFixed 1
 										width: result.score * 4
 										packet: result.packet
@@ -70,7 +68,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 							menu.append (
 								templates[result.model]
 									url: result.url
-									name: result.name.replace(searchTermRegExp, '<mark>$1</mark>');
+									name: result.name.replace(searchTermRegExp, '<mark>$1</mark>')
 									score: result.score.toFixed 1
 									width: result.score * 4
 									team: result.team_name
@@ -87,7 +85,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 		$('.typeahead-result').off 'mouseover'
 
 		$('body').on 'click', (e) ->
-			if !$(e.target).hasClass('.typeahead-results') && $(e.target).parents(".typeahead-results").length == 0
+			if !$(e.target).hasClass('.typeahead-results') && $(e.target).parents('.typeahead-results').length == 0
 				$('.typeahead-results').remove()
 			return
 

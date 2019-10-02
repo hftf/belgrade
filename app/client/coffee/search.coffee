@@ -9,75 +9,53 @@ perSetLimit = 5
 prevQuery = ''
 
 initLunr = ->
-	$.getJSON('/jank/question_sets/index.json').done((sets) ->
+	$.getJSON('/jank/question_sets/index.json').done (sets) ->
 		deferreds = []
 
-		sets.forEach((element) ->
-			deferreds.push( $.getJSON(element.url + 'index.json')
-				.done((results) ->
-					index.push(
-						set_name: element.name
-						set_url: element.url
-						pages: results
-					)
-					return
-				).fail ->
-					return
+		sets.forEach (set) ->
+			deferreds.push( $.getJSON(set.url + 'index.json')
+				.done (results) ->
+					set.pages = results
+				.fail (xhr, status, error) ->
+					console.log "Failed to load search index for #{set.name} (Status: #{xhr.status}). You may not be authorized."
 			)
-		)
 
-		$.when.apply(null, deferreds).done( ->
-			index.forEach ((set) ->
-				set.lunrIndex = lunr(->
+		$.when.apply(null, deferreds).done ->
+			index = sets
+
+			for set in index
+				set.lunrIndex = lunr () ->
 					@field 'name'
 					@ref 'url'
 					
 					@pipeline.remove(lunr.trimmer)
 					@pipeline.remove(lunr.stemmer)
-					@pipeline.remove(lunr.porterStemmer)
 
-					set.pages.forEach ((page) ->
-						try
-							@add page
-						catch e
-							console.log e
+					for page in set.pages
+						@add page
 
-						return
-					), this
-
-					return
-				)
-			), this
-		)
-
-		return
-	).fail ->
-		return
-	return
+	.fail (xhr, status, error) ->
+		console.log "Failed to load main search index."
 
 search = (query) ->
 	index.map (set) ->
-		set_name: set.set_name
-		set_url: set.set_url
-		set_results: set.lunrIndex.query((q) ->
-			q.term query,
-				boost: 100
-			q.term '*' + query + '*',
-				boost: 10
-			
-			return
-		).map (result) ->
-			match = set.pages.find((page) ->
-				try
-					return page.url == result.ref
-				# catch e
-					# console.log e
-				
-				return
-			)
-			match.score = result.score
+		# something goes wrong on Safari https://github.com/olivernn/lunr.js/issues/279
+		queryResults = set.lunrIndex.query (q) ->
+			q.term query, boost: 100
+			q.term '*' + query + '*', boost: 10
+		# need to look up again because lunr.Index.query only returns ref instead of whole document
+		# TODO this should really be constant lookup
+		queryMatches = queryResults.map (result) ->
+			match = set.pages.find( (page) -> page.url == result.ref )
+			if match
+				match.score = result.score
+				return match
+			# else shouldn't happen
+		.filter (e) -> e
 
-			return match
+		name: set.name
+		url: set.url
+		set_results: queryMatches
 	.filter (set) ->
 		return set.set_results.length > 0
 
@@ -95,15 +73,13 @@ initUI = ->
 		prevQuery = query
 		results = search(query.trim())
 		renderTypeahead '.search', results, query, perSetLimit, (e) ->
-			destination = $(e.target).data "href"
+			destination = $(e.target).data 'href'
 
 			if !destination
-				destination = $(e.target).parents(".typeahead-result").first().data "href"
+				destination = $(e.target).parents('.typeahead-result').first().data 'href'
 			
 			window.location.href = destination
-			return
 
 initLunr()
 $(document).ready ->
 	initUI()
-	return
