@@ -41,8 +41,9 @@ search = (query) ->
 	index.map (set) ->
 		# something goes wrong on Safari https://github.com/olivernn/lunr.js/issues/279
 		queryResults = set.lunrIndex.query (q) ->
-			q.term query, boost: 100
-			q.term '*' + query + '*', boost: 10
+			q.term lunr.tokenizer(query), boost: 10, wildcard: lunr.Query.wildcard.LEADING | lunr.Query.wildcard.TRAILING
+			# q.term lunr.tokenizer(query), boost: 100
+			# q.term lunr.tokenizer(query), boost: 33, wildcard: lunr.Query.wildcard.TRAILING
 		# need to look up again because lunr.Index.query only returns ref instead of whole document
 		# TODO this should really be constant lookup
 		queryMatches = queryResults.map (result) ->
