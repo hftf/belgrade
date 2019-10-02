@@ -8,12 +8,12 @@ question_set_result = '
 tossup_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<b class="typeahead-secondary-text typeahead-model">Tossup</b>
-			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
+			<b class="typeahead-secondary typeahead-model">Tossup</b>
+			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
-		<div class="typeahead-secondary-text typeahead-editions">
-			<span>Editions: </span>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">Editions</span>
 			{{#each editions}}
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
@@ -23,12 +23,12 @@ tossup_result = '
 bonus_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<b class="typeahead-secondary-text typeahead-model">Bonus</b>
-			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
+			<b class="typeahead-secondary typeahead-model">Bonus</b>
+			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
-		<div class="typeahead-secondary-text typeahead-editions">
-			<span>Editions: </span>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">Editions</span>
 			{{#each editions}}
 				<a href={{url}}>{{name}}</a> 
 			{{/each}}
@@ -38,24 +38,26 @@ bonus_result = '
 team_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<b class="typeahead-secondary-text typeahead-model">Team</b>
-			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
+			<b class="typeahead-secondary typeahead-model">Team</b>
+			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
-		<div class="typeahead-secondary-text typeahead-editions">
-			<span>at {{tournament}}</span>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">At site</span>
+			<span>{{tournament}}</span>
 		</div>
 	</div>'
 
 player_result = '
 	<div class="typeahead-result" data-href={{url}}>
 		<div>
-			<b class="typeahead-secondary-text typeahead-model">Player</b>
-			<span class="typeahead-secondary-text typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
+			<b class="typeahead-secondary typeahead-model">Player</b>
+			<span class="typeahead-secondary typeahead-score"><span style="width: {{width}}px;"></span> {{score}}</span>
 			<a href={{url}}>{{{name}}}</a>
 		</div>
-		<div class="typeahead-secondary-text typeahead-editions">
-			<span>on team {{team}} @ {{tournament}}</span>
+		<div class="typeahead-secondary typeahead-editions">
+			<span class="typeahead-model">On team</span>
+			<span>{{team}} @ {{tournament}}</span>
 		</div>
 	</div>'
 
