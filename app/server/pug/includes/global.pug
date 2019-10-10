@@ -14,6 +14,9 @@ mixin preload
 	link(rel='prefetch', href='/fonts/Benton/BentonSansCond-Regular.otf', as='font', crossorigin='anonymous')
 	link(rel='prefetch', href='/fonts/Benton/BentonSansCond-Medium.otf',  as='font', crossorigin='anonymous')
 
+mixin js
+	script(src=basePath('/js/all.js'))
+
 mixin css
 	link(rel='stylesheet', type='text/css', href=basePath('/css/all.css'))
 
