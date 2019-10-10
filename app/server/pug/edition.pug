@@ -58,7 +58,7 @@ html
 							td.r= tournament.game_count
 
 			h2#tossups Tossups
-			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
+			table.small.dataTable.compact(data-column-defs='[{"targets": [1], "orderData": [1, 2]}]')
 				thead: tr
 					+th(6.5) Set edition
 					+th(3)(data-name='packet') Packet
@@ -86,7 +86,7 @@ html
 							td= tossup.words
 
 			h2#bonuses Bonuses
-			table.small.dataTable.compact(data-column-defs='[{"targets": [1, 2], "orderData": [1, 2]}]')
+			table.small.dataTable.compact(data-column-defs='[{"targets": [1], "orderData": [1, 2]}]')
 				thead: tr
 					+th(6.5) Set edition
 					+th(3)(data-name='packet') Packet
