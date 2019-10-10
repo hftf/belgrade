@@ -28,6 +28,7 @@ html
 
 body
 	font-family: var(--base-serif-font)
+	font-feature-settings: 'lnum' 1
 	font-variant-numeric: lining-nums
 	margin: 0 2em 1em
 
@@ -187,13 +188,18 @@ span[data-index="null"]
 	font-family: var(--base-sans-font)
 
 .tabular-nums
+	font-feature-settings: 'tnum' 1, 'lnum' 1
 	font-variant-numeric: tabular-nums lining-nums
+.prop-nums
+	font-feature-settings: 'pnum' 1, 'lnum' 1
+	font-variant-numeric: proportional-nums lining-nums
 
 
 // Tables
 table.small
 	font-size: 90%
 table
+	font-feature-settings: 'tnum' 1, 'lnum' 1
 	font-variant-numeric: tabular-nums lining-nums
 
 	border-spacing: 0
