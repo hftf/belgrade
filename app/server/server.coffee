@@ -193,11 +193,12 @@ router.get '/question_sets/', 'question_sets', (req, res, next) ->
 		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next) ->
-	id = id: req.params.question_set_slug
+	params =
+		question_set_slug: req.params.question_set_slug
 
 	queries =
-		question_set: ['get', allQueries.question_set.question_set, id]
-		editions:     ['all', allQueries.question_set.editions,     id]
+		question_set: ['get', allQueries.question_set.question_set, params]
+		editions:     ['all', allQueries.question_set.editions,     params]
 
 	try
 		results = runQueries queries

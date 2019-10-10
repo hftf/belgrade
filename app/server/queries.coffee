@@ -234,7 +234,7 @@ left join schema_questionsetedition qse on qse.question_set_id = qs.id
 left join schema_tournament tou on tou.question_set_edition_id = qse.id
 left join schema_team te on te.tournament_id = tou.id
 where
-qs.slug = $id
+qs.slug = $question_set_slug
 group by qse.id
 ;'
 
@@ -245,7 +245,7 @@ qs.name || CASE WHEN qs.clear = "no" THEN " (not clear)" ELSE "" END as question
 from
 schema_questionset qs
 where
-qs.slug = $id
+qs.slug = $question_set_slug
 ;'
 
 question_set_index = "with
