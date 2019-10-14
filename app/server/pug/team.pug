@@ -220,7 +220,7 @@ html
 
 				tbody.stripe.buzzes
 					for buzz in buzzes
-						tr(data-index=buzz.p class=buzz.class)
+						tr(data-index=buzz.buzz_location class=buzz.class)
 
 							//- td= buzz.question_set_edition
 							//- +tdel(buzz.tournament_name)
@@ -240,7 +240,7 @@ html
 
 							+tdel(buzz.player_name, basePath(buzz.player_url))
 							td.r.bg(data-order=buzz.buzz_value)= formatNegative(buzz.buzz_value)
-							td.r.bg= buzz.p
+							td.r.bg= buzz.buzz_location
 							td.r.bg= formatBzPct(buzz.buzz_location_pct)
 							//- td
 

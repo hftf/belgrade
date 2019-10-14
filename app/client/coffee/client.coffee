@@ -64,9 +64,9 @@ replaceM = (m, buzzes) ->
 	s.appendChild n
 
 classifyBuzz = (buzz) ->
-	if buzz.buzz_value <= 0
+	if buzz.v <= 0
 		'neg'
-	else if buzz.bounceback != null # == 'bounceback'
+	else if buzz.bb != null # == 'bounceback'
 		'bb' #bounceback-get
 	else
 		'get'
@@ -89,7 +89,7 @@ buzzesToDiffStat = (buzzes) ->
 splitWordM = (question, groupedBuzzesByWord) ->
 	replaceMs(question, groupedBuzzesByWord, +question.dataset.words)
 
-groupBuzzesByWord = R.groupBy R.prop 'p' # p means position
+groupBuzzesByWord = R.groupBy R.prop 'p' # p means position (buzz_location)
 
 window.loadData = () ->
 	graph window.tossup.a, window.allCategoryKdes.d, window.allCategoryKdes.kdeXs

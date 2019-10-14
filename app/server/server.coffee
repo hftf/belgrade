@@ -404,7 +404,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 	
 	queries =
 		a: ['get', allQueries.tossup_data.a, id]
-		b: ['all', allQueries.tossup.buzzes, id]
+		b: ['all', allQueries.tossup.buzzes, id] # note: same query is used for tossup view
 
 	try
 		results = runQueries queries
@@ -413,6 +413,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results.a.p.sort()
 		results.a.n = JSON.parse results.a.n
 		results.a.n.sort()
+		results.b = results.b.map (buzz) -> p: buzz.buzz_location, v: buzz.buzz_value, bb: buzz.bounceback
 
 		res.setHeader 'Cache-Control', 'public, max-age=3600'
 		res.setHeader 'Content-Type', 'application/javascript'
