@@ -9,7 +9,7 @@ var pug = require('gulp-pug');
 var plumber = require('gulp-plumber');
 var replace = require('gulp-replace');
 
-var lr = require('gulp-livereload');
+// var lr = require('gulp-livereload');
 
 var resolve = require('resolve');
 
@@ -30,8 +30,8 @@ gulp.task('scripts', function () {
     }))
     .pipe(concat('all.js'))
     .pipe(replace(/sourceMappingURL/g, 'sourceFaffingURL'))
-    .pipe(gulp.dest('dist/js'))
-    .pipe(lr());
+    .pipe(gulp.dest('dist/js'));
+    // .pipe(lr());
 });
 
 /*gulp.task('scripts-app', function () {
@@ -66,16 +66,16 @@ gulp.task('styles', function () {
     .pipe(plumber())
     .pipe(sass())
     .pipe(concat('all.css'))
-    .pipe(gulp.dest('dist/css'))
-    .pipe(lr());
+    .pipe(gulp.dest('dist/css'));
+    // .pipe(lr());
 });
 
 gulp.task('views', function () {
   return gulp.src(paths.views)
     .pipe(plumber())
     .pipe(pug())
-    .pipe(gulp.dest('dist'))
-    .pipe(lr());
+    .pipe(gulp.dest('dist'));
+    // .pipe(lr());
 });
 
 gulp.task('copy', function() {
@@ -86,7 +86,7 @@ gulp.task('copy', function() {
 gulp.task('build', gulp.parallel('scripts', 'styles', 'views', 'copy'));
 
 gulp.task('watch', function () {
-  lr.listen();
+  // lr.listen();
   gulp.watch(paths.scripts, gulp.series('scripts'));
   gulp.watch(paths.styles,  gulp.series('styles'));
   gulp.watch(paths.views,   gulp.series('views'));
