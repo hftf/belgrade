@@ -47,8 +47,12 @@ d3 = require 'd3'
 allQueries = require './queries'
 
 
-dbfname = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/db.sqlite3'
-db = new sqlite dbfname, { readonly: true }
+# Example: npm start --port=3002 --dbfname=fo19.db.sqlite3
+port = process.env.npm_config_port || 3000
+dbfname = process.env.npm_config_dbfname || 'db.sqlite3'
+
+dbpath = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/' + dbfname
+db = new sqlite dbpath, { readonly: true }
 
 
 # TODO rename
@@ -466,7 +470,6 @@ server.use '/jank', router
 
 server.use '/fonts', express.static './dist/fonts'
 
-port = 3000
 server.listen port, ->
 	console.log 'server listening on port ' + port
 	return
