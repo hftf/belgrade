@@ -83,7 +83,7 @@ html
 							td= buzz.position
 							if player.has_authors
 								td(title=buzz.author, data-search=buzz.author)= buzz.initials
-							td(data-order=buzz.lft)= buzz.category
+							+tdel(buzz.category)(data-order=buzz.lft)
 							+tdel(buzz.answer, basePath(buzz.tossup_url))
 							//- if edition.has_powers
 							//- td= buzz.power_words

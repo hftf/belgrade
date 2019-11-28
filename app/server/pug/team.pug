@@ -232,7 +232,7 @@ html
 							td= buzz.position
 							if team.has_authors
 								td(title=buzz.author, data-search=buzz.author)= buzz.initials
-							td(data-order=buzz.lft)= buzz.category
+							+tdel(buzz.category)(data-order=buzz.lft)
 							+tdel(buzz.answer, basePath(buzz.tossup_url))
 							//- if edition.has_powers
 							//- td= buzz.power_words
@@ -291,7 +291,7 @@ html
 							td= geb.position
 							if team.has_authors
 								td(title=geb.author, data-search=geb.author)= geb.initials
-							td(data-order=geb.lft)= geb.category
+							+tdel(geb.category)(data-order=geb.lft)
 							+tdel(geb.answers, basePath(geb.bonus_url))
 
 							td.r= geb.total

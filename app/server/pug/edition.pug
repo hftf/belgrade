@@ -79,7 +79,7 @@ html
 							td= tossup.position
 							if edition.has_authors
 								td(title=tossup.author, data-search=tossup.author)= tossup.initials
-							td(data-order=tossup.lft)= tossup.category
+							+tdel(tossup.category)(data-order=tossup.lft)
 							+tdel(tossup.answer, basePath(url('tossup', tossup)))
 							if edition.has_powers
 								td= tossup.power_words
@@ -106,7 +106,7 @@ html
 							td= bonus.position
 							if edition.has_authors
 								td(title=bonus.author, data-search=bonus.author)= bonus.initials
-							td(data-order=bonus.lft)= bonus.category
+							+tdel(bonus.category)(data-order=bonus.lft)
 							+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer3, href=basePath(url('bonus', bonus)))
