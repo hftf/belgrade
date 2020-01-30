@@ -127,7 +127,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		width: 41*16
 		height: 220
 		mt: 45
-		mb: 60
+		mb: 80
 		mz: 10
 		ml: 24 + 44
 		mr: 76
@@ -377,6 +377,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'class', 'label'
 		.text 'Position in tossup'
 		.attr 'transform', 'translate(' + c.width/2 + ',40)'
+		.append('tspan').text('(buzz location %)').attr('x','0').attr('dy','20').attr('class','')
 	if gets_null.length or negs_null.length
 		gx.append 'text'
 			.attr 'class', 'label'
