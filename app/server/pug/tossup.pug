@@ -181,7 +181,7 @@ html
 								td.bg= buzz.protested
 								+tdel(buzz.opponent, basePath(buzz.opponent_url))
 								+tdel(buzz.tournament_name)
-								td= buzz.room_number
+								td: +room(buzz.room_number, buzz.spreadsheet)
 								td= buzz.round_number
 
 		script(src=basePath(url('tossup_data', tossup)))

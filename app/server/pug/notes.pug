@@ -53,7 +53,7 @@ html
 							+tdel(tossup.category)(data-order=tossup.lft)
 
 							+tdel(tossup.tournament_name)
-							td= tossup.room_number
+							td: +room(tossup.room_number, tossup.spreadsheet)
 							td= tossup.round_number
 
 							+tdel(tossup.answer, basePath(url('tossup', tossup)))
@@ -100,7 +100,7 @@ html
 							+tdel(bonus.category)(data-order=bonus.lft)
 
 							+tdel(bonus.tournament_name)
-							td= bonus.room_number
+							td: +room(bonus.room_number, bonus.spreadsheet)
 							td= bonus.round_number
 
 							+tdel(bonus.answers, basePath(url('bonus', bonus)))

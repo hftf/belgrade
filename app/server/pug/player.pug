@@ -75,7 +75,7 @@ html
 
 							//- td= buzz.question_set_edition
 							//- +tdel(buzz.tournament_name)
-							td= buzz.room_number
+							td: +room(buzz.room_number, buzz.spreadsheet)
 							td= buzz.round_number
 							+tdel(buzz.opponent, basePath(buzz.opponent_url))
 

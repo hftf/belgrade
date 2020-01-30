@@ -224,7 +224,7 @@ html
 
 							//- td= buzz.question_set_edition
 							//- +tdel(buzz.tournament_name)
-							td= buzz.room_number
+							td: +room(buzz.room_number, buzz.spreadsheet)
 							td= buzz.round_number
 							+tdel(buzz.opponent, basePath(buzz.opponent_url))
 
@@ -283,7 +283,7 @@ html
 						tr
 							//- td= geb.question_set_edition
 							//- +tdel(geb.tournament_name)
-							td= geb.room_number
+							td: +room(geb.room_number, geb.spreadsheet)
 							td= geb.round_number
 							+tdel(geb.opponent, basePath(geb.opponent_url))
 

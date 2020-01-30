@@ -160,7 +160,7 @@ html
 								td= geb.protested
 								+tdel(geb.opponent, basePath(geb.opponent_url))
 								+tdel(geb.tournament_name)
-								td= geb.room_number
+								td: +room(geb.room_number, geb.spreadsheet)
 								td= geb.round_number
 
 		+js

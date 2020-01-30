@@ -72,6 +72,9 @@ mixin tdel(c, href, title)
 		else
 			= c
 
+mixin room(room_number, spreadsheet)
+	a(href=spreadsheet, target='_blank')= room_number
+
 mixin tickerPlural(n, t, suffix, href)
 	b.r #{formatThousand(n)} 
 	span.l
