@@ -78,7 +78,7 @@ html
 							td= tossup.packet_letter
 							td= tossup.position
 							if edition.has_authors
-								td(title=tossup.author, data-search=tossup.author)= tossup.initials
+								td.el(title=tossup.author, data-search=tossup.author)= tossup.initials
 							+tdel(tossup.category)(data-order=tossup.lft)
 							+tdel(tossup.answer, basePath(url('tossup', tossup)))
 							if edition.has_powers
@@ -105,7 +105,7 @@ html
 							td= bonus.packet_letter
 							td= bonus.position
 							if edition.has_authors
-								td(title=bonus.author, data-search=bonus.author)= bonus.initials
+								td.el(title=bonus.author, data-search=bonus.author)= bonus.initials
 							+tdel(bonus.category)(data-order=bonus.lft)
 							+tdel(bonus.answer1, href=basePath(url('bonus', bonus)))
 							+tdel(bonus.answer2, href=basePath(url('bonus', bonus)))
