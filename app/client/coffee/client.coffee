@@ -245,6 +245,24 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.domain [0, 2, 3]
 	kdeDash = (x) -> {0: '0', 1: '0', 2: '0', 3: '4'}[x]
 
+	# legend
+	legend.append 'text'
+		.text gets_all.length
+		.attr 'x', '68'
+		.attr 'y', '0'
+		.attr 'class', 'legend-num'
+	legend.append 'text'
+		.text 'Correct buzzes'
+		.attr 'x', '78'
+		.attr 'y', '0'
+	legend.append 'g'
+		.attr 'class', 'bar'
+		.append 'rect'
+		.attr 'x', '0'
+		.attr 'y', '-6'
+		.attr 'width', '30'
+		.attr 'height', '12'
+
 	for category in allCategoryKdes
 		unless category.lft <= a.lft and a.rght <= category.rght and a.tree_id == category.tree_id
 			continue
@@ -269,11 +287,6 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.attr 'stroke-dasharray', kdeDash category.level
 			.attr 'd', "M 0,0 L 30,0"
 		legendCategory.append 'text'
-			.text name
-			.attr 'x', '78'
-			.attr 'dx', 6*category.level
-			.attr 'y', '0'
-		legendCategory.append 'text'
 			.text category.count
 			.attr 'x', '68'
 			.attr 'y', '0'
@@ -283,24 +296,11 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.attr 'x', '68'
 			.attr 'y', '0'
 			.attr 'class', 'dag'
-
-	# legend
-	legend.append 'g'
-		.attr 'class', 'bar'
-		.append 'rect'
-		.attr 'x', '0'
-		.attr 'y', '-6'
-		.attr 'width', '30'
-		.attr 'height', '12'
-	legend.append 'text'
-		.text 'Correct buzzes'
-		.attr 'x', '78'
-		.attr 'y', '0'
-	legend.append 'text'
-		.text gets_all.length
-		.attr 'x', '68'
-		.attr 'y', '0'
-		.attr 'class', 'legend-num'
+		legendCategory.append 'text'
+			.text name
+			.attr 'x', '78'
+			.attr 'dx', 6*category.level
+			.attr 'y', '0'
 
 	ng = chart.append 'g'
 		.attr 'class', 'legend'
@@ -312,14 +312,14 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.attr 'width', '30'
 		.attr 'height', '12'
 	ng.append 'text'
-		.text 'Incorrect buzzes'
-		.attr 'x', '78'
-		.attr 'y', '0'
-	ng.append 'text'
 		.text negs_all.length
 		.attr 'x', '68'
 		.attr 'y', '0'
 		.attr 'class', 'legend-num'
+	ng.append 'text'
+		.text 'Incorrect buzzes'
+		.attr 'x', '78'
+		.attr 'y', '0'
 
 	# labels
 
