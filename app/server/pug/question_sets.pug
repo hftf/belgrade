@@ -4,6 +4,7 @@ html
 	head
 		include includes/base.pug
 		+preload
+		link(rel='preload', href=basePath(url('question_sets_index')), as='fetch', crossorigin='anonymous')
 		include includes/analytics.pug
 		+css
 		+title(`every.buzz ⬢ Question sets`)

@@ -51,6 +51,7 @@ html
 	head
 		include includes/base.pug
 		+preload
+		link(rel='preload', href=basePath(url('question_set_index', question_set)), as='fetch', crossorigin='anonymous')
 		include includes/analytics.pug
 		+css
 		+title(`every.buzz ⬢ ${question_set.question_set}`)
