@@ -490,6 +490,9 @@ router.get '/question_sets/:question_set_slug/categories.js', 'categories', (req
 router.get '/notices.html', 'notices', (req, res, next) ->
 	res.render 'notices.pug'
 
+router.get '/licensing.html', 'licensing', (req, res, next) ->
+	res.render 'licensing.pug'
+
 router.get '/', 'home', (req, res, next) ->
 	queries =
 		ticker: ['get', allQueries.home.ticker]
