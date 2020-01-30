@@ -324,7 +324,13 @@ graph = (a, allCategoryKdes, kdeXs) ->
 	# labels
 
 	ftp = 0.84
-	pwds = a.power_words / a.words
+
+	if a.power_words
+		pwds = a.power_words / a.words
+		xaxis_pwr = d3.axisTop x
+			.tickValues [pwds]
+			.tickFormat ''
+			.tickSizeInner -c.height
 
 	xaxis = d3.axisBottom x
 		# .tickValues [.5, .84, 1]
@@ -347,6 +353,21 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.attr 'fill', null
 			.select('.domain').remove()
 
+	if a.power_words
+		gx_pwr = chart.append 'g'
+			.attr 'class', 'x axis power'
+			.attr 'transform', 'translate(0,0)'
+			.call xaxis_pwr
+			.call noAxisDefault
+			.append 'text'
+			.attr 'class', 'label'
+			.text 'Power'
+			.attr 'transform', 'translate(' + (x(pwds) - 5) + ',' + 20 + ')'
+		chart.append 'g'
+			.attr 'class', 'x axis power'
+			.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
+			.call xaxis_pwr
+			.call noAxisDefault
 	gx = chart.append 'g'
 		.attr 'class', 'x axis'
 		.attr 'transform', 'translate(0,' + c.height + ')'
