@@ -4,13 +4,18 @@ html
 	head
 		include includes/base.pug
 		include includes/analytics.pug
+		+css
 		link(rel='stylesheet', href='/fonts/Benton/fonts.css')
 		style.
 			body { font-family: 'BentonSans', sans-serif; text-align: center;
-				display: grid; height: 100vh; margin: 0; place-items: center center; }
-			header h1 { font-weight: 800; font-size: 2.8em; margin-bottom: 0.3em; }
-			header h2 { font-weight: 400; font-size: 1.4em; margin-bottom: 1.7em; max-width: 23em; }
-			main h1 { font-weight: 400; font-size: 1.6em; }
+				height: 100vh; margin: 0; display: grid; grid-template-rows: 5em 1fr 5em; place-items: center center; }
+			header { margin: 1em; border: 0; }
+			h1, h2 { font-family: inherit; }
+			.mast h1 { font-weight: 800; font-size: 2.8em; margin: 0; }
+			.mast h2 { font-weight: 400; font-size: 1.4em; margin: 0.8em auto 2.8em; max-width: 13em; }
+			@media screen and (max-width: 768px) { .typeahead { width: auto; } }
+			.typeahead input.search { width: 100%; box-sizing: border-box; }
+			.typeahead, .typeahead-results { text-align: left; }
 			.ticker { display: grid; grid-template-columns: repeat(2, max-content); grid-auto-flow: dense;
 			  column-gap: 0.3em; justify-content: center; }
 			.l, .c { text-align: left; }
@@ -19,12 +24,16 @@ html
 			.l:first-of-type, .r:first-of-type { font-size: 1.8em; }
 		+title(`every.buzz`)
 	body
-		div
-			header
-				h1 every.buzz
-				h2 Explore visualizations of detailed quizbowl stats by Ophir Lifshitz
+		header
+			.typeahead
+				input(type='text' placeholder="Search every.buzz").search
 
-			main
+		main
+			div
+				.mast
+					h1 every.buzz
+					h2 Explore visualizations of detailed quizbowl stats made by Ophir Lifshitz
+
 				.ticker
 					| #[b.r #{formatThousand(ticker.gameeventtossup)}] #[span.l buzzes recorded]
 					| #[span.c on]   #[+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')]
