@@ -340,6 +340,35 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.tickSize -c.height
 		.tickSizeOuter 0
 
+	noAxisDefault = (g) ->
+		g
+			.attr 'font-size', null
+			.attr 'font-family', null
+			.attr 'fill', null
+			.select('.domain').remove()
+
+	gx = chart.append 'g'
+		.attr 'class', 'x axis'
+		.attr 'transform', 'translate(0,' + c.height + ')'
+		.call xaxis
+		.call noAxisDefault
+	gx.append 'text'
+		.attr 'class', 'label'
+		.text 'Position in tossup'
+		.attr 'transform', 'translate(' + c.width/2 + ',40)'
+	if gets_null.length or negs_null.length
+		gx.append 'text'
+			.attr 'class', 'label'
+			.text 'missing'
+			.attr 'transform', 'translate(' + x(-0.0625) + ',40)'
+	chart.append 'g'
+		.attr 'class', 'x axis'
+		.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
+		.call negs_xaxis
+		.call noAxisDefault
+		.selectAll '.tick text'
+		.remove()
+
 	yaxis = d3.axisRight y
 		.ticks 4
 		.tickSize -c.width
@@ -348,13 +377,6 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.ticks 4
 		.tickSize -c.width
 		.tickSizeOuter 0
-
-	noAxisDefault = (g) ->
-		g
-			.attr 'font-size', null
-			.attr 'font-family', null
-			.attr 'fill', null
-			.select('.domain').remove()
 
 	# commented?
 	chart.append 'g'
@@ -378,28 +400,6 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.text 'Incorrect buzzes'
 		.attr 'text-anchor', 'middle'
 		.attr 'transform', 'translate(' + 40 + ',' + (3*c.height/2 + c.mb) + ') rotate(-90)'
-
-	gx = chart.append 'g'
-		.attr 'class', 'x axis'
-		.attr 'transform', 'translate(0,' + c.height + ')'
-		.call xaxis
-		.call noAxisDefault
-	gx.append 'text'
-		.attr 'class', 'label'
-		.text 'Position in tossup'
-		.attr 'transform', 'translate(' + c.width/2 + ',40)'
-	if gets_null.length or negs_null.length
-		gx.append 'text'
-			.attr 'class', 'label'
-			.text 'missing'
-			.attr 'transform', 'translate(' + x(-0.0625) + ',40)'
-	chart.append 'g'
-		.attr 'class', 'x axis'
-		.attr 'transform', 'translate(0,' + (c.height + c.mb) + ')'
-		.call negs_xaxis
-		.call noAxisDefault
-		.selectAll '.tick text'
-		.remove()
 
 	box = [
 		d3.quantile(gets, 0.2),
