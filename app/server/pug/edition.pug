@@ -13,7 +13,7 @@ html
 			li: a(href=basePath(url('edition', edition)))= edition.question_set_edition
 
 		.left
-			h1 #{edition.question_set} › #{edition.question_set_edition}
+			h1 #{edition.question_set} › #[nobr #{edition.question_set_edition}]
 
 			nav
 				ul.compact
@@ -30,7 +30,7 @@ html
 					+th(2): a(href='http://collegequizbowlcalendar.com/map/'): abbr(title='Region') Reg
 					+th(3) Rooms
 					+th(3) Teams
-					+th(60)(data-orderable='false')
+					+th(30)(data-orderable='false')
 					+th(3) Games
 
 				tbody.stripe
@@ -42,7 +42,7 @@ html
 							td= tournament.region
 							td.r= tournament.room_count
 							td.r= tournament.team_count
-							td(style='width:60em;')
+							td(style='min-width:30em;max-width:60em;')
 								ul.compact: for team in tournament.teams
 									li: a(href=basePath(team.team_url))= team.team_name
 							td.r= tournament.game_count
