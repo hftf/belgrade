@@ -16,6 +16,12 @@ html
 		.left
 			h1 #{team.team_name} at #{team.tournament_name}
 
+			nav
+				ul.compact
+					li: a(href='#categories') Categories
+					li: a(href='#tossups') Tossups
+					li: a(href='#bonuses') Bonuses
+
 			h2#players Players
 			ul: for player in team.players
 				li: a(href=basePath(player.player_url))= player.player_name
