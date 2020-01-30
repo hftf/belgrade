@@ -17,11 +17,10 @@ html
 			.typeahead input.search { width: 100%; box-sizing: border-box; }
 			.typeahead, .typeahead-results { text-align: left; }
 			.ticker { display: grid; grid-template-columns: repeat(2, max-content); grid-auto-flow: dense;
-			  column-gap: 0.3em; justify-content: center; }
-			.l, .c { text-align: left; }
-			.c { display: none; }
+			  row-gap: 0.15em; column-gap: 0.3em; justify-content: center; }
+			.l { text-align: left; }
 			.r { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums lining-nums; }
-			.l:first-of-type, .r:first-of-type { font-size: 1.8em; }
+			.l:first-of-type, .r:first-of-type { font-size: 1.4em; }
 		+title(`every.buzz`)
 	body
 		header
@@ -36,13 +35,14 @@ html
 
 				.ticker
 					| #[b.r #{formatThousand(ticker.gameeventtossup)}] #[span.l buzzes recorded]
-					| #[span.c on]   #[+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')]
-					| #[span.c in]   #[+tickerPlural(ticker.game,                  'game',                 's')]
-					| #[span.c from] #[+tickerPlural(ticker.player,                'player',               's')]
-					| #[span.c and]  #[+tickerPlural(ticker.team,                  'team',                 's')]
-					| #[span.c at]   #[+tickerPlural(ticker.tournament,            'tournament',           's')]
-					| #[span.c and]  #[+tickerPlural(ticker.questionsetedition,    'question set edition', 's')]
-					| #[span.c and]  #[+tickerPlural(ticker.questionset,           'question set',         's', basePath(url('question_sets')))]
+					| #[+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')]
+					| #[+tickerPlural(ticker.game,                  'game',                 's')]
+					| #[+tickerPlural(ticker.player,                'player',               's')]
+					| #[+tickerPlural(ticker.team,                  'team',                 's')]
+					| #[+tickerPlural(ticker.tournament,            'tournament',           's')]
+					| #[+tickerPlural(ticker.questionsetedition,    'question set edition', 's')]
+					| #[+tickerPlural(ticker.questionset,           'question set',         's', basePath(url('question_sets')))]
+					//- TODO number of users
 
 		+js
 //

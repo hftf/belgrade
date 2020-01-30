@@ -76,6 +76,7 @@ mixin room(room_number, spreadsheet)
 	a(href=spreadsheet, target='_blank')= room_number
 
 mixin tickerPlural(n, t, suffix, href)
+	//- space at end is intentional
 	b.r #{formatThousand(n)} 
 	span.l
 		if href
