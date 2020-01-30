@@ -30,15 +30,15 @@ db = new sqlite dbfname, { readonly: true }
 
 # TODO rename
 META = {
-    'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/',
-    'tossup': {
-        'line_startswith_template':  '<p class="p1 tu"><m v="0">%d.</m> ',
-        'get_next_n_lines': 2, # ANSWER + <Tag>
-    },
-    'bonus': {
-        'line_startswith_template':  '<p class="p1 bonus">%d. ',
-        'get_next_n_lines': 7, # (Part, ANSWER) × 3 + <Tag>
-    },
+	'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/',
+	'tossup': {
+		'line_startswith_template':  '<p class="p1 tu"><m v="0">%d.</m> ',
+		'get_next_n_lines': 2, # ANSWER + <Tag>
+	},
+	'bonus': {
+		'line_startswith_template':  '<p class="p1 bonus">%d. ',
+		'get_next_n_lines': 7, # (Part, ANSWER) × 3 + <Tag>
+	},
 }
 
 
@@ -52,22 +52,22 @@ get_question_html = (question_type, question) ->
 		question['position']
 	)
 get_question_html_ = (question_type, packet_filename, question_set_slug, question_set_edition_slug, question_number) ->
-    # TODO Hardcoded
-    set_edition_path = util.format(META['filename_template'], question_set_slug, question_set_edition_slug)
-    packet_filename = set_edition_path + packet_filename
-    return scan_packet(packet_filename, question_type, question_number)
+	# TODO Hardcoded
+	set_edition_path = util.format(META['filename_template'], question_set_slug, question_set_edition_slug)
+	packet_filename = set_edition_path + packet_filename
+	return scan_packet(packet_filename, question_type, question_number)
 
 fs = require('fs')
 util = require('util')
 scan_packet = (packet_filename, question_type, question_number) ->
-    packet_file = fs.readFileSync(packet_filename, 'utf8').split('\n')
+	packet_file = fs.readFileSync(packet_filename, 'utf8').split('\n')
 
-    for line, index in packet_file
-        if line.startsWith(util.format(META[question_type]['line_startswith_template'], question_number))
-            return [
-                packet_file.slice(index, index + 1).join('\n'),
-                packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
-            ]
+	for line, index in packet_file
+		if line.startsWith(util.format(META[question_type]['line_startswith_template'], question_number))
+			return [
+				packet_file.slice(index, index + 1).join('\n'),
+				packet_file.slice(index + 1, index + 1 + META[question_type]['get_next_n_lines']).join('\n')
+			]
 # END NEW
 
 sim = require 'string-similarity'
