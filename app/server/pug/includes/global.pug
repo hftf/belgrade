@@ -27,8 +27,8 @@ mixin title(title)
 
 mixin header
 	header.twocol.skinny
-		//- h1: a(href=basePath(url('home'))) every.buzz
-		h1 every.buzz
+		h1: a(href=basePath(url('home'))) every.buzz
+		//- h1 every.buzz
 		nav
 			ul.compact
 				li: a(href=basePath(url('notices'))) Notices
