@@ -258,14 +258,17 @@ col:not(:first-of-type)
 	background: inherit
 	position: relative
 
-tbody.categories th
-	font-weight: inherit
+tr.category-0, tr.category-1
+	th, td
+		font-weight: 600
+tr.category-2
+	th, td
+		font-weight: 400
 tr.category-0, tr.category-1
 	border-top: 1px solid #ccc
-	font-weight: 600
-
+tr.category-0, tr.category-1
 	&, & + tr
-		& th, & td
+		th, td
 			padding-top: 4px
 
 td.bar
