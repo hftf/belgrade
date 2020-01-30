@@ -214,6 +214,32 @@ router.get '/question_sets/:question_set_slug/', 'question_set', (req, res, next
 		res.status 500
 		res.send err.stack
 
+router.get '/question_sets/:question_set_slug/notes.html', 'question_set_notes', (req, res, next) ->
+	params =
+		question_set_slug: req.params.question_set_slug
+
+	queries =
+		question_set: ['get', allQueries.question_set.question_set, params]
+		tossups:      ['all', allQueries.question_set.tossup_notes, params]
+		bonuses:      ['all', allQueries.question_set.bonus_notes, params]
+
+	try
+		results = runQueries queries
+
+		results['tossups'].map (buzz) ->
+			url_params = { ...buzz, question_set_slug: results['question_set']['question_set_slug'] }
+			buzz.team_url   = namedRouter.build('team', url_params)
+			buzz.player_url = namedRouter.build('player', url_params)
+		results['bonuses'].map (geb) ->
+			url_params = { ...geb, question_set_slug: results['question_set']['question_set_slug'] }
+			geb.team_url   = namedRouter.build('team', url_params)
+			# geb.bonus_url = namedRouter.build('bonus', url_params)
+
+		res.render 'notes.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
+
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/', 'edition', (req, res, next) ->
 	params =
 		question_set_slug         : req.params.question_set_slug

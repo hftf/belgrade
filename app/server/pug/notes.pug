@@ -1,0 +1,116 @@
+doctype html
+include includes/global.pug
+html
+	head
+		include includes/base.pug
+		+preload
+		include includes/analytics.pug
+		+css
+		+title(`every.buzz ⬢ ${question_set.question_set} notes`)
+	body
+		+header
+			li: a(href=basePath(url('question_set', question_set)), aria-current='page')= question_set.question_set
+
+		.left
+			h1 #{question_set.question_set} notes
+
+			nav
+				ul.compact
+					li: a(href='#tossups') Tossups
+					li: a(href='#bonuses') Bonuses
+
+			h2#tossups Tossups
+			table.small.dataTable.compact(data-order='[[1,"asc"]]' data-column-defs='[{"targets": [1], "orderData": [1, 2]}]')
+				thead: tr
+					+th(6.5) Set edition
+					+th(3)(data-name='packet') Packet
+					+th(3)(data-name='position') Tossup
+
+					+th(3) Author
+					+th(15) Category
+
+					+th(7) Site
+					+th(2): abbr(title='Room') Rm
+					+th(2): abbr(title='Round') Rd
+
+					+th(18) Answer
+
+					th Value
+					th: abbr(title='Buzz location') BzPt
+					th: abbr(title='Buzz location %') BzPt%
+
+					+th(18) Answer given
+					th: abbr(title='Protested') Pro?
+
+				tbody.stripe
+					for tossup in tossups
+						tr
+							td= tossup.question_set_edition
+							td= tossup.packet_letter
+							td= tossup.position
+
+							+tdel(tossup.initials, null, tossup.author)
+							+tdel(tossup.category)(data-order=tossup.lft)
+
+							+tdel(tossup.tournament_name)
+							td= tossup.room_number
+							td= tossup.round_number
+
+							+tdel(tossup.answer, basePath(url('tossup', tossup)))
+
+							td.r.bg(data-order=tossup.buzz_value)= formatNegative(tossup.buzz_value)
+							td.r.bg= tossup.buzz_location
+							td.r.bg= formatBzPct(tossup.buzz_location_pct)
+
+							+tdel(tossup.answer_given).bg
+							td.bg= tossup.protested
+
+			h2#bonuses Bonuses
+			table.small.dataTable.compact(data-order='[[1,"asc"]]' data-column-defs='[{"targets": [1], "orderData": [1, 2]}]')
+				thead: tr
+					+th(6.5) Set edition
+					+th(3)(data-name='packet') Packet
+					+th(3)(data-name='position') Tossup
+
+					+th(3) Author
+					+th(15) Category
+
+					+th(7) Site
+					+th(2): abbr(title='Room') Rm
+					+th(2): abbr(title='Round') Rd
+
+					+th(18) Answers
+
+					+th(3) Total
+					+th(3) Part 1
+					+th(3) Part 2
+					+th(3) Part 3
+
+					+th(18) Notes
+					th: abbr(title='Protested') Pro?
+
+				tbody.stripe
+					for bonus in bonuses
+						tr
+							td= bonus.question_set_edition
+							td= bonus.packet_letter
+							td= bonus.position
+
+							+tdel(bonus.initials, null, bonus.author)
+							+tdel(bonus.category)(data-order=bonus.lft)
+
+							+tdel(bonus.tournament_name)
+							td= bonus.room_number
+							td= bonus.round_number
+
+							+tdel(bonus.answers, basePath(url('bonus', bonus)))
+
+							td.r= bonus.total
+							td.r= bonus.value1
+							td.r= bonus.value2
+							td.r= bonus.value3
+
+							+tdel(bonus.answer_given)
+							td= bonus.protested
+
+		+js
