@@ -82,7 +82,7 @@ html
 							td= buzz.packet_letter
 							td= buzz.position
 							if player.has_authors
-								td.el(title=buzz.author, data-search=buzz.author)= buzz.initials
+								+tdel(buzz.initials, null, buzz.author)
 							+tdel(buzz.category)(data-order=buzz.lft)
 							+tdel(buzz.answer, basePath(buzz.tossup_url))
 							//- if edition.has_powers

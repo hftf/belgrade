@@ -231,7 +231,7 @@ html
 							td= buzz.packet_letter
 							td= buzz.position
 							if team.has_authors
-								td.el(title=buzz.author, data-search=buzz.author)= buzz.initials
+								+tdel(buzz.initials, null, buzz.author)
 							+tdel(buzz.category)(data-order=buzz.lft)
 							+tdel(buzz.answer, basePath(buzz.tossup_url))
 							//- if edition.has_powers
@@ -290,7 +290,7 @@ html
 							td= geb.packet_letter
 							td= geb.position
 							if team.has_authors
-								td.el(title=geb.author, data-search=geb.author)= geb.initials
+								+tdel(geb.initials, null, geb.author)
 							+tdel(geb.category)(data-order=geb.lft)
 							+tdel(geb.answers, basePath(geb.bonus_url))
 

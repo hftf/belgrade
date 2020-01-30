@@ -61,8 +61,12 @@ mixin tdavg(n, avg, max)
 		- var disp = formatPct(avg/max);
 		td.r.bar(style=avg ? `background-size: ${disp} 2px;` : '')&attributes(attributes)
 			= formatAvg(avg)
-mixin tdel(c, href)
-	td.el(title=c)&attributes(attributes): span
+mixin tdel(c, href, title)
+	if !title
+		- title = c;
+	else
+		- attributes['data-search'] = title;
+	td.el(title=title)&attributes(attributes): span
 		if href
 			a(href=href)= c
 		else
