@@ -13,7 +13,8 @@ SELECT
 (SELECT count(*) FROM schema_game)               as game,
 (SELECT count(*) FROM schema_gameeventtossup
 	WHERE buzz_value IS NOT NULL)                as gameeventtossup,
-(SELECT count(*) FROM schema_gameeventbonus)     as gameeventbonus
+(SELECT count(*) FROM schema_gameeventbonus)     as gameeventbonus,
+(SELECT sum(seq) FROM sqlite_sequence WHERE name like "schema_%") as total_records
 '
 
 q_ = '
