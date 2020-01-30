@@ -77,7 +77,8 @@ mixin room(room_number, spreadsheet)
 
 mixin tickerPlural(n, t, suffix, href)
 	//- space at end is intentional
-	b.r #{formatThousand(n)} 
+	b.r #{formatThousand(n)}
+	|  
 	span.l
 		if href
 			a(href=href)= t
@@ -87,6 +88,7 @@ mixin tickerPlural(n, t, suffix, href)
 			= t
 			if n != 1
 				= suffix
+	|  
 
 - function formatThousand(n) { return n.toLocaleString(); }
 - function formatNegative(n) { if (n<0) return '−'+Math.abs(n); return n; }

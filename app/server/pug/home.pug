@@ -34,14 +34,14 @@ html
 					h2 Explore visualizations of detailed quizbowl stats made by Ophir Lifshitz
 
 				.ticker
-					| #[b.r #{formatThousand(ticker.gameeventtossup)}] #[span.l buzzes recorded]
-					| #[+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')]
-					| #[+tickerPlural(ticker.game,                  'game',                 's')]
-					| #[+tickerPlural(ticker.player,                'player',               's')]
-					| #[+tickerPlural(ticker.team,                  'team',                 's')]
-					| #[+tickerPlural(ticker.tournament,            'tournament',           's')]
-					| #[+tickerPlural(ticker.questionsetedition,    'question set edition', 's')]
-					| #[+tickerPlural(ticker.questionset,           'question set',         's', basePath(url('question_sets')))]
+					+tickerPlural(ticker.gameeventtossup,       'buzzes recorded',      '')
+					+tickerPlural(ticker.tossup + ticker.bonus, 'question edition',     's')
+					+tickerPlural(ticker.game,                  'game',                 's')
+					+tickerPlural(ticker.player,                'player',               's')
+					+tickerPlural(ticker.team,                  'team',                 's')
+					+tickerPlural(ticker.tournament,            'tournament',           's')
+					+tickerPlural(ticker.questionsetedition,    'question set edition', 's')
+					+tickerPlural(ticker.questionset,           'question set',         's', basePath(url('question_sets')))
 					//- TODO number of users
 
 		+js
