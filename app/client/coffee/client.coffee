@@ -277,9 +277,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 			.text category.count
 			.attr 'x', '68'
 			.attr 'y', '0'
-			.attr 'text-anchor', 'end'
-			.attr 'font-size', 'smaller'
-			# .attr 'font-weight', '300'
+			.attr 'class', 'legend-num'
 		legendCategory.append 'text'
 			.text '†'
 			.attr 'x', '68'
@@ -302,9 +300,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.text gets_all.length
 		.attr 'x', '68'
 		.attr 'y', '0'
-		.attr 'text-anchor', 'end'
-		.attr 'font-size', 'smaller'
-		# .attr 'font-weight', '300'
+		.attr 'class', 'legend-num'
 
 	ng = chart.append 'g'
 		.attr 'class', 'legend'
@@ -323,9 +319,7 @@ graph = (a, allCategoryKdes, kdeXs) ->
 		.text negs_all.length
 		.attr 'x', '68'
 		.attr 'y', '0'
-		.attr 'text-anchor', 'end'
-		.attr 'font-size', 'smaller'
-		# .attr 'font-weight', '300'
+		.attr 'class', 'legend-num'
 
 	# labels
 
