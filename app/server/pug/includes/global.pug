@@ -97,6 +97,7 @@ mixin tickerPlural(n, t, suffix, href)
 - function formatAvg(n) { if (isNaN(n)) return ''; if (n<0) return '−'+Math.abs(n).toFixed(1); return n.toFixed(1); }
 -
 	function formatPct2(n) {
+		if (n == '?') return '?';
 		if (isNaN(n)) return '';
 		if (n == 0) return '=';
 		var np = 100*n;

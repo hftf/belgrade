@@ -102,6 +102,7 @@ scan_packet = (packet_filename, question_type, question_number) ->
 sim = require 'string-similarity'
 striptags = require 'striptags'
 
+# compute difference between two strings
 similarity = (h1, h2) ->
 	h1 = striptags h1, [], '\n'
 	h2 = striptags h2, [], '\n'
@@ -304,8 +305,11 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
-				edition_raw = get_question_html('tossup', edition)
-				edition.similarity = similarity(edition_raw, results['raw'])
+				try
+					edition_raw = get_question_html('tossup', edition)
+					edition.similarity = similarity(edition_raw, results['raw'])
+				catch err
+					edition.similarity = '?'
 
 		res.render 'tossup.pug', results
 	catch err
@@ -342,8 +346,11 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		results['markdown'] = h2m results['raw']
 		for edition in results['editions']
 			unless edition['rollup'] or edition['question_ptr_id'] == id.id
-				edition_raw = get_question_html('bonus', edition)
-				edition.similarity = similarity(edition_raw, results['raw'])
+				try
+					edition_raw = get_question_html('bonus', edition)
+					edition.similarity = similarity(edition_raw, results['raw'])
+				catch err
+					edition.similarity = '?'
 
 		res.render 'bonus.pug', results
 	catch err
