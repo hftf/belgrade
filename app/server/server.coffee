@@ -50,14 +50,16 @@ allQueries = require './queries'
 # Example: npm start --port=3002 --dbfname=fo19.db.sqlite3
 port = process.env.npm_config_port || 3000
 dbfname = process.env.npm_config_dbfname || 'db.sqlite3'
+dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
+bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
 
-dbpath = '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/' + dbfname
+dbpath = dbfbase + dbfname
 db = new sqlite dbpath, { readonly: true }
 
 
 # TODO rename
 META = {
-	'filename_template': '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/',
+	'filename_template': bundlebase,
 	'tossup': {
 		'line_startswith_template':  '<p class="p1 tu"><m v="0">%d.</m> ',
 		'get_next_n_lines': 2, # ANSWER + <Tag>
