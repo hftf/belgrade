@@ -7,6 +7,8 @@ isQuestion = (model) ->
 	model == 'tossup' || model == 'bonus'
 
 editionAbbr = (question_set_edition_slug) -> question_set_edition_slug.substring 5
+packetAbbr = (packet_letter) ->
+	(if /^\d+$/.test packet_letter then 'P' else '') + packet_letter
 
 renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 	init = () ->
@@ -52,7 +54,7 @@ renderTypeahead = (input, arr, searchTerm, perSetLimit, onClick) ->
 										name: result.name.replace(searchTermRegExp, '<mark>$1</mark>')
 										score: result.score.toFixed 1
 										width: result.score * 4
-										packet: result.packet
+										packet: packetAbbr result.packet
 										position: result.position
 										category: result.category
 										author: result.author

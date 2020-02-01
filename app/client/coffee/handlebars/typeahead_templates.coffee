@@ -21,7 +21,7 @@ tossup_result = '
 		</div>
 		{{/if}}
 		<div class="typeahead-secondary typeahead-editions">
-			<span class="typeahead-model">P{{packet}}, T{{position}}</span>
+			<span class="typeahead-model">{{packet}}, T{{position}}</span>
 			<span>{{#if author}}{{author}}, {{/if}}{{category}}</span>
 		</div>
 	</div>'
@@ -42,7 +42,7 @@ bonus_result = '
 		</div>
 		{{/if}}
 		<div class="typeahead-secondary typeahead-editions">
-			<span class="typeahead-model">P{{packet}}, B{{position}}</span>
+			<span class="typeahead-model">{{packet}}, B{{position}}</span>
 			<span>{{#if author}}{{author}}, {{/if}}{{category}}</span>
 		</div>
 	</div>'
