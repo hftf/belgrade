@@ -2,8 +2,13 @@ express = require 'express'
 NamedRouter = require 'named-routes'
 compression = require 'compression'
 
+fs = require 'fs'
+util = require 'util'
+glob = require 'glob'
+
 R = require 'ramda'
 sqlite = require 'better-sqlite3'
+moment = require 'moment'
 
 HTML2BBCode = require('html2bbcode').HTML2BBCode
 h2b_s = new HTML2BBCode()
@@ -57,6 +62,20 @@ dbpath = dbfbase + dbfname
 db = new sqlite dbpath, { readonly: true }
 
 
+formatDate = (date) ->
+	dateMoment = moment date
+	"#{dateMoment.fromNow()} (#{dateMoment.format('LL, LT')})"
+statstats = () ->
+	files = new glob.Glob 'app/**', sync: true, stat: true
+	mtimes = R.pluck 'mtime', files.statCache
+	latest = Object.keys(mtimes).reduce (a, b) -> if mtimes[a] > mtimes[b] then a else b
+	return
+		dbpath_mtime:   formatDate fs.statSync(dbpath).mtime
+		file_mtime:     formatDate mtimes[latest]
+		filepath_mtime: latest
+		filename_mtime: latest.replace process.cwd(), ''
+
+
 # TODO rename
 META = {
 	'filename_template': bundlebase,
@@ -86,8 +105,6 @@ get_question_html_ = (question_type, packet_filename, question_set_slug, questio
 	packet_filename = set_edition_path + packet_filename
 	return scan_packet(packet_filename, question_type, question_number)
 
-fs = require('fs')
-util = require('util')
 scan_packet = (packet_filename, question_type, question_number) ->
 	packet_file = fs.readFileSync(packet_filename, 'utf8').split('\n')
 
@@ -193,6 +210,8 @@ router.get '/question_sets/', 'question_sets', (req, res, next) ->
 		
 	try
 		results = runQueries queries
+
+		results.statstats = statstats()
 
 		res.render 'question_sets.pug', results
 	catch err

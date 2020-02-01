@@ -23,11 +23,13 @@
     "html2bbcode": "^1.2.6",
     "turndown": "^5.0.3",
     "clipboard-polyfill": "^2.8.6",
-    "handlebars": "^4.1.0",
+    "handlebars": "^4.7.2",
     "lunr": "^2.3.6",
     "lunr-unicode-normalizer": "git+https://github.com/nekdolan/lunr-unicode-normalizer.git",
     "jquery": "^3.4.1",
-    "compression": "^1.7.4"
+    "compression": "^1.7.4",
+    "glob": "^7.1.6",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "browserify": "^16.5.0",

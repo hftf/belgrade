@@ -14,6 +14,9 @@ html
 		.left
 			h1 Question sets
 			p
+				| Data last updated #{statstats.dbpath_mtime}. 
+				| App last updated #{statstats.file_mtime}.
+			p
 				| Data from some tournaments may be unavailable.
 				//- preference to not show spoilers for certain packets (use for practice)
 
@@ -24,6 +27,7 @@ html
 					+th(6) Tournaments
 					+th(6) Teams
 					+th(6) Clear
+					+th(6) Published
 
 				tbody.stripe
 					for question_set in question_sets
@@ -33,5 +37,6 @@ html
 							td.r= question_set.tournament_count
 							td.r= question_set.team_count
 							td= question_set.clear
+							td= question_set.published
 
 		+js
