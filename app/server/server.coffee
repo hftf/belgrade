@@ -37,7 +37,7 @@ h2m = (h) ->
 	h2 = h
 		.join('\n')
 		.replace(/span class="s1">|span>/g, 'u>')
-	h2m_s.addRule 'underline', 
+	h2m_s.addRule 'underline',
 		filter: ['u']
 		replacement: (v) -> '__' + v + '__'
 	h2m_s.turndown(h2).toString()
@@ -55,8 +55,10 @@ allQueries = require './queries'
 # Example: npm start --port=3002 --dbfname=fo19.db.sqlite3
 port = process.env.npm_config_port || 3000
 dbfname = process.env.npm_config_dbfname || 'db.sqlite3'
-dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
-bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
+dbfbase = process.env.npm_config_dbfbase || '/Users/neilesh/belgrade/app/data/'
+bundlebase = process.env.npm_config_bundlebase || '/Users/neilesh/belgrade/app/data/bundles/%s/%s/html/'
+# dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
+# bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
 
 dbpath = dbfbase + dbfname
 db = new sqlite dbpath, { readonly: true }
@@ -169,7 +171,7 @@ router.get '/question_sets/index.json', 'question_sets_index', (req, res, next) 
 	try
 		results = runQueries queries
 
-		sets = R.map ((qs) -> 
+		sets = R.map ((qs) ->
 			name: qs.name
 			url: basePath namedRouter.build 'question_set', { question_set_slug: qs.slug }, 'get'
 		), results.set
@@ -185,7 +187,7 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 
 	queries =
 		pages: ['all', allQueries.question_set.question_set_index,  id]
-		
+
 	try
 		results = runQueries queries
 		pages = []
@@ -207,7 +209,7 @@ router.get '/question_sets/:question_set_slug/index.json', 'question_set_index',
 router.get '/question_sets/', 'question_sets', (req, res, next) ->
 	queries =
 		question_sets: ['all', allQueries.question_sets.question_sets]
-		
+
 	try
 		results = runQueries queries
 
@@ -308,7 +310,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		buzzes:   ['all', allQueries.tossup.buzzes,   id]
 		editions: ['all', allQueries.tossup.editions, id]
 
-	try 
+	try
 		results = runQueries queries
 
 		results['raw'] = get_question_html('tossup', results['tossup'])
@@ -448,6 +450,51 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		res.status 500
 		res.send err.stack
 
+router.get '/question_sets/:question_set_slug/leaderboard_team/:category_slug.html', 'leaderboard_team', (req, res, next) ->
+	params =
+		question_set_slug		  : req.params.question_set_slug
+		category_slug			  : req.params.category_slug
+
+	queries =
+		leaderboard_team_t: ['all', allQueries.leaderboards.leaderboard_team_t, params]
+		leaderboard_team_b: ['all', allQueries.leaderboards.leaderboard_team_b, params]
+		subcategories: ['all', allQueries.leaderboards.subcategories, params]
+		categories: ['all', allQueries.leaderboards.categories, params]
+
+	try
+		results = runQueries queries
+
+		results['leaderboard_team_t'].map (team) ->
+			url_params = { ...team}
+			team.team_url   = namedRouter.build('team', url_params)
+		results['leaderboard_team_b'].map (team) ->
+			url_params = { ...team}
+			team.team_url   = namedRouter.build('team', url_params)
+
+		res.render 'leaderboard_team.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
+
+router.get '/question_sets/:question_set_slug/leaderboard_player/:category_slug.html', 'leaderboard_player', (req, res, next) ->
+	params =
+		question_set_slug		  : req.params.question_set_slug
+		category_slug			  : req.params.category_slug
+
+	queries =
+		leaderboard_player: ['all', allQueries.leaderboards.leaderboard_player, params]
+		subcategories: ['all', allQueries.leaderboards.subcategories, params]
+		categories: ['all', allQueries.leaderboards.categories, params]
+	try
+		results = runQueries queries
+		results['leaderboard_player'].map (player) ->
+			url_params = { ...player}
+			player.player_url = namedRouter.build('player', url_params)
+			player.team_url   = namedRouter.build('team', url_params)
+		res.render 'leaderboard_player.pug', results
+	catch err
+		res.status 500
+		res.send err.stack
 
 router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slug/tossups/:tossup_slug.js', 'tossup_data', (req, res, next) ->
 	params =
@@ -459,7 +506,7 @@ router.get '/question_sets/:question_set_slug/editions/:question_set_edition_slu
 		db.prepare allQueries.tossup.t_id
 		.get params
 		.question_ptr_id
-	
+
 	queries =
 		a: ['get', allQueries.tossup_data.a, id]
 		b: ['all', allQueries.tossup.buzzes, id] # note: same query is used for tossup view
