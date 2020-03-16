@@ -391,7 +391,7 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		team: ['get', allQueries.team.team, id]
 		buzzes: ['all', allQueries.team.buzzes, id]
 		bonuses: ['all', allQueries.team.bonuses, id]
-		categories: ['all', allQueries.perf.categories, params]
+		categories_by_team: ['all', allQueries.perf.categories_by_team, params]
 
 	try
 		results = runQueries queries
@@ -432,6 +432,8 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 	queries =
 		player: ['get', allQueries.player.player, id]
 		buzzes: ['all', allQueries.player.buzzes, id]
+		categories_by_player: ['all', allQueries.perf.categories_by_player, params]
+		categories_by_team: ['all', allQueries.perf.categories_by_team, params]
 
 	try
 		results = runQueries queries

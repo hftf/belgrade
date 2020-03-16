@@ -770,7 +770,7 @@ order by r.id, q.position'
 # buzz_location is not null
 # r.number sorts as string -> using r.id instead fixme
 
-perf_by_cat ='
+perf_by_cat_team = (where_exp, category_levels) -> "
 SELECT * FROM (
 SELECT
 	c.id,
@@ -792,7 +792,8 @@ COUNT(CASE WHEN cb.total >= 0  THEN 1 END) b_atleast0,
 COUNT(CASE WHEN cb.total >= 10 THEN 1 END) b_atleast10,
 COUNT(CASE WHEN cb.total >= 20 THEN 1 END) b_atleast20,
 COUNT(CASE WHEN cb.total >= 30 THEN 1 END) b_atleast30,
-COUNT(DISTINCT cb.gameevent_ptr_id) AS b_countRooms
+COUNT(DISTINCT cb.bonus_id) AS b_countUnique,
+COUNT(DISTINCT cb.game_id || ',' || cb.bonus_id) AS b_countRooms
 
 FROM
 	schema_category c
@@ -811,18 +812,18 @@ LEFT JOIN (
 		JOIN schema_gameevent ge           ON ge.id  = geb.gameevent_ptr_id
 		JOIN schema_gameteam gt            ON gt.id  = ge.game_team_id
 		JOIN schema_team te                ON te.id  = gt.team_id
-		JOIN schema_tournament tou         ON tou.id = te.tournament_id
+		JOIN schema_tournament tou         ON tou.id = te.tournament_id AND tou.site_slug = $tournament_site_slug
 		JOIN schema_game g                 ON g.id   = gt.game_id
 		JOIN schema_questionsetedition qse ON qse.id = tou.question_set_edition_id
 			AND qse.id = p.question_set_edition_id
-	WHERE te.slug = $team_slug) cb
+	#{where_exp}) cb
 ON (c.lft <= cb.lft
 	AND cb.rght <= c.rght
 	AND c.tree_id = cb.tree_id)
 
 WHERE
 	c.question_set_id = qs.id
-	AND c.level <= 2
+	AND c.level <= #{category_levels}
 	AND qs.slug = $question_set_slug
 GROUP BY
 	c.id
@@ -843,12 +844,16 @@ COUNT(CASE WHEN ct.buzz_value = 10 THEN 1 END) t_count10,
 COUNT(CASE WHEN ct.buzz_value = -5 THEN 1 END) t_countN5,
 COUNT(CASE WHEN ct.buzz_value =  0 THEN 1 END) t_count0,
 COUNT(CASE WHEN ct.buzz_value >  0 THEN 1 END) t_countG,
-COUNT(DISTINCT ct.gameevent_ptr_id) AS t_countRooms,
+COUNT(DISTINCT ct.tossup_id) AS t_countUnique,
+COUNT(DISTINCT ct.game_id || ',' || ct.tossup_id) AS t_countRooms,
 COUNT(DISTINCT CASE WHEN ct.buzz_location THEN ct.game_id END) AS t_countRoomsBzPt,
 COUNT(CASE WHEN ct.buzz_value    IS NOT NULL THEN 1 END) AS t_countBzs,
 COUNT(CASE WHEN ct.buzz_location IS NOT NULL THEN 1 END) AS t_countBzPts,
 round(AVG(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_avgBzPt,
-round(min(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_firstBzPt
+round(min(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_firstBzPt,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS bpa,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 AND ct.buzz_location * 1.0 / ct.words <= 0.50 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS spbpa,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 AND ct.buzz_location * 1.0 / ct.words > 0.50 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS gebpa
 
 FROM
 	schema_category c
@@ -866,18 +871,18 @@ LEFT JOIN (
 		JOIN schema_gameevent ge           ON ge.id  = get.gameevent_ptr_id
 		JOIN schema_gameteam gt            ON gt.id  = ge.game_team_id
 		JOIN schema_team te                ON te.id  = gt.team_id
-		JOIN schema_tournament tou         ON tou.id = te.tournament_id
+		JOIN schema_tournament tou         ON tou.id = te.tournament_id AND tou.site_slug = $tournament_site_slug
 		JOIN schema_game g                 ON g.id   = gt.game_id
 		JOIN schema_questionsetedition qse ON qse.id = tou.question_set_edition_id
 			AND qse.id = p.question_set_edition_id
-	WHERE te.slug = $team_slug) ct
+	#{where_exp}) ct
 ON (c.lft <= ct.lft
 	AND ct.rght <= c.rght
 	AND c.tree_id = ct.tree_id)
 
 WHERE
 	c.question_set_id = qs.id
-	AND c.level <= 2
+	AND c.level <= #{category_levels}
 	AND qs.slug = $question_set_slug
 GROUP BY
 	c.id
@@ -886,7 +891,67 @@ ORDER BY
 ) cct
 USING(id)
 GROUP BY ccb.id
-'
+"
+
+perf_by_cat_player = (where_exp, category_levels) -> "
+SELECT
+	c.id,
+	c.name,
+	c.lft,
+	c.level,
+
+COALESCE(SUM(ct.buzz_value), 0) t_sum,
+COUNT(CASE WHEN ct.buzz_value = 15 THEN 1 END) t_count15,
+COUNT(CASE WHEN ct.buzz_value = 10 THEN 1 END) t_count10,
+COUNT(CASE WHEN ct.buzz_value = -5 THEN 1 END) t_countN5,
+COUNT(CASE WHEN ct.buzz_value =  0 THEN 1 END) t_count0,
+COUNT(CASE WHEN ct.buzz_value >  0 THEN 1 END) t_countG,
+COUNT(DISTINCT ct.tossup_id) AS t_countUnique,
+COUNT(DISTINCT ct.game_id || ',' || ct.tossup_id) AS t_countRooms,
+COUNT(DISTINCT CASE WHEN ct.buzz_location THEN ct.game_id END) AS t_countRoomsBzPt,
+COUNT(CASE WHEN ct.buzz_value    IS NOT NULL THEN 1 END) AS t_countBzs,
+COUNT(CASE WHEN ct.buzz_location IS NOT NULL THEN 1 END) AS t_countBzPts,
+round(AVG(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_avgBzPt,
+round(min(CASE WHEN ct.buzz_value > 0 THEN ct.buzz_location END * 1.0 / ct.words), 3) t_firstBzPt,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS bpa,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 AND ct.buzz_location * 1.0 / ct.words <= 0.50 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS spbpa,
+round(SUM(CASE WHEN ct.buzz_location IS NOT NULL and ct.buzz_value > 0 AND ct.buzz_location * 1.0 / ct.words > 0.50 THEN 1 - ct.buzz_location * 1.0 / ct.words END), 3) AS gebpa
+
+FROM
+	schema_category c
+JOIN schema_questionset qs ON c.question_set_id = qs.id
+
+LEFT JOIN (
+	SELECT
+		*
+	FROM
+		schema_category cp
+		JOIN schema_question q             ON cp.id  = q.category_id
+		JOIN schema_tossup t               ON q.id   = t.question_ptr_id
+		JOIN schema_packet p               ON p.id   = q.packet_id
+		JOIN schema_gameeventtossup get    ON get.tossup_id = t.question_ptr_id
+		JOIN schema_gameevent ge           ON ge.id  = get.gameevent_ptr_id
+		JOIN schema_gameteam gt            ON gt.id  = ge.game_team_id
+	    JOIN schema_player pl              ON pl.id  = get.player_id
+		JOIN schema_team te                ON te.id  = gt.team_id
+		JOIN schema_tournament tou         ON tou.id = te.tournament_id
+		JOIN schema_game g                 ON g.id   = gt.game_id
+		JOIN schema_questionsetedition qse ON qse.id = tou.question_set_edition_id
+			AND qse.id = p.question_set_edition_id
+	#{where_exp}) ct
+ON (c.lft <= ct.lft
+	AND ct.rght <= c.rght
+	AND c.tree_id = ct.tree_id)
+
+WHERE
+	c.question_set_id = qs.id
+	AND c.level <= #{category_levels}
+	AND qs.slug = $question_set_slug
+GROUP BY
+	c.id
+ORDER BY
+	c.id
+"
 
 lbp = 'SELECT
 pl.name as player_name,
@@ -1124,7 +1189,8 @@ module.exports =
     buzzes: player_buzzes
 
   perf:
-    categories: perf_by_cat
+    categories_by_team: perf_by_cat_team('WHERE te.slug = $team_slug', 2)#('',3)
+    categories_by_player: perf_by_cat_player('WHERE pl.slug = $player_slug', 2)#('',3)
 
   leaderboards:
     leaderboard_team_t: lbtt

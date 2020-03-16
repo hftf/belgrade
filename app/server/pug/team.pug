@@ -35,11 +35,11 @@ html
 				// Tossups
 				colgroup(span=1)
 					col
-				colgroup(span=2)
+				colgroup(span=3)
 				colgroup(span=2)
 					col
 					col
-				colgroup(span=3 + 2 * team.has_powers)
+				colgroup(span=3 + 1 * team.has_powers)
 				colgroup(span=2 + team.has_powers)
 					col
 					if team.has_powers
@@ -49,7 +49,14 @@ html
 					//- col
 					//- col
 
-				colgroup(span=1, style='border:none;')
+				colgroup(span=3, style='border:none;')
+					col
+					col
+					col
+
+				colgroup(span=3)
+					col
+					col
 					col
 
 				// Bonuses
@@ -69,7 +76,7 @@ html
 				thead
 					tr
 						th
-						th(colspan=12 + 3 * team.has_powers) Tossups
+						th(colspan=18 + 2 * team.has_powers) Tossups
 						th
 						th(colspan=13) Bonuses
 					tr
@@ -80,13 +87,12 @@ html
 						+th(3) Heard
 						+th(3) Buzzes
 						//- +th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
+						+th(2) Correct
 						+th(3): abbr(title='Points') Pts
 						+th(3): abbr(title='Points per tossup') PPT
 						+th(3): abbr(title='Points per buzz') PPBz
 
 						if team.has_powers
-							+th(2): abbr(title='Gets (= 15s + 10s)') G
-
 							+th(2) 15s
 						+th(2) 10s
 						+th(2) −5s
@@ -96,11 +102,16 @@ html
 						if team.has_powers
 							+th(3): abbr(title='Power rate (= 15s / Tossups Heard)') Pow
 						+th(3): abbr(title='Neg rate (= −5s / Tossups Heard)') Neg
-						
 						+th(3): abbr(title='Buzz location % of first correct buzz') MinB%
 						+th(3): abbr(title='Average correct buzz location %') AvgB%
 
-						+th(1)
+						+th(3): abbr(title='Buzz Point Area Under the Curve (sums 1-BzPt over all correct buzzes') BPA
+						+th(3): abbr(title='Generalist BPA (sums 1-BzPt only for BzPt > 0.50)') geBPA
+						+th(3): abbr(title='Specialist BPA (sums 1-BzPt only for BzPt <= 0.50)') spBPA
+
+						+th(3): abbr(title='BPA per 20 tossups heard') BPA/Rd
+						+th(3): abbr(title='Generalist BPA per 20 tossups heard') geBPA/Rd
+						+th(3): abbr(title='Specialist BPA per 20 tossups heard') spBPA/Rd
 
 						// Bonuses
 						+th(3) Heard
@@ -120,7 +131,7 @@ html
 						+th(3).bar ≥20
 						+th(3).bar =30
 				tbody.categories
-					for category in categories
+					for category in categories_by_team
 						tr(class='category-' + category.level)
 							th.el: span(style='padding-left:' + category.level + 'em;')
 								= category.level ? category.name : 'All categories'
@@ -131,14 +142,13 @@ html
 							//- td.r= bldiff(category.t_countRooms, category.t_countRoomsBzPt)
 							td.r= bl(category.t_countRooms, category.t_countBzs)
 							//- td.r= bldiff(category.t_countBzs, category.t_countBzPts)
+							td.r= bl(category.t_countRooms, category.t_countG)
 							td.r= bl(category.t_countRooms, formatNegative(category.t_sum))
-							
+
 							+tdavg(category.t_countRooms, category.t_sum / category.t_countRooms, 15)
 							+tdavg(category.t_countRooms, category.t_sum / category.t_countBzs,   15)
 
 							if team.has_powers
-								td.r= bl(category.t_countRooms, category.t_countG)
-
 								td.r= bl(category.t_countRooms, category.t_count15)
 							td.r= bl(category.t_countRooms, category.t_count10)
 							td.r= bl(category.t_countRooms, category.t_countN5)
@@ -151,8 +161,13 @@ html
 
 							td.r= bl(category.t_countBzs, formatBzPct(category.t_firstBzPt))
 							td.r= bl(category.t_countBzs, formatBzPct(category.t_avgBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa))
 
-							td
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa / category.t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa / category.t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa / category.t_countRooms * 20))
 
 							td.r= category.b_countRooms
 
@@ -176,7 +191,6 @@ html
 							+tdb(category.b_countRooms, category.b_atleast10)
 							+tdb(category.b_countRooms, category.b_atleast20)
 							+tdb(category.b_countRooms, category.b_atleast30)
-
 
 
 
