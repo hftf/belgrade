@@ -55,10 +55,8 @@ allQueries = require './queries'
 # Example: npm start --port=3002 --dbfname=fo19.db.sqlite3
 port = process.env.npm_config_port || 3000
 dbfname = process.env.npm_config_dbfname || 'db.sqlite3'
-dbfbase = process.env.npm_config_dbfbase || '/Users/neilesh/belgrade/app/data/'
-bundlebase = process.env.npm_config_bundlebase || '/Users/neilesh/belgrade/app/data/bundles/%s/%s/html/'
-# dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
-# bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
+dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
+bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
 
 dbpath = dbfbase + dbfname
 db = new sqlite dbpath, { readonly: true }
