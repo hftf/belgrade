@@ -770,6 +770,48 @@ order by r.id, q.position'
 # buzz_location is not null
 # r.number sorts as string -> using r.id instead fixme
 
+
+player_overview =
+'SELECT
+pl.name as player_name,
+pl.slug as player_slug,
+COUNT(DISTINCT get.tossup_id) as count_t_heard,
+COUNT(CASE WHEN buzz_value NOT NULL AND get.player_id == pl.id THEN 1 END) as count_buzzes,
+COUNT(CASE WHEN buzz_value > 0 AND get.player_id == pl.id THEN 1 END) as count_Gs,
+COUNT(CASE WHEN buzz_value == 15 AND get.player_id == pl.id THEN 1 END) as count_15s,
+COUNT(CASE WHEN buzz_value == 10 AND get.player_id == pl.id THEN 1 END) as count_10s,
+COUNT(CASE WHEN buzz_value == -5 AND get.player_id == pl.id THEN 1 END) as count_N5s,
+COUNT(CASE WHEN buzz_value == 0 AND get.player_id == pl.id THEN 1 END) as count_0s,
+AVG(CASE WHEN buzz_value > 0 AND get.player_id == pl.id THEN buzz_location * 1.0 / words END) as avg_bzpt,
+SUM(CASE WHEN get.player_id == pl.id THEN buzz_value ELSE 0 END) as total_pts,
+SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id THEN 1 * (1 - buzz_location * 1.0 / words) END) as bpa,
+SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id AND buzz_location * 1.0 / words > 0.5 THEN 1 * (1 - buzz_location * 1.0 / words) END) as gebpa,
+SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id AND buzz_location * 1.0 / words <= 0.5 THEN 1 * (1 - buzz_location * 1.0 / words) END) as spbpa,
+20 * SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id AND get.player_id == pl.id THEN 1 * (1 - buzz_location * 1.0 / words) END) / COUNT(DISTINCT get.tossup_id) as bpa_rd,
+20 * SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id AND buzz_location * 1.0 / words > 0.5 THEN 1 * (1 - buzz_location * 1.0 / words) END) / COUNT(DISTINCT get.tossup_id) as gebpa_rd,
+20 * SUM(CASE WHEN buzz_value > 0 AND get.player_id == pl.id AND buzz_location * 1.0 / words <= 0.5 THEN 1 * (1 - buzz_location * 1.0 / words) END) / COUNT(DISTINCT get.tossup_id) as spbpa_rd,
+qs.has_powers as has_powers,
+qs.slug as question_set_slug,
+tou.site_slug as tournament_site_slug,
+te.slug as team_slug
+from schema_gameeventtossup get, schema_tossup t, schema_question q, schema_packet p,
+schema_team te, schema_tournament tou, schema_player pl,
+schema_questionsetedition qse, schema_questionset qs,
+schema_gameevent ge, schema_gameteam gt, schema_game g, schema_round r, schema_room rm,
+schema_gameteam gt2, schema_team te2,
+schema_author a
+where ge.id = get.gameevent_ptr_id and ge.game_team_id = gt.id and gt.team_id = te.id and gt.game_id = g.id
+and gt2.game_id = g.id and gt2.id != gt.id and gt2.team_id = te2.id
+and g.round_id = r.id and g.room_id = rm.id and te.tournament_id = tou.id
+and tou.question_set_edition_id = qse.id and qse.question_set_id = qs.id and pl.team_id = te.id
+and get.tossup_id = t.question_ptr_id
+and q.packet_id = p.id and t.question_ptr_id = q.id
+and q.author_id = a.id
+and qs.slug = $question_set_slug
+and te.slug = $team_slug
+group by pl.slug
+order by bpa_rd DESC, total_pts DESC'
+
 perf_by_cat_team = (where_exp, category_levels) -> "
 SELECT * FROM (
 SELECT
@@ -1182,6 +1224,7 @@ module.exports =
     team: team
     buzzes: team_buzzes
     bonuses: team_bonuses
+    overview: player_overview
 
   player:
     pl_id: pl_id

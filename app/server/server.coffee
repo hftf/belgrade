@@ -387,15 +387,20 @@ router.get '/question_sets/:question_set_slug/tournaments/:tournament_site_slug/
 		db.prepare allQueries.team.te_id
 		.get params
 		.id
+		
 	queries =
 		team: ['get', allQueries.team.team, id]
 		buzzes: ['all', allQueries.team.buzzes, id]
 		bonuses: ['all', allQueries.team.bonuses, id]
 		categories_by_team: ['all', allQueries.perf.categories_by_team, params]
+		overview: ['all', allQueries.team.overview, params]
 
 	try
 		results = runQueries queries
 
+		results['overview'].map (player) ->
+			url_params = { ...player}
+			player.player_url = namedRouter.build('player', url_params)
 		results['team']['players'] = JSON.parse results['team']['players']
 		for player in results['team']['players']
 			url_params = { ...player, question_set_slug: results['team']['question_set_slug'], tournament_site_slug: results['team']['tournament_site_slug'], team_slug: results['team']['team_slug'] }
