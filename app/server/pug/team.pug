@@ -25,7 +25,6 @@ html
 
 					table.dataTable.compact
 						thead: tr
-							//- +th(6.5) Set edition
 							+th(9) Player
 							+th: abbr(title='Tossups Heard') H
 							+th: abbr(title='Buzzes') Bz
@@ -43,7 +42,6 @@ html
 						tbody.stripe
 							for player in overview
 								tr
-									//- td= tournament.question_set_edition
 									+tdel(player.player_name, basePath(player.player_url))
 									td.r= player.count_t_heard
 									td.r= player.count_buzzes
