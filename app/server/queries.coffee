@@ -1165,6 +1165,25 @@ and cp.level = 2
 and cp.question_set_id = qs.id
 group by category'
 
+sc_parent = 'select
+cc.name as category,
+cc.slug as category_slug,
+cc.tree_id as tree_id,
+qs.slug as question_set_slug,
+qs.name as question_set_name
+from
+schema_questionsetedition qse, schema_questionset qs,
+schema_category c, schema_category cp, schema_category cc
+where
+qs.slug = $question_set_slug
+and c.slug = $category_slug
+and (c.parent_id = cc.id or c.id = cc.id)
+and cp.parent_id = cc.id
+and cc.level = 1
+and cp.level = 2
+and cp.question_set_id = qs.id
+group by category'
+
 c = 'select distinct
 cp.name as category,
 cp.slug as category_slug,
@@ -1240,6 +1259,7 @@ module.exports =
     leaderboard_team_b: lbtb
     leaderboard_player: lbp
     subcategories: sc
+    subcategories_parent: sc_parent
     categories: c
 
   home:

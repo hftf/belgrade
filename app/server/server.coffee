@@ -55,8 +55,10 @@ allQueries = require './queries'
 # Example: npm start --port=3002 --dbfname=fo19.db.sqlite3
 port = process.env.npm_config_port || 3000
 dbfname = process.env.npm_config_dbfname || 'db.sqlite3'
-dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
-bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
+dbfbase = process.env.npm_config_dbfbase || '/Users/neilesh/belgrade/app/data/'
+bundlebase = process.env.npm_config_bundlebase || '/Users/neilesh/belgrade/app/data/bundles/%s/%s/html/'
+# dbfbase = process.env.npm_config_dbfbase || '/Users/ophir/Documents/quizbowl/every.buzz/every_buzz/'
+# bundlebase = process.env.npm_config_bundlebase || '/Users/ophir/Documents/quizbowl/oligodendrocytes/bundles/%s/%s/html/'
 
 dbpath = dbfbase + dbfname
 db = new sqlite dbpath, { readonly: true }
@@ -464,6 +466,7 @@ router.get '/question_sets/:question_set_slug/leaderboard_team/:category_slug.ht
 		leaderboard_team_t: ['all', allQueries.leaderboards.leaderboard_team_t, params]
 		leaderboard_team_b: ['all', allQueries.leaderboards.leaderboard_team_b, params]
 		subcategories: ['all', allQueries.leaderboards.subcategories, params]
+		subcategories_parent: ['all', allQueries.leaderboards.subcategories_parent, params]
 		categories: ['all', allQueries.leaderboards.categories, params]
 
 	try
@@ -489,6 +492,7 @@ router.get '/question_sets/:question_set_slug/leaderboard_player/:category_slug.
 	queries =
 		leaderboard_player: ['all', allQueries.leaderboards.leaderboard_player, params]
 		subcategories: ['all', allQueries.leaderboards.subcategories, params]
+		subcategories_parent: ['all', allQueries.leaderboards.subcategories_parent, params]
 		categories: ['all', allQueries.leaderboards.categories, params]
 	try
 		results = runQueries queries
