@@ -34,6 +34,8 @@ html
                 select.subcategorySelect(onChange='window.location.href=this.value')
                     if leaderboard_team_t[0].category_level <= 1
                         option(value=basePath(url('leaderboard_team', leaderboard_team_t[0])) selected) All
+                    else
+                        option(value=basePath(url('leaderboard_team', subcategories_parent[0]))) All
                     for subcat in subcategories
                         if subcat.category_slug === leaderboard_team_t[0].category_slug
                             option(value=basePath(url('leaderboard_team', subcat)) selected) #{subcat.category}
