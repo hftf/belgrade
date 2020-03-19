@@ -1105,7 +1105,6 @@ lbtb =
    COUNT(CASE WHEN geb.value1+geb.value2+geb.value3 == 10 THEN 1 END) as count_10s,
    COUNT(CASE WHEN geb.value1+geb.value2+geb.value3 == 20 THEN 1 END) as count_20s,
    COUNT(CASE WHEN geb.value1+geb.value2+geb.value3 == 30 THEN 1 END) as count_30s,
-   SUM(geb.value1+geb.value2+geb.value3) as total_pts,
    SUM(geb.value1+geb.value2+geb.value3) * 1.0 / COUNT(*) as avg_pts,
    SUM(geb.value1+geb.value2+geb.value3) * 1.0 / (30 * COUNT(*)) as pct_correct,
    COUNT(CASE WHEN geb.value1+geb.value2+geb.value3 >= 10 THEN 1 END) * 1.0 / COUNT(*) as count_at_least_10s,
@@ -1144,7 +1143,7 @@ WHERE
 GROUP BY
     te.slug
 ORDER BY
-    total_pts DESC'
+    avg_pts DESC'
 
 sc = 'select
 cp.name as category,
