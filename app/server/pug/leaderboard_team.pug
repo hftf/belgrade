@@ -1,0 +1,123 @@
+doctype html
+include includes/global.pug
+html
+    head
+        include includes/base.pug
+        +preload
+        include includes/analytics.pug
+        +css
+        +title(`every.buzz ⬢ ${leaderboard_team_t[0].question_set_name} › Team Leaderboard`)
+    body
+        +header
+            li: a(href=basePath(url('question_set', leaderboard_team_t[0])))= leaderboard_team_t[0].question_set_name
+            li: a(href=basePath(url('leaderboard_player', leaderboard_team_t[0]))) Player Leaderboard
+
+        h1 #{leaderboard_team_t[0].question_set_name} › Team Leaderboard
+
+        .left
+            p
+                | Choose category: &emsp;
+
+                select.categorySelect(onChange='window.location.href=this.value')
+                    for cat in categories
+                        if cat.category_slug === leaderboard_team_t[0].category_slug & cat.category_slug === 'root'
+                            option(value=basePath(url('leaderboard_team', cat)) selected) All
+                        else if cat.category_slug === leaderboard_team_t[0].category_slug || cat.category_id === leaderboard_team_t[0].parent_id
+                            option(value=basePath(url('leaderboard_team', cat)) selected) #{cat.category}
+                        else if cat.category_slug === 'root'
+                            option(value=basePath(url('leaderboard_team', cat))) All
+                        else
+                            option(value=basePath(url('leaderboard_team', cat))) #{cat.category}
+
+                br
+                | Choose subcategory: &emsp;
+                select.subcategorySelect(onChange='window.location.href=this.value')
+                    if leaderboard_team_t[0].category_level <= 1
+                        option(value=basePath(url('leaderboard_team', leaderboard_team_t[0])) selected) All
+                    else
+                        option(value=basePath(url('leaderboard_team', subcategories_parent[0]))) All
+                    for subcat in subcategories
+                        if subcat.category_slug === leaderboard_team_t[0].category_slug
+                            option(value=basePath(url('leaderboard_team', subcat)) selected) #{subcat.category}
+                        else
+                            option(value=basePath(url('leaderboard_team', subcat))) #{subcat.category}
+
+
+        h2 Tossups
+
+        table.small.dataTable.compact(data-order='[[0,"asc"]]' data-column-defs='[{"targets": [3], "orderData": [3, 4]}]')
+            colgroup(span=6)
+            thead
+                tr
+                    th Rk
+                    +th(9) Team
+                    +th(7) Site
+                    +th(2): abbr(title="Tossups Heard") H
+                    +th(2): abbr(title="Buzzes") Bz
+                    if leaderboard_team_t[0].has_powers
+                        th 15s
+                    th 10s
+                    th -5s
+                    th: abbr(title="Points per round (=20 * pts / heard)") Pts/Rd
+                    th: abbr(title="Conversion Rate (= correct buzzes / heard)") Conv
+                    th: abbr(title="Average buzz point in tossup") AvgBzPt
+                    th: abbr(title="Per-round Buzz Point Area Under the Curve (= 20 * summed 1-BzPt for all correct buzzes / heard)") BPA/Rd
+                    th: abbr(title="Per-round Generalist BPA (uses only BzPt > 0.5)") geBPA/Rd
+                    th: abbr(title="Per-round Specialist BPA (uses only BzPt <= 0.5)") spBPA/Rd
+            tbody.stripe.buzzes
+                for team, i in leaderboard_team_t
+                    tr
+                        td.l.bg= i+1
+                        +tdel(team.team_name, basePath(team.team_url))
+                        td.l.bg= team.site_name
+                        td.r.bg= team.count_t_heard
+                        td.r.bg= team.count_buzzes
+                        if leaderboard_team_t[0].has_powers
+                            td.r.bg= team.count_15s
+                        td.r.bg= team.count_10s
+                        td.r.bg= team.count_N5s
+                        td.r.bg= formatBzPct(20 * team.total_pts / team.count_t_heard)
+                        td.r.bg= formatPct(team.count_Gs / team.count_t_heard)
+                        td.r.bg= formatBzPct(team.avg_bzpt)
+                        td.r.ranked= formatBzPct(team.bpa_rd)
+                        td.r.bg= formatBzPct(team.gebpa_rd)
+                        td.r.bg= formatBzPct(team.spbpa_rd)
+
+        h2 Bonuses
+
+        table.small.dataTable.compact(data-order='[[0,"asc"]]' data-column-defs='[{"targets": [3], "orderData": [3, 4]}]')
+            colgroup(span=6)
+            thead
+                tr
+                    th Rk
+                    +th(9) Team
+                    +th(7) Site
+                    th Heard
+                    th 0s
+                    th 10s
+                    th 20s
+                    th 30s
+                    th TotalPts
+                    th AvgPts
+                    th Conv
+                    +th.bar ≥10
+                    +th.bar ≥20
+                    +th.bar =30
+            tbody.stripe.buzzes
+                for team, i in leaderboard_team_b
+                    tr
+                        td.l.bg= i+1
+                        +tdel(team.name, basePath(team.team_url))
+                        td.l.bg= team.site_name
+                        td.r.bg= team.b_heard
+                        td.r.bg= team.count_0s
+                        td.r.bg= team.count_10s
+                        td.r.bg= team.count_20s
+                        td.r.bg= team.count_30s
+                        td.r.bg= team.total_pts
+                        td.r.ranked= formatBzPct(team.avg_pts)
+                        td.r.bg= formatPct(team.pct_correct)
+                        td.r.bg= formatPct(team.count_at_least_10s)
+                        td.r.bg= formatPct(team.count_at_least_20s)
+                        td.r.bg= formatPct(team.count_at_least_30s)
+        +js

@@ -1,0 +1,84 @@
+doctype html
+include includes/global.pug
+html
+    head
+        include includes/base.pug
+        +preload
+        include includes/analytics.pug
+        +css
+        +title(`every.buzz ⬢ ${leaderboard_player[0].question_set_name} › Player Leaderboard`)
+    body
+        +header
+            li: a(href=basePath(url('question_set', leaderboard_player[0])))= leaderboard_player[0].question_set_name
+            li: a(href=basePath(url('leaderboard_team', leaderboard_player[0]))) Team Leaderboard
+
+        h1 #{leaderboard_player[0].question_set_name} › Player Leaderboard
+
+        .left
+            p
+                | Choose category: &emsp;
+
+                select.categorySelect(onChange='window.location.href=this.value')
+                    for cat in categories
+                        if cat.category_slug === leaderboard_player[0].category_slug & cat.category_slug === 'root'
+                            option(value=basePath(url('leaderboard_player', cat)) selected) All
+                        else if cat.category_slug === leaderboard_player[0].category_slug || cat.category_id === leaderboard_player[0].parent_id
+                            option(value=basePath(url('leaderboard_player', cat)) selected) #{cat.category}
+                        else if cat.category_slug === 'root'
+                            option(value=basePath(url('leaderboard_player', cat))) All
+                        else
+                            option(value=basePath(url('leaderboard_player', cat))) #{cat.category}
+                br
+                | Choose subcategory: &emsp;
+                select.subcategorySelect(onChange='window.location.href=this.value')
+                    if leaderboard_player[0].category_level <= 1
+                        option(value=basePath(url('leaderboard_player', leaderboard_player[0])) selected) All
+                    else
+                        option(value=basePath(url('leaderboard_team', subcategories_parent[0]))) All
+                    for subcat in subcategories
+                        if subcat.category_slug === leaderboard_player[0].category_slug
+                            option(value=basePath(url('leaderboard_player', subcat)) selected) #{subcat.category}
+                        else
+                            option(value=basePath(url('leaderboard_player', subcat))) #{subcat.category}
+
+        h2 Tossups
+
+        table.small.dataTable.compact(data-order='[[0,"asc"]]' data-column-defs='[{"targets": [3], "orderData": [3, 4]}]')
+            colgroup(span=6)
+            thead
+                tr
+                    th Rk
+                    +th(9) Player
+                    +th(9) Team
+                    th: abbr(title="Tossups Heard") H
+                    th: abbr(title="Buzzes") Bz
+                    if leaderboard_player[0].has_powers
+                        th 15s
+                    th 10s
+                    th -5s
+                    th: abbr(title="Points") Pts
+                    th: abbr(title="Conversion Rate (= correct buzzes / heard)") Conv
+                    th: abbr(title="Average buzz point in tossup") AvgBzPt
+                    th: abbr(title="Per-round Buzz Point Area Under the Curve (= 20 * summed 1-BzPt for all correct buzzes / heard)") BPA/Rd
+                    th: abbr(title="Per-round Generalist BPA (uses only BzPt > 0.5)") geBPA/Rd
+                    th: abbr(title="Per-round Specialist BPA (uses only BzPt <= 0.5)") spBPA/Rd
+
+            tbody.stripe.buzzes
+                for player, i in leaderboard_player
+                    tr
+                        td.r.bg= i+1
+                        +tdel(player.player_name, basePath(player.player_url))
+                        +tdel(player.team_name, basePath(player.team_url))
+                        td.r.bg= player.count_t_heard
+                        td.r.bg= player.count_buzzes
+                        if leaderboard_player[0].has_powers
+                            td.r.bg= player.count_15s
+                        td.r.bg= player.count_10s
+                        td.r.bg= player.count_N5s
+                        td.r.bg= player.total_pts
+                        td.r.bg= formatPct(player.count_Gs / player.count_t_heard)
+                        td.r.bg= formatBzPct(player.avg_bzpt)
+                        td.r.bg.ranked= formatBzPct(player.bpa_rd)
+                        td.r.bg= formatBzPct(player.gebpa_rd)
+                        td.r.bg= formatBzPct(player.spbpa_rd)
+        +js

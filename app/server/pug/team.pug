@@ -21,10 +21,56 @@ html
 					li: a(href='#tossups') Tossups
 					li: a(href='#bonuses') Bonuses
 
-			h2#players Players
-			nav
-				ul: for player in team.players
-					li: a(href=basePath(player.player_url))= player.player_name
+					h2#players Players
+
+					table.dataTable.compact
+						thead: tr
+							+th(9) Player
+							+th: abbr(title='Tossups Heard') H
+							+th: abbr(title='Buzzes') Bz
+							if team.has_powers
+								+th 15s
+							+th 10s
+							+th -5s
+							+th(3): abbr(title='Points per round') Pts/Rd
+							+th: abbr(title='Conversion (=correct buzzes / tossups heard') Conv
+							+th(3): abbr(title='Average buzz point in tossup') AvgBzPt
+							+th(3): abbr(title='BPA per 20 tossups heard') BPA/Rd
+							+th(3): abbr(title='Generalist BPA per 20 tossups heard') geBPA/Rd
+							+th(3): abbr(title='Specialist BPA per 20 tossups heard') spBPA/Rd
+
+						tbody.stripe
+							for player in overview
+								tr
+									+tdel(player.player_name, basePath(player.player_url))
+									td.r= player.count_t_heard
+									td.r= player.count_buzzes
+									if team.has_powers
+										td.r= player.count_15s
+									td.r= player.count_10s
+									td.r= player.count_N5s
+									td.r= formatBzPct(player.total_pts / player.count_t_heard * 20)
+									td.r= formatPct(player.count_Gs / player.count_t_heard)
+									td.r= formatBzPct(player.avg_bzpt)
+									td.r= formatBzPct(player.bpa / player.count_t_heard * 20)
+									td.r= formatBzPct(player.gebpa / player.count_t_heard * 20)
+									td.r= formatBzPct(player.spbpa / player.count_t_heard * 20)
+
+						tfoot
+							tr
+								th(9) Total
+								td.r= categories_by_team[0].t_countRooms
+								td.r= categories_by_team[0].t_countBzs
+								if team.has_powers
+									td.r= categories_by_team[0].t_count15
+								td.r= categories_by_team[0].t_count10
+								td.r= categories_by_team[0].t_countN5
+								td.r= formatBzPct(categories_by_team[0].t_sum / categories_by_team[0].t_countRooms * 20)
+								td.r= formatPct(categories_by_team[0].t_countG / categories_by_team[0].t_countRooms)
+								td.r= formatBzPct(categories_by_team[0].t_avgBzPt)
+								td.r= formatBzPct(categories_by_team[0].bpa / categories_by_team[0].t_countRooms * 20)
+								td.r= formatBzPct(categories_by_team[0].gebpa / categories_by_team[0].t_countRooms * 20)
+								td.r= formatBzPct(categories_by_team[0].spbpa / categories_by_team[0].t_countRooms * 20)
 
 			h2#categories Categories
 
@@ -35,11 +81,11 @@ html
 				// Tossups
 				colgroup(span=1)
 					col
-				colgroup(span=2)
+				colgroup(span=3)
 				colgroup(span=2)
 					col
 					col
-				colgroup(span=3 + 2 * team.has_powers)
+				colgroup(span=3 + 1 * team.has_powers)
 				colgroup(span=2 + team.has_powers)
 					col
 					if team.has_powers
@@ -49,7 +95,14 @@ html
 					//- col
 					//- col
 
-				colgroup(span=1, style='border:none;')
+				colgroup(span=3, style='border:none;')
+					col
+					col
+					col
+
+				colgroup(span=3)
+					col
+					col
 					col
 
 				// Bonuses
@@ -69,7 +122,7 @@ html
 				thead
 					tr
 						th
-						th(colspan=12 + 3 * team.has_powers) Tossups
+						th(colspan=18 + 2 * team.has_powers) Tossups
 						th
 						th(colspan=13) Bonuses
 					tr
@@ -80,13 +133,12 @@ html
 						+th(3) Heard
 						+th(3) Buzzes
 						//- +th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
+						+th(2) Correct
 						+th(3): abbr(title='Points') Pts
 						+th(3): abbr(title='Points per tossup') PPT
 						+th(3): abbr(title='Points per buzz') PPBz
 
 						if team.has_powers
-							+th(2): abbr(title='Gets (= 15s + 10s)') G
-
 							+th(2) 15s
 						+th(2) 10s
 						+th(2) −5s
@@ -96,11 +148,16 @@ html
 						if team.has_powers
 							+th(3): abbr(title='Power rate (= 15s / Tossups Heard)') Pow
 						+th(3): abbr(title='Neg rate (= −5s / Tossups Heard)') Neg
-						
 						+th(3): abbr(title='Buzz location % of first correct buzz') MinB%
 						+th(3): abbr(title='Average correct buzz location %') AvgB%
 
-						+th(1)
+						+th(3): abbr(title='Buzz Point Area Under the Curve (sums 1-BzPt over all correct buzzes') BPA
+						+th(3): abbr(title='Generalist BPA (sums 1-BzPt only for BzPt > 0.50)') geBPA
+						+th(3): abbr(title='Specialist BPA (sums 1-BzPt only for BzPt <= 0.50)') spBPA
+
+						+th(3): abbr(title='BPA per 20 tossups heard') BPA/Rd
+						+th(3): abbr(title='Generalist BPA per 20 tossups heard') geBPA/Rd
+						+th(3): abbr(title='Specialist BPA per 20 tossups heard') spBPA/Rd
 
 						// Bonuses
 						+th(3) Heard
@@ -120,7 +177,7 @@ html
 						+th(3).bar ≥20
 						+th(3).bar =30
 				tbody.categories
-					for category in categories
+					for category in categories_by_team
 						tr(class='category-' + category.level)
 							th.el: span(style='padding-left:' + category.level + 'em;')
 								= category.level ? category.name : 'All categories'
@@ -131,14 +188,13 @@ html
 							//- td.r= bldiff(category.t_countRooms, category.t_countRoomsBzPt)
 							td.r= bl(category.t_countRooms, category.t_countBzs)
 							//- td.r= bldiff(category.t_countBzs, category.t_countBzPts)
+							td.r= bl(category.t_countRooms, category.t_countG)
 							td.r= bl(category.t_countRooms, formatNegative(category.t_sum))
-							
+
 							+tdavg(category.t_countRooms, category.t_sum / category.t_countRooms, 15)
 							+tdavg(category.t_countRooms, category.t_sum / category.t_countBzs,   15)
 
 							if team.has_powers
-								td.r= bl(category.t_countRooms, category.t_countG)
-
 								td.r= bl(category.t_countRooms, category.t_count15)
 							td.r= bl(category.t_countRooms, category.t_count10)
 							td.r= bl(category.t_countRooms, category.t_countN5)
@@ -151,8 +207,13 @@ html
 
 							td.r= bl(category.t_countBzs, formatBzPct(category.t_firstBzPt))
 							td.r= bl(category.t_countBzs, formatBzPct(category.t_avgBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa))
 
-							td
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa / category.t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa / category.t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa / category.t_countRooms * 20))
 
 							td.r= category.b_countRooms
 
@@ -176,7 +237,6 @@ html
 							+tdb(category.b_countRooms, category.b_atleast10)
 							+tdb(category.b_countRooms, category.b_atleast20)
 							+tdb(category.b_countRooms, category.b_atleast30)
-
 
 
 

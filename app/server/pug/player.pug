@@ -15,6 +15,117 @@ html
 		.left
 			h1 #{player.player_name} (#[a(href=basePath(url('team', player))) #{player.team_name}]) at #{player.tournament_name}
 
+			h2#categories Categories
+
+			table.small
+				colgroup(span=1)
+					col
+
+				// Tossups
+				colgroup(span=1)
+					col
+				colgroup(span=3)
+				colgroup(span=2)
+					col
+					col
+				colgroup(span=3 + 1 * player.has_powers)
+				colgroup(span=2 + player.has_powers)
+					col
+					if player.has_powers
+						col
+					col
+				colgroup(span=5)
+					col
+					col
+					col
+					col
+					col
+
+				colgroup(span=3)
+					col
+					col
+					col
+
+				thead
+					tr
+						th
+						th(colspan=15 + 3 * player.has_powers) Tossups
+						th
+					tr
+						+th(15) Category
+
+						// Tossups
+						//- +th(2) BP?
+						+th(3) Heard
+						+th(3) Buzzes
+						+th(2) Correct
+						//- +th(3): abbr(title='Number of recorded buzz locations (= if same as Buzzes)') BzPts
+						+th(3): abbr(title='Points') Pts
+						+th(3): abbr(title='Points per tossup') PPT
+						+th(3): abbr(title='Points per buzz') PPBz
+
+						if player.has_powers
+							+th(2) 15s
+						+th(2) 10s
+						+th(2) −5s
+						+th(2) 0s
+
+						+th(3): abbr(title='Conversion rate (= Gets / Heard)') Conv
+						if player.has_powers
+							+th(3): abbr(title='Power rate (= 15s / Tossups Heard)') Pow
+						+th(3): abbr(title='Neg rate (= −5s / Tossups Heard)') Neg
+
+						+th(3): abbr(title='Buzz location % of first correct buzz') MinB%
+						+th(3): abbr(title='Average correct buzz location %') AvgB%
+
+						+th(3): abbr(title='Buzz Point Area Under the Curve (sums 1-BzPt over all correct buzzes)') BPA
+						+th(3): abbr(title='Generalist BPA (sums 1-BzPt only for BzPt > 0.50)') geBPA
+						+th(3): abbr(title='Specialist BPA (sums 1-BzPt only for BzPt <= 0.50)') spBPA
+
+						+th(3): abbr(title='BPA per 20 tossups heard') BPA/Rd
+						+th(3): abbr(title='Generalist BPA per 20 tossups heard') geBPA/Rd
+						+th(3): abbr(title='Specialist BPA per 20 tossups heard') spBPA/Rd
+
+						+th(1)
+
+				tbody.categories
+					for category, i in categories_by_player
+						tr(class='category-' + category.level)
+							th.el: span(style='padding-left:' + category.level + 'em;')
+								= category.level ? category.name : 'All categories'
+
+
+							td.r= categories_by_team[i].t_countRooms
+
+							//- td.r= bldiff(category.t_countRooms, category.t_countRoomsBzPt)
+							td.r= bl(category.t_countRooms, category.t_countBzs)
+							td.r= bl(category.t_countRooms, category.t_countG)
+							//- td.r= bldiff(category.t_countBzs, category.t_countBzPts)
+							td.r= bl(category.t_countRooms, formatNegative(category.t_sum))
+
+							+tdavg(category.t_countRooms, category.t_sum / category.t_countRooms, 15)
+							+tdavg(category.t_countRooms, category.t_sum / category.t_countBzs,   15)
+
+							if player.has_powers
+								td.r= bl(category.t_countRooms, category.t_count15)
+							td.r= bl(category.t_countRooms, category.t_count10)
+							td.r= bl(category.t_countRooms, category.t_countN5)
+							td.r= bl(category.t_countRooms, category.t_count0)
+
+							+tdb(categories_by_team[i].t_countRooms, category.t_countG)
+							if player.has_powers
+								+tdb(category.t_countRooms, category.t_count15)
+							+tdb(category.t_countRooms, category.t_countN5)
+
+							td.r= bl(category.t_countBzs, formatBzPct(category.t_firstBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.t_avgBzPt))
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa))
+							td.r= bl(category.t_countBzs, formatBzPct(category.bpa / categories_by_team[i].t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.gebpa / categories_by_team[i].t_countRooms * 20))
+							td.r= bl(category.t_countBzs, formatBzPct(category.spbpa / categories_by_team[i].t_countRooms * 20))
+							
 			h2#tossups Tossups
 
 			//- h3#round    By round
